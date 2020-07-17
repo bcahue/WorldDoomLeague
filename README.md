@@ -53,6 +53,11 @@ For example, to add a new migration from the root folder:
 
 # Overview of Api Design
 
+The system is designed using principles from Clean Architecture and CQRS. As such, it uses MediatR to send a message from the controller to the Application layer and finally to the Infrastructure layer to interface externally with systems to get and manipulate required data. The Infrastructure layer then sends back either an error or the requested VM or DTO.
+
+It uses AutoMapper when convenient, but most query viewmodels don't match the base entity, or need extended logic performed before finally resting in a DTO.
+
+
 ### Domain
 
 This will contain all entities, enums, exceptions, interfaces, types and logic specific to the domain layer.
@@ -69,7 +74,7 @@ This layer contains classes for accessing external resources such as file system
 
 ### Api
 
-This layer is a single page application based on ASP.NET Core 3.1. This layer depends on both the Application and Infrastructure layers, however, the dependency on Infrastructure is only to support dependency injection. Therefore only *Startup.cs* should reference Infrastructure.
+This layer contains the REST controller based on ASP.NET Core 3.1. This layer depends on both the Application and Infrastructure layers, however, the dependency on Infrastructure is only to support dependency injection. Therefore only *Startup.cs* should reference Infrastructure.
 
 ## Support
 

@@ -29,7 +29,7 @@ Here is how to get the Api to compile locally:
 
 The site is configured to use an in-memory database by default. This ensures that all users will be able to run the solution without needing to set up additional infrastructure (e.g. SQL Server).
 
-If you would like to use MariaDb, you will need to update **WebUI/appsettings.json** as follows:
+If you would like to use MariaDb, you will need to update **Api/appsettings.json** as follows:
 
 ```json
   "UseInMemoryDatabase": false,

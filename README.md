@@ -1,41 +1,35 @@
- <img align="left" width="116" height="116" src="https://raw.githubusercontent.com/jasontaylordev/CleanArchitecture/master/.github/icon.png" />
+ <img align="left" width="116" height="116" src="https://i.imgur.com/id2VAPF.png" />
  
- # Clean Architecture Solution Template
-![.NET Core](https://github.com/jasontaylordev/CleanArchitecture/workflows/.NET%20Core/badge.svg) [![Build status](https://codingflow.visualstudio.com/CleanArchitecture/_apis/build/status/CleanArchitecture-CI)](https://codingflow.visualstudio.com/CleanArchitecture/_build/latest?definitionId=23) [![Clean.Architecture.Solution.Template NuGet Package](https://img.shields.io/badge/nuget-1.1.1-blue)](https://www.nuget.org/packages/Clean.Architecture.Solution.Template) [![NuGet](https://img.shields.io/nuget/dt/Clean.Architecture.Solution.Template.svg)](https://www.nuget.org/packages/Clean.Architecture.Solution.Template) [![Twitter Follow](https://img.shields.io/twitter/follow/jasontaylordev.svg?style=social&label=Follow)](https://twitter.com/jasontaylordev)
+ # WorldDoomLeague.Api
+![.NET Core](https://github.com/jasontaylordev/CleanArchitecture/workflows/.NET%20Core/badge.svg)
 
 <br/>
 
-This is a solution template for creating a Single Page App (SPA) with Angular and ASP.NET Core following the principles of Clean Architecture. Create a new project based on this template by clicking the above **Use this template** button or by installing and running the associated NuGet package (see Getting Started for full details). 
+This is an Api that drives the SPA front-end website for the World Doom League. This software follows the [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) software principle to separate business logic from infrastructure.
 
 
 ## Technologies
 * .NET Core 3.1
 * ASP .NET Core 3.1
 * Entity Framework Core 3.1
-* Angular 9
 * MediatR
 * AutoMapper
 * FluentValidation
 * NUnit, FluentAssertions, Moq & Respawn
+* MariaDb
 
 ## Getting Started
 
-The easiest way to get started is to install the [NuGet package](https://www.nuget.org/packages/Clean.Architecture.Solution.Template) and run `dotnet new ca-sln`:
+Here is how to get the Api to compile locally:
 
 1. Install the latest [.NET Core SDK](https://dotnet.microsoft.com/download)
-2. Install the latest [Node.js LTS](https://nodejs.org/en/)
-3. Run `dotnet new --install Clean.Architecture.Solution.Template` to install the project template
-4. Create a folder for your solution and cd into it (the template will use it as project name)
-5. Run `dotnet new ca-sln` to create a new project
-6. Navigate to `src/WebUI` and run `dotnet run` to launch the project
-
-Check out my [blog post](https://jasontaylor.dev/clean-architecture-getting-started/) for more information.
+2. Navigate to `src/WebUI` and run `dotnet run` to launch the project
 
 ### Database Configuration
 
-The template is configured to use an in-memory database by default. This ensures that all users will be able to run the solution without needing to set up additional infrastructure (e.g. SQL Server).
+The site is configured to use an in-memory database by default. This ensures that all users will be able to run the solution without needing to set up additional infrastructure (e.g. SQL Server).
 
-If you would like to use SQL Server, you will need to update **WebUI/appsettings.json** as follows:
+If you would like to use MariaDb, you will need to update **WebUI/appsettings.json** as follows:
 
 ```json
   "UseInMemoryDatabase": false,
@@ -50,14 +44,14 @@ When you run the application the database will be automatically created (if nece
 To use `dotnet-ef` for your migrations please add the following flags to your command (values assume you are executing from repository root)
 
 - `--project src/Infrastructure` (optional if in this folder)
-- `--startup-project src/WebUI`
+- `--startup-project src/Api`
 - `--output-dir Persistence/Migrations`
 
 For example, to add a new migration from the root folder:
 
- `dotnet ef migrations add "SampleMigration" --project src\Infrastructure --startup-project src\WebUI --output-dir Persistence\Migrations`
+ `dotnet ef migrations add "SampleMigration" --project src\Infrastructure --startup-project src\Api --output-dir Persistence\Migrations`
 
-## Overview
+# Overview of Api Design
 
 ### Domain
 
@@ -73,9 +67,9 @@ This layer contains all application logic. It is dependent on the domain layer, 
 
 This layer contains classes for accessing external resources such as file systems, web services, smtp, and so on. These classes should be based on interfaces defined within the application layer.
 
-### WebUI
+### Api
 
-This layer is a single page application based on Angular 9 and ASP.NET Core 3.1. This layer depends on both the Application and Infrastructure layers, however, the dependency on Infrastructure is only to support dependency injection. Therefore only *Startup.cs* should reference Infrastructure.
+This layer is a single page application based on ASP.NET Core 3.1. This layer depends on both the Application and Infrastructure layers, however, the dependency on Infrastructure is only to support dependency injection. Therefore only *Startup.cs* should reference Infrastructure.
 
 ## Support
 

@@ -23,7 +23,7 @@ This is an Api that drives the SPA front-end website for the World Doom League. 
 Here is how to get the Api to compile locally:
 
 1. Install the latest [.NET Core SDK](https://dotnet.microsoft.com/download)
-2. Navigate to `src/WebUI` and run `dotnet run` to launch the project
+2. Navigate to `src/Api` and run `dotnet run` to launch the project
 
 ### Database Configuration
 

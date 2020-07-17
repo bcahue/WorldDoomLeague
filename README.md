@@ -17,6 +17,7 @@ This is an Api that drives the SPA front-end website for the World Doom League. 
 * FluentValidation
 * NUnit, FluentAssertions, Moq & Respawn
 * MariaDb
+* NSwag
 
 ## Getting Started
 

@@ -73,7 +73,7 @@ This layer is a single page application based on ASP.NET Core 3.1. This layer de
 
 ## Support
 
-If you are having problems, please let us know by [raising a new issue](https://github.com/jasontaylordev/CleanArchitecture/issues/new/choose).
+If you are having problems, please let us know by [raising a new issue](https://github.com/bcahue/WorldDoomLeague.Api/issues/new/choose).
 
 ## License
 

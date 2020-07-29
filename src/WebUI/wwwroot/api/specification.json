@@ -1,0 +1,2719 @@
+{
+  "x-generator": "NSwag v13.6.2.0 (NJsonSchema v10.1.23.0 (Newtonsoft.Json v12.0.0.0))",
+  "openapi": "3.0.0",
+  "info": {
+    "title": "WorldDoomLeague Api",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/LeaderboardStats/season/{seasonId}/players": {
+      "get": {
+        "tags": [
+          "LeaderboardStats"
+        ],
+        "operationId": "LeaderboardStats_GetSeason",
+        "parameters": [
+          {
+            "name": "seasonId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "schema": {
+              "default": "Total",
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/LeaderboardStatsMode"
+                }
+              ]
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerLeaderboardSeasonStatsVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/LeaderboardStats/players": {
+      "get": {
+        "tags": [
+          "LeaderboardStats"
+        ],
+        "operationId": "LeaderboardStats_GetAllTime",
+        "parameters": [
+          {
+            "name": "mode",
+            "in": "query",
+            "schema": {
+              "default": "Total",
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/LeaderboardStatsMode"
+                }
+              ]
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerLeaderboardAllTimeStatsVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Matches/{matchId}/summary": {
+      "get": {
+        "tags": [
+          "Matches"
+        ],
+        "operationId": "Matches_Get",
+        "parameters": [
+          {
+            "name": "matchId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MatchSummaryVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Players": {
+      "get": {
+        "tags": [
+          "Players"
+        ],
+        "operationId": "Players_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayersVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Players/{playerId}/summary": {
+      "get": {
+        "tags": [
+          "Players"
+        ],
+        "operationId": "Players_GetPlayerSummaryById",
+        "parameters": [
+          {
+            "name": "playerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerSummaryVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Rounds": {
+      "get": {
+        "tags": [
+          "Rounds"
+        ],
+        "operationId": "Rounds_Get",
+        "parameters": [
+          {
+            "name": "output",
+            "in": "query",
+            "schema": {
+              "default": "csv",
+              "nullable": true,
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/RoundsOutputFileType"
+                }
+              ]
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Seasons": {
+      "get": {
+        "tags": [
+          "Seasons"
+        ],
+        "operationId": "Seasons_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeasonsVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Seasons/{seasonId}": {
+      "get": {
+        "tags": [
+          "Seasons"
+        ],
+        "operationId": "Seasons_GetSeasonSummaryById",
+        "parameters": [
+          {
+            "name": "seasonId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeasonSummaryVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Seasons/{seasonId}/standings": {
+      "get": {
+        "tags": [
+          "Seasons"
+        ],
+        "operationId": "Seasons_GetSeasonStandingsById",
+        "parameters": [
+          {
+            "name": "seasonId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeasonStandingsVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Seasons/{seasonId}/players": {
+      "get": {
+        "tags": [
+          "Seasons"
+        ],
+        "operationId": "Seasons_GetSeasonPlayers",
+        "parameters": [
+          {
+            "name": "seasonId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeasonPlayersVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Teams/{teamId}/summary": {
+      "get": {
+        "tags": [
+          "Teams"
+        ],
+        "operationId": "Teams_Get",
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamSummaryVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/TodoItems": {
+      "post": {
+        "tags": [
+          "TodoItems"
+        ],
+        "operationId": "TodoItems_Create",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTodoItemCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/TodoItems/{id}": {
+      "put": {
+        "tags": [
+          "TodoItems"
+        ],
+        "operationId": "TodoItems_Update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTodoItemCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "TodoItems"
+        ],
+        "operationId": "TodoItems_Delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/TodoItems/UpdateItemDetails": {
+      "put": {
+        "tags": [
+          "TodoItems"
+        ],
+        "operationId": "TodoItems_UpdateItemDetails",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTodoItemDetailCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/TodoLists": {
+      "get": {
+        "tags": [
+          "TodoLists"
+        ],
+        "operationId": "TodoLists_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TodosVm"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "TodoLists"
+        ],
+        "operationId": "TodoLists_Create",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTodoListCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/TodoLists/{id}": {
+      "get": {
+        "tags": [
+          "TodoLists"
+        ],
+        "operationId": "TodoLists_Get2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "TodoLists"
+        ],
+        "operationId": "TodoLists_Update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTodoListCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "TodoLists"
+        ],
+        "operationId": "TodoLists_Delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/WeatherForecast": {
+      "get": {
+        "tags": [
+          "WeatherForecast"
+        ],
+        "operationId": "WeatherForecast_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WeatherForecast"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PlayerLeaderboardSeasonStatsVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "seasonId": {
+            "type": "integer"
+          },
+          "seasonName": {
+            "type": "string",
+            "nullable": true
+          },
+          "playerLeaderboardStats": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/PlayerLeaderboardStatsDto"
+            }
+          }
+        }
+      },
+      "PlayerLeaderboardStatsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "statName": {
+            "type": "string",
+            "nullable": true
+          },
+          "leaderboardStats": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/LeaderboardStatsDto"
+            }
+          }
+        }
+      },
+      "LeaderboardStatsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "stat": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "LeaderboardStatsMode": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "PerRound",
+          "Total",
+          "Per1Min",
+          "Per8Min"
+        ],
+        "enum": [
+          "PerRound",
+          "Total",
+          "Per1Min",
+          "Per8Min"
+        ]
+      },
+      "PlayerLeaderboardAllTimeStatsVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "playerLeaderboardStats": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/PlayerLeaderboardStatsDto"
+            }
+          }
+        }
+      },
+      "MatchSummaryVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "matchId": {
+            "type": "integer"
+          },
+          "seasonId": {
+            "type": "integer"
+          },
+          "redTeamId": {
+            "type": "integer"
+          },
+          "blueTeamId": {
+            "type": "integer"
+          },
+          "roundsPlayed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gameTimeTotal": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "seasonName": {
+            "type": "string",
+            "nullable": true
+          },
+          "redTeamName": {
+            "type": "string",
+            "nullable": true
+          },
+          "blueTeamName": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapsPlayed": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/MatchMapsPlayedDto"
+            }
+          },
+          "lineScore": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MatchLineScoreDto"
+              }
+            ]
+          },
+          "finalBoxScore": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MatchFinalBoxScoreDto"
+              }
+            ]
+          },
+          "perRoundBoxScore": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/RoundBoxScoreDto"
+            }
+          },
+          "demoList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/DemoDto"
+            }
+          }
+        }
+      },
+      "MatchMapsPlayedDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "mapId": {
+            "type": "integer"
+          },
+          "mapNumber": {
+            "type": "integer"
+          },
+          "mapName": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapPack": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "MatchLineScoreDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "redTeamName": {
+            "type": "string",
+            "nullable": true
+          },
+          "blueTeamName": {
+            "type": "string",
+            "nullable": true
+          },
+          "roundScore": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/ScoreDto"
+            }
+          },
+          "matchResult": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MatchResultDto"
+              }
+            ]
+          }
+        }
+      },
+      "ScoreDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "round": {
+            "type": "string",
+            "nullable": true
+          },
+          "redScore": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "blueScore": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "roundWinner": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "MatchResultDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "redRoundScore": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "blueRoundScore": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gameWinner": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "MatchFinalBoxScoreDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "redTeamFinalBoxScore": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MatchStatsDto"
+              }
+            ]
+          },
+          "blueTeamFinalBoxScore": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MatchStatsDto"
+              }
+            ]
+          },
+          "redTeamPlayerFinalBoxScore": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/GamePlayersDto"
+            }
+          },
+          "blueTeamPlayerFinalBoxScore": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/GamePlayersDto"
+            }
+          }
+        }
+      },
+      "MatchStatsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "timePlayed": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "captures": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickupCaptures": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "assists": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "damageBetweenTouchAndCaptureMax": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "damageBetweenTouchAndCaptureAverage": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "captureTimeMin": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "captureTimeMax": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "captureTimeAverage": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "captureHealthMin": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "captureHealthMax": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "captureHealthAverage": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "captureGreenArmorMin": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "captureGreenArmorMax": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "captureGreenArmorAverage": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "captureBlueArmorMin": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "captureBlueArmorMax": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "captureBlueArmorAverage": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "capturesWithSuperPickups": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "flagCarriersKilledWhileHoldingFlag": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "highestKillsBeforeCapturing": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickupCaptureTimeMin": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "pickupCaptureTimeMax": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "pickupCaptureTimeAverage": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "flagTouches": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickupFlagTouches": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "flagDefenses": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "flagReturns": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "frags": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "deaths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "environmentalDeaths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "environmentalFlagCarrierDeaths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "teamKills": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "killingSprees": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rampages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dominatings": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unstoppables": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "godLikes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "wickedSicks": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "longestSpree": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "doubleKills": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "multiKills": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ultraKills": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "monsterKills": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "highestMultiKill": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickupHealthGained": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "healthFromNonPowerups": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "healthWhenTouchingFlagMin": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "healthWhenTouchingFlagMax": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "healthWhenTouchingFlagAverage": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "greenArmorWhenTouchingFlagMin": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "greenArmorWhenTouchingFlagMax": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "greenArmorWhenTouchingFlagAverage": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "blueArmorWhenTouchingFlagMin": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "blueArmorWhenTouchingFlagMax": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "blueArmorWhenTouchingFlagAverage": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "healthWhenTouchingFlagThatResultsInCaptureMin": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "healthWhenTouchingFlagThatResultsInCaptureMax": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "healthWhenTouchingFlagThatResultsInCaptureAverage": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "damage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "damageTakenFromEnvironment": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "damageTakenFromEnvironmentAsFlagCarrier": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "damageToFlagCarriers": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "damageDoneWithFlag": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "damageToGreenArmor": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "damageToBlueArmor": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "powerups": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "GamePlayersDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "playerId": {
+            "type": "integer"
+          },
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "matchStats": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MatchStatsDto"
+              }
+            ]
+          }
+        }
+      },
+      "RoundBoxScoreDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "roundNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "roundTimeTotal": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "redTeamBoxScore": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MatchStatsDto"
+              }
+            ]
+          },
+          "blueTeamBoxScore": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MatchStatsDto"
+              }
+            ]
+          },
+          "redTeamPlayerRoundBoxScore": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/GamePlayersDto"
+            }
+          },
+          "blueTeamPlayerRoundBoxScore": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/GamePlayersDto"
+            }
+          }
+        }
+      },
+      "DemoDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "playerId": {
+            "type": "integer"
+          },
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "demoLost": {
+            "type": "boolean"
+          },
+          "demoFilePath": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "PlayersVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "playerList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/PlayerDto"
+            }
+          }
+        }
+      },
+      "PlayerDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "PlayerSummaryVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "seasonsPlayedIn": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/SeasonsPlayedInDto"
+            }
+          },
+          "playerAllTimeStats": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/StatsDto"
+              }
+            ]
+          },
+          "totalRecord": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PlayerCaptainRecordDto"
+              }
+            ]
+          },
+          "regularSeasonRecord": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PlayerCaptainRecordDto"
+              }
+            ]
+          },
+          "playoffRecord": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PlayerCaptainRecordDto"
+              }
+            ]
+          },
+          "finalsRecord": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PlayerCaptainRecordDto"
+              }
+            ]
+          },
+          "seasonStats": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/SeasonPlayerStatsDto"
+            }
+          }
+        }
+      },
+      "SeasonsPlayedInDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "seasonName": {
+            "type": "string",
+            "nullable": true
+          },
+          "teamsPlayedFor": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/TeamsPlayedForDto"
+            }
+          }
+        }
+      },
+      "TeamsPlayedForDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "teamName": {
+            "type": "string",
+            "nullable": true
+          },
+          "draftPosition": {
+            "type": "string",
+            "nullable": true
+          },
+          "didTeamWinSeason": {
+            "type": "boolean"
+          }
+        }
+      },
+      "StatsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "roundsPlayed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalTimePlayed": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "totalFrags": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "frags": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "flagCarrierFrags": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "deaths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "environmentalDeaths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "damage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "flagCarrierDamage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "damageWithFlag": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "flagTouches": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickupFlagTouches": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "assists": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "captures": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickupCaptures": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "flagReturns": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "powerPickups": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "killingSprees": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rampages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dominations": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unstoppables": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "godLikes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "wickedSicks": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "doubleKills": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "multiKills": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ultraKills": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "monsterKills": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PlayerCaptainRecordDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "total": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RoundGameRecordDto"
+              }
+            ]
+          },
+          "asCaptain": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RoundGameRecordDto"
+              }
+            ]
+          }
+        }
+      },
+      "RoundGameRecordDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "rounds": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RecordDto"
+              }
+            ]
+          },
+          "matches": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RecordDto"
+              }
+            ]
+          }
+        }
+      },
+      "RecordDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "wins": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "losses": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ties": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "SeasonPlayerStatsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "seasonId": {
+            "type": "integer"
+          },
+          "seasonName": {
+            "type": "string",
+            "nullable": true
+          },
+          "seasonStats": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/StatsDto"
+              }
+            ]
+          }
+        }
+      },
+      "RoundsOutputFileType": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "csv"
+        ],
+        "enum": [
+          0
+        ]
+      },
+      "SeasonsVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "seasonList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/SeasonDto"
+            }
+          }
+        }
+      },
+      "SeasonDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "seasonName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "SeasonSummaryVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "seasonSummary": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SeasonSummaryDto"
+              }
+            ]
+          }
+        }
+      },
+      "SeasonSummaryDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "seasonName": {
+            "type": "string",
+            "nullable": true
+          },
+          "winningTeam": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "dateStart": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "weeks": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/SeasonWeekDto"
+            }
+          }
+        }
+      },
+      "SeasonWeekDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "idWeek": {
+            "type": "integer"
+          },
+          "weekNumber": {
+            "type": "integer"
+          },
+          "weekType": {
+            "type": "string",
+            "nullable": true
+          },
+          "weekStartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "games": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/SeasonGameDto"
+            }
+          }
+        }
+      },
+      "SeasonGameDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "idGame": {
+            "type": "integer"
+          },
+          "gameType": {
+            "type": "string",
+            "nullable": true
+          },
+          "gameDatetime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "teamWinnerColor": {
+            "type": "string",
+            "nullable": true
+          },
+          "teamForfeitColor": {
+            "type": "string",
+            "nullable": true
+          },
+          "redTeam": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SeasonTeamDto"
+              }
+            ]
+          },
+          "blueTeam": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SeasonTeamDto"
+              }
+            ]
+          },
+          "rounds": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/SeasonRoundsDto"
+            }
+          }
+        }
+      },
+      "SeasonTeamDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "idTeam": {
+            "type": "integer"
+          },
+          "teamName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "SeasonRoundsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "idRound": {
+            "type": "integer"
+          },
+          "roundNumber": {
+            "type": "integer",
+            "nullable": true
+          },
+          "roundDatetime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "roundTicsDuration": {
+            "type": "integer",
+            "nullable": true
+          },
+          "roundWinner": {
+            "type": "string",
+            "nullable": true
+          },
+          "map": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SeasonMapDto"
+              }
+            ]
+          }
+        }
+      },
+      "SeasonMapDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "idMap": {
+            "type": "integer"
+          },
+          "mapPack": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapName": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapNumber": {
+            "type": "integer"
+          },
+          "file": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SeasonFileDto"
+              }
+            ]
+          }
+        }
+      },
+      "SeasonFileDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "fileName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "SeasonStandingsVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "seasonStandings": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/SeasonStandingsDto"
+            }
+          }
+        }
+      },
+      "SeasonStandingsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "teamName": {
+            "type": "string",
+            "nullable": true
+          },
+          "points": {
+            "type": "integer"
+          },
+          "gamesPlayed": {
+            "type": "integer"
+          },
+          "roundsPlayed": {
+            "type": "integer"
+          },
+          "timePlayed": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "wins": {
+            "type": "integer"
+          },
+          "ties": {
+            "type": "integer"
+          },
+          "losses": {
+            "type": "integer"
+          },
+          "flagCapturesFor": {
+            "type": "integer"
+          },
+          "flagCapturesAgainst": {
+            "type": "integer"
+          },
+          "flagDefenses": {
+            "type": "integer"
+          },
+          "frags": {
+            "type": "integer"
+          },
+          "damage": {
+            "type": "integer"
+          }
+        }
+      },
+      "SeasonPlayersVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "seasonStandings": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/SeasonPlayersDto"
+            }
+          }
+        }
+      },
+      "SeasonPlayersDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "gamesPlayed": {
+            "type": "integer"
+          },
+          "roundsPlayed": {
+            "type": "integer"
+          },
+          "timePlayed": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "points": {
+            "type": "integer"
+          },
+          "captures": {
+            "type": "integer"
+          },
+          "pickupCaptures": {
+            "type": "integer"
+          },
+          "assists": {
+            "type": "integer"
+          },
+          "flagTouches": {
+            "type": "integer"
+          },
+          "flagDefenses": {
+            "type": "integer"
+          },
+          "flagReturns": {
+            "type": "integer"
+          },
+          "frags": {
+            "type": "integer"
+          },
+          "deaths": {
+            "type": "integer"
+          },
+          "damage": {
+            "type": "integer"
+          },
+          "powerups": {
+            "type": "integer"
+          }
+        }
+      },
+      "TeamSummaryVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "teamId": {
+            "type": "integer"
+          },
+          "seasonId": {
+            "type": "integer"
+          },
+          "teamName": {
+            "type": "string",
+            "nullable": true
+          },
+          "seasonName": {
+            "type": "string",
+            "nullable": true
+          },
+          "didTeamWinSeason": {
+            "type": "boolean"
+          },
+          "draft": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/TeamDraftDto"
+            }
+          },
+          "players": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/TeamPlayerDto"
+            }
+          },
+          "gamesPlayed": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/GamesPlayedDto"
+            }
+          },
+          "stats": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TeamStatsDto"
+              }
+            ]
+          }
+        }
+      },
+      "TeamDraftDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "playerId": {
+            "type": "integer"
+          },
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "draftPosition": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "TeamPlayerDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "playerId": {
+            "type": "integer"
+          },
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "GamesPlayedDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "gameId": {
+            "type": "integer"
+          },
+          "gameName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "TeamStatsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "gamesPlayed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "roundsPlayed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timePlayed": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "points": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "captures": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickupCaptures": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "assists": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "damageBetweenTouchAndCaptureMax": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "damageBetweenTouchAndCaptureAverage": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "captureTimeMin": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "captureTimeMax": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "captureTimeAverage": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "captureHealthMin": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "captureHealthMax": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "captureHealthAverage": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "captureGreenArmorMin": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "captureGreenArmorMax": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "captureGreenArmorAverage": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "captureBlueArmorMin": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "captureBlueArmorMax": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "captureBlueArmorAverage": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "capturesWithSuperPickups": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "flagCarriersKilledWhileHoldingFlag": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "highestKillsBeforeCapturing": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickupCaptureTimeMin": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "pickupCaptureTimeMax": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "pickupCaptureTimeAverage": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "flagTouches": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickupFlagTouches": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "flagDefenses": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "flagReturns": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "frags": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "deaths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "environmentalDeaths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "environmentalFlagCarrierDeaths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "teamKills": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "killingSprees": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rampages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dominatings": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unstoppables": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "godLikes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "wickedSicks": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "longestSpree": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "doubleKills": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "multiKills": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ultraKills": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "monsterKills": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "highestMultiKill": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickupHealthGained": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "healthFromNonPowerups": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "healthWhenTouchingFlagMin": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "healthWhenTouchingFlagMax": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "healthWhenTouchingFlagAverage": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "greenArmorWhenTouchingFlagMin": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "greenArmorWhenTouchingFlagMax": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "greenArmorWhenTouchingFlagAverage": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "blueArmorWhenTouchingFlagMin": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "blueArmorWhenTouchingFlagMax": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "blueArmorWhenTouchingFlagAverage": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "healthWhenTouchingFlagThatResultsInCaptureMin": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "healthWhenTouchingFlagThatResultsInCaptureMax": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "healthWhenTouchingFlagThatResultsInCaptureAverage": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "damage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "damageTakenFromEnvironment": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "damageTakenFromEnvironmentAsFlagCarrier": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "damageToFlagCarriers": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "damageDoneWithFlag": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "damageToGreenArmor": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "damageToBlueArmor": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "powerups": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "CreateTodoItemCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "listId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateTodoItemCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "done": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UpdateTodoItemDetailCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "listId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "priority": {
+            "$ref": "#/components/schemas/PriorityLevel"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "PriorityLevel": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "None",
+          "Low",
+          "Medium",
+          "High"
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "TodosVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "priorityLevels": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/PriorityLevelDto"
+            }
+          },
+          "lists": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/TodoListDto"
+            }
+          }
+        }
+      },
+      "PriorityLevelDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "TodoListDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "items": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/TodoItemDto"
+            }
+          }
+        }
+      },
+      "TodoItemDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "listId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "done": {
+            "type": "boolean"
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CreateTodoListCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateTodoListCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "WeatherForecast": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "temperatureC": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "temperatureF": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "summary": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "JWT": {
+        "type": "apiKey",
+        "description": "Type into the textbox: Bearer {your JWT token}.",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  },
+  "security": [
+    {
+      "JWT": []
+    }
+  ]
+}

@@ -22,7 +22,7 @@ namespace WorldDoomLeague.Infrastructure.Identity
 
             return user.UserName;
         }
-        public async Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password)
+        public async Task<(Result Result, string UserId)> CreateUserAsync(string userName)
         {
             var user = new ApplicationUser
             {
@@ -30,7 +30,7 @@ namespace WorldDoomLeague.Infrastructure.Identity
                 Email = userName,
             };
 
-            var result = await _userManager.CreateAsync(user, password);
+            var result = await _userManager.CreateAsync(user);
 
             return (result.ToApplicationResult(), user.Id);
         }

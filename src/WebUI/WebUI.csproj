@@ -1,0 +1,125 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>WorldDoomLeague.WebUI</RootNamespace>
+    <AssemblyName>WorldDoomLeague.WebUI</AssemblyName>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <IsPackable>true</IsPackable>
+    <!--<IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>-->
+
+    <!-- Set this to true if you enable server-side prerendering -->
+    <BuildServerSideRenderer>false</BuildServerSideRenderer>
+    <SpaRoot>ClientApp\</SpaRoot>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspNet.Security.OpenId.Steam" Version="3.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.6" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="3.1.6" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.9.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NSwag.AspNetCore" Version="13.6.2" />
+    <PackageReference Include="NSwag.MSBuild" Version="13.6.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+    <ItemGroup>
+        <!-- Don't publish the SPA source files, but do show them in the project files list -->
+        <Content Remove="$(SpaRoot)**" />
+        <Content Remove="bin\**" />
+        <Content Remove="ClientApp\build\**" />
+        <Content Remove="obj\**" />
+        <None Remove="$(SpaRoot)**" />
+        <None Remove="bin\**" />
+        <None Remove="ClientApp\build\**" />
+        <None Remove="obj\**" />
+        <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="bin\**" />
+      <Compile Remove="ClientApp\build\**" />
+      <Compile Remove="obj\**" />
+      <EmbeddedResource Remove="bin\**" />
+      <EmbeddedResource Remove="ClientApp\build\**" />
+      <EmbeddedResource Remove="obj\**" />
+      <TypeScriptCompile Remove="bin\**" />
+      <TypeScriptCompile Remove="ClientApp\build\**" />
+      <TypeScriptCompile Remove="ClientApp\node_modules\**" />
+      <TypeScriptCompile Remove="obj\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="ClientApp\build\asset-manifest.json" />
+      <None Remove="ClientApp\build\favicon.ico" />
+      <None Remove="ClientApp\build\index.html" />
+      <None Remove="ClientApp\build\manifest.json" />
+      <None Remove="ClientApp\build\precache-manifest.f44bd5c16ebc09539f42581920819ebe.js" />
+      <None Remove="ClientApp\build\service-worker.js" />
+      <None Remove="ClientApp\build\static\css\2.d6500151.chunk.css" />
+      <None Remove="ClientApp\build\static\css\2.d6500151.chunk.css.map" />
+      <None Remove="ClientApp\build\static\css\main.6636e503.chunk.css" />
+      <None Remove="ClientApp\build\static\css\main.6636e503.chunk.css.map" />
+      <None Remove="ClientApp\build\static\js\2.bed1da42.chunk.js" />
+      <None Remove="ClientApp\build\static\js\2.bed1da42.chunk.js.LICENSE.txt" />
+      <None Remove="ClientApp\build\static\js\2.bed1da42.chunk.js.map" />
+      <None Remove="ClientApp\build\static\js\main.2369d941.chunk.js" />
+      <None Remove="ClientApp\build\static\js\main.2369d941.chunk.js.map" />
+      <None Remove="ClientApp\build\static\js\runtime-main.8746a0cd.js" />
+      <None Remove="ClientApp\build\static\js\runtime-main.8746a0cd.js.map" />
+      <None Remove="ClientApp\src\components\FetchLeaderboardAllTimeStats.tsx" />
+      <None Remove="ClientApp\src\store\LeaderboardAllTime.ts" />
+    </ItemGroup>
+
+    <ItemGroup>
+    <ProjectReference Include="..\Application\Application.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+  </ItemGroup>
+
+  <Target Name="NSwag" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
+    <Copy SourceFiles="@(Reference)" DestinationFolder="$(OutDir)References" />
+    <Exec Command="$(NSwagExe_Core31) run /variables:Configuration=$(Configuration)" />
+    <RemoveDir Directories="$(OutDir)References" />
+  </Target>
+
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+        <!-- Ensure Node.js is installed -->
+        <Exec Command="node --version" ContinueOnError="true">
+            <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+        </Exec>
+        <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+        <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+        <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+    </Target>
+
+    <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+        <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+        <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+        <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
+
+        <!-- Include the newly-built files in the publish output -->
+        <ItemGroup>
+            <DistFiles Include="$(SpaRoot)build\**; $(SpaRoot)build-ssr\**" />
+            <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+                <RelativePath>%(DistFiles.Identity)</RelativePath>
+                <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+                <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            </ResolvedFileToPublish>
+        </ItemGroup>
+    </Target>
+    
+</Project>

@@ -51,9 +51,7 @@ namespace WorldDoomLeague.Api
             });
 
             services.AddAuthentication(options => { /* Authentication options */ })
-                .AddSteam(options => {
-                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                    });
+                .AddSteam();
 
             // Customise default API behaviour
             services.Configure<ApiBehaviorOptions>(options =>
@@ -94,7 +92,10 @@ namespace WorldDoomLeague.Api
             app.UseHealthChecks("/health");
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
+            if (!env.IsDevelopment())
+            {
+                app.UseSpaStaticFiles();
+            }
 
             app.UseSwaggerUi3(settings =>
             {

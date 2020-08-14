@@ -1,11 +1,11 @@
  <img align="left" width="116" height="116" src="https://i.imgur.com/id2VAPF.png" />
  
- # WorldDoomLeague.Api
+ # WorldDoomLeague
 ![.NET Core](https://github.com/jasontaylordev/CleanArchitecture/workflows/.NET%20Core/badge.svg)
 
 <br/>
 
-This is an Api that drives the SPA front-end website for the World Doom League. This software follows the [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) software principle to separate business logic from infrastructure.
+This is an Api + SPA front-end website for the World Doom League. This software follows the [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) software principle to separate business logic from infrastructure.
 
 
 ## Technologies
@@ -18,6 +18,8 @@ This is an Api that drives the SPA front-end website for the World Doom League. 
 * NUnit, FluentAssertions, Moq & Respawn
 * MariaDb
 * NSwag
+* React
+* Redux
 
 ## Getting Started
 

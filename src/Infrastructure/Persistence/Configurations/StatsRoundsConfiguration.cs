@@ -14,25 +14,25 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.ToTable("statsrounds");
 
             builder.HasIndex(e => e.FkIdGame)
-                .HasName("fk_stats_StatsRounds_Games_idx");
+                .HasName("fk_StatsRounds_Games_idx");
 
             builder.HasIndex(e => e.FkIdMap)
-                .HasName("fk_stats_StatsRounds_Maps_idx");
+                .HasName("fk_StatsRounds_Maps_idx");
 
             builder.HasIndex(e => e.FkIdPlayer)
-                .HasName("fk_statround_player_idx");
+                .HasName("fk_StatsRounds_Player_idx");
 
             builder.HasIndex(e => e.FkIdRound)
-                .HasName("fk_statround_round_idx");
+                .HasName("fk_StatsRounds_Round_idx");
 
             builder.HasIndex(e => e.FkIdSeason)
-                .HasName("fk_stats_StatsRounds_Seasons_idx");
+                .HasName("fk_StatsRounds_Seasons_idx");
 
             builder.HasIndex(e => e.FkIdTeam)
-                .HasName("fk_stats_StatsRounds_Teams_idx");
+                .HasName("fk_StatsRounds_Teams_idx");
 
             builder.HasIndex(e => e.FkIdWeek)
-                .HasName("fk_stats_StatsRounds_Weeks_idx");
+                .HasName("fk_StatsRounds_Weeks_idx");
 
             builder.HasIndex(e => e.IdStatsRound)
                 .HasName("id_stats_round_UNIQUE")
@@ -345,43 +345,49 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .WithMany(p => p.StatsRounds)
                 .HasForeignKey(d => d.FkIdGame)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_stats_StatsRounds_Games");
+                .HasConstraintName("fk_StatsRounds_Games");
 
             builder.HasOne(d => d.FkIdMapNavigation)
                 .WithMany(p => p.StatsRounds)
                 .HasForeignKey(d => d.FkIdMap)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_stats_StatsRounds_Maps");
+                .HasConstraintName("fk_StatsRounds_Maps");
 
             builder.HasOne(d => d.FkIdPlayerNavigation)
                 .WithMany(p => p.StatsRounds)
                 .HasForeignKey(d => d.FkIdPlayer)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_stats_StatsRounds_Players");
+                .HasConstraintName("fk_StatsRounds_Players");
 
             builder.HasOne(d => d.FkIdRoundNavigation)
                 .WithMany(p => p.StatsRounds)
                 .HasForeignKey(d => d.FkIdRound)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_stats_StatsRounds_Rounds");
+                .HasConstraintName("fk_StatsRounds_Rounds");
 
             builder.HasOne(d => d.FkIdSeasonNavigation)
                 .WithMany(p => p.StatsRounds)
                 .HasForeignKey(d => d.FkIdSeason)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_stats_StatsRounds_Seasons");
+                .HasConstraintName("fk_StatsRounds_Seasons");
 
             builder.HasOne(d => d.FkIdWeekNavigation)
                 .WithMany(p => p.StatsRounds)
                 .HasForeignKey(d => d.FkIdWeek)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_stats_StatsRounds_Weeks");
+                .HasConstraintName("fk_StatsRounds_Weeks");
 
             builder.HasOne(d => d.FkIdTeamNavigation)
                 .WithMany(p => p.StatsRounds)
                 .HasForeignKey(d => d.FkIdTeam)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_stats_StatsRounds_Teams");
+                .HasConstraintName("fk_StatsRounds_Teams");
+
+            builder.HasOne(d => d.FkIdPlayerRoundRecordNavigation)
+                .WithOne(p => p.FkIdStatsRoundNavigation)
+                .HasForeignKey<PlayerRoundRecord>(d => d.FkIdStatsRound)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_StatsRounds_PlayerRoundRecord");
         }
     }
 }

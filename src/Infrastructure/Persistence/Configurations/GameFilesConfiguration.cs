@@ -32,7 +32,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasColumnName("file_size")
                 .HasColumnType("int(10) unsigned");
 
-            builder.Property(e => e.UploadDate).HasColumnName("upload_date");
+            builder.Property(e => e.UploadDate)
+                .HasColumnName("upload_date")
+                .HasColumnType("timestamp");
         }
     }
 }

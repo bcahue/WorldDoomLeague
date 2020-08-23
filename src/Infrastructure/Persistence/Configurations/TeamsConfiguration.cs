@@ -59,7 +59,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.Property(e => e.TeamAbbreviation)
                 .IsRequired()
                 .HasColumnName("team_abbreviation")
-                .HasColumnType("varchar(16)")
+                .HasColumnType("varchar(4)")
                 .HasCharSet("utf8mb4")
                 .HasCollation("utf8mb4_unicode_ci");
 

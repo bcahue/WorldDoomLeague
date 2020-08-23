@@ -54,7 +54,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .WithMany(p => p.StatsKillDataFkIdPlayerAttackerNavigation)
                 .HasForeignKey(d => d.FkIdPlayerAttacker)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_statskillplayer_attacker");
+                .HasConstraintName("fk_statskill_player_attacker");
 
             builder.HasOne(d => d.FkIdPlayerTargetNavigation)
                 .WithMany(p => p.StatsKillDataFkIdPlayerTargetNavigation)

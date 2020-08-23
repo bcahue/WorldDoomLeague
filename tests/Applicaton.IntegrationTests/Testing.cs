@@ -14,6 +14,7 @@ using Respawn;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 [SetUpFixture]
 public class Testing
@@ -39,7 +40,7 @@ public class Testing
 
         services.AddSingleton(Mock.Of<IWebHostEnvironment>(w =>
             w.EnvironmentName == "Development" &&
-            w.ApplicationName == "WorldDoomLeague.Api"));
+            w.ApplicationName == "WorldDoomLeague.WebUI"));
 
         services.AddLogging();
 
@@ -107,7 +108,12 @@ public class Testing
 
     public static async Task ResetState()
     {
-        await _checkpoint.Reset(_configuration.GetConnectionString("DefaultConnection"));
+        using (var conn = new MySqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+        {
+            await conn.OpenAsync();
+
+            await _checkpoint.Reset(conn);
+        }
         _currentUserId = null;
     }
 

@@ -14,7 +14,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.5")
+                .HasAnnotation("ProductVersion", "3.1.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.DeviceFlowCodes", b =>
@@ -290,7 +290,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime>("UploadDate")
                         .HasColumnName("upload_date")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp");
 
                     b.HasKey("IdFile")
                         .HasName("PRIMARY");
@@ -300,6 +300,37 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("id_file_UNIQUE");
 
                     b.ToTable("files");
+                });
+
+            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.GameMaps", b =>
+                {
+                    b.Property<uint>("IdGameMap")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("id_gamemap")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdGame")
+                        .HasColumnName("fk_id_game")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdMap")
+                        .HasColumnName("fk_id_map")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.HasKey("IdGameMap")
+                        .HasName("PRIMARY");
+
+                    b.HasIndex("FkIdGame")
+                        .HasName("fk_GameMaps_Games_idx");
+
+                    b.HasIndex("FkIdMap")
+                        .HasName("fk_GameMaps_Maps_idx");
+
+                    b.HasIndex("IdGameMap")
+                        .IsUnique()
+                        .HasName("id_file_UNIQUE");
+
+                    b.ToTable("gamemaps");
                 });
 
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.GamePlayers", b =>
@@ -328,10 +359,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnName("fk_id_game")
                         .HasColumnType("int(10) unsigned");
 
-                    b.Property<uint>("FkIdMap")
-                        .HasColumnName("fk_id_map")
-                        .HasColumnType("int(10) unsigned");
-
                     b.Property<uint>("FkIdPlayer")
                         .HasColumnName("fk_id_player")
                         .HasColumnType("int(10) unsigned");
@@ -348,35 +375,27 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnName("fk_id_week")
                         .HasColumnType("int(10) unsigned");
 
-                    b.Property<uint?>("MapsIdMap")
-                        .HasColumnType("int(10) unsigned");
-
                     b.HasKey("IdGameplayer")
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdGame")
-                        .HasName("fk_stats_GamePlayers_Games_idx");
-
-                    b.HasIndex("FkIdMap")
-                        .HasName("fk_stats_GamePlayers_Map_idx");
+                        .HasName("fk_GamePlayers_Games_idx");
 
                     b.HasIndex("FkIdPlayer")
-                        .HasName("fk_stats_GamePlayers_Players_idx");
+                        .HasName("fk_GamePlayers_Players_idx");
 
                     b.HasIndex("FkIdSeason")
-                        .HasName("fk_stats_GamePlayers_Seasons_idx");
+                        .HasName("fk_GamePlayers_Seasons_idx");
 
                     b.HasIndex("FkIdTeam")
-                        .HasName("fk_stats_GamePlayers_Teams_idx");
+                        .HasName("fk_GamePlayers_Teams_idx");
 
                     b.HasIndex("FkIdWeek")
-                        .HasName("fk_stats_GamePlayers_Weeks_idx");
+                        .HasName("fk_GamePlayers_Weeks_idx");
 
                     b.HasIndex("IdGameplayer")
                         .IsUnique()
                         .HasName("id_gameplayer_UNIQUE");
-
-                    b.HasIndex("MapsIdMap");
 
                     b.ToTable("gameplayers");
                 });
@@ -547,19 +566,19 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdGame")
-                        .HasName("fk_stats_GameTeamStats_Games_idx");
+                        .HasName("fk_GameTeamStats_Games_idx");
 
                     b.HasIndex("FkIdMap")
-                        .HasName("fk_stats_GameTeamStats_Maps_idx");
+                        .HasName("fk_GameTeamStats_Maps_idx");
 
                     b.HasIndex("FkIdSeason")
-                        .HasName("fk_stats_GameTeamStats_Seasons_idx");
+                        .HasName("fk_GameTeamStats_Seasons_idx");
 
                     b.HasIndex("FkIdTeam")
-                        .HasName("fk_stats_GameTeamStats_Teams_idx");
+                        .HasName("fk_GameTeamStats_Teams_idx");
 
                     b.HasIndex("FkIdWeek")
-                        .HasName("fk_stats_GameTeamStats_Weeks_idx");
+                        .HasName("fk_GameTeamStats_Weeks_idx");
 
                     b.HasIndex("IdGameteamstats")
                         .IsUnique()
@@ -573,10 +592,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.Property<uint>("IdGame")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id_game")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("FkIdMap")
-                        .HasColumnName("fk_id_map")
                         .HasColumnType("int(10) unsigned");
 
                     b.Property<uint>("FkIdSeason")
@@ -605,7 +620,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime?>("GameDatetime")
                         .HasColumnName("game_datetime")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp");
 
                     b.Property<string>("GameType")
                         .IsRequired()
@@ -628,9 +643,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.HasKey("IdGame")
                         .HasName("PRIMARY");
-
-                    b.HasIndex("FkIdMap")
-                        .HasName("fk_stats_Games_Map_idx");
 
                     b.HasIndex("FkIdSeason")
                         .HasName("fk_stats_Games_Seasons_idx");
@@ -684,7 +696,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdFile")
-                        .HasName("fk_stats_Maps_Files_idx");
+                        .HasName("fk_Maps_Files_idx");
 
                     b.HasIndex("IdMap")
                         .IsUnique()
@@ -698,10 +710,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.Property<uint>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("FdbkIdMember")
-                        .HasColumnName("fdbk_id_member")
                         .HasColumnType("int(10) unsigned");
 
                     b.Property<string>("PlayerAlias")
@@ -720,10 +728,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("PRIMARY");
 
-                    b.HasIndex("FdbkIdMember")
-                        .IsUnique()
-                        .HasName("fdbk_id_member");
-
                     b.HasIndex("Id")
                         .IsUnique()
                         .HasName("id_player_UNIQUE");
@@ -733,6 +737,273 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("player_name_UNIQUE");
 
                     b.ToTable("players");
+                });
+
+            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.PlayerDraft", b =>
+                {
+                    b.Property<uint>("DraftRecordId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("draftrecord_id")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("DraftPosition")
+                        .HasColumnName("draft_position")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdPlayerNominated")
+                        .HasColumnName("fk_id_player_nominated")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdPlayerNominating")
+                        .HasColumnName("fk_id_player_nominating")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdPlayerSoldTo")
+                        .HasColumnName("fk_id_player_sold_to")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdSeason")
+                        .HasColumnName("fk_id_season")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdTeamSoldTo")
+                        .HasColumnName("fk_id_team_sold_to")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("SellPrice")
+                        .HasColumnName("sell_price")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.HasKey("DraftRecordId")
+                        .HasName("PRIMARY");
+
+                    b.HasIndex("DraftRecordId")
+                        .IsUnique()
+                        .HasName("draftrecord_id_UNIQUE");
+
+                    b.HasIndex("FkIdPlayerNominated")
+                        .HasName("fk_playerdraft_playernominated_idx");
+
+                    b.HasIndex("FkIdPlayerNominating")
+                        .HasName("fk_playerdraft_playernominating_idx");
+
+                    b.HasIndex("FkIdPlayerSoldTo")
+                        .HasName("fk_playerdraft_playersoldto_idx");
+
+                    b.HasIndex("FkIdSeason")
+                        .HasName("fk_playerdraft_season_idx");
+
+                    b.HasIndex("FkIdTeamSoldTo")
+                        .HasName("fk_playerdraft_teamsoldto_idx");
+
+                    b.ToTable("playerdraft");
+                });
+
+            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.PlayerGameRecord", b =>
+                {
+                    b.Property<uint>("GameRecordID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("id_gamerecord")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<byte>("AsCaptain")
+                        .HasColumnName("ascaptain")
+                        .HasColumnType("tinyint(1) unsigned");
+
+                    b.Property<uint>("FkIdGame")
+                        .HasColumnName("fk_id_game")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdPlayer")
+                        .HasColumnName("fk_id_player")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdSeason")
+                        .HasColumnName("fk_id_season")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdTeam")
+                        .HasColumnName("fk_id_team")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdWeek")
+                        .HasColumnName("fk_id_week")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("Loss")
+                        .HasColumnName("loss")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("Tie")
+                        .HasColumnName("tie")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("Win")
+                        .HasColumnName("win")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.HasKey("GameRecordID")
+                        .HasName("PRIMARY");
+
+                    b.HasIndex("FkIdGame")
+                        .HasName("fk_PlayerGameRecord_Game_idx");
+
+                    b.HasIndex("FkIdPlayer")
+                        .HasName("fk_PlayerGameRecord_Player_idx");
+
+                    b.HasIndex("FkIdSeason")
+                        .HasName("fk_PlayerGameRecord_Season_idx");
+
+                    b.HasIndex("FkIdTeam")
+                        .HasName("fk_PlayerGameRecord_Team_idx");
+
+                    b.HasIndex("FkIdWeek")
+                        .HasName("fk_PlayerGameRecord_Week_idx");
+
+                    b.HasIndex("GameRecordID")
+                        .IsUnique()
+                        .HasName("id_gamerecord_UNIQUE");
+
+                    b.ToTable("playergamerecord");
+                });
+
+            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.PlayerRoundRecord", b =>
+                {
+                    b.Property<uint>("RoundRecordID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("id_gameteamstats")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<byte>("AsCaptain")
+                        .HasColumnName("ascaptain")
+                        .HasColumnType("tinyint(1) unsigned");
+
+                    b.Property<uint>("FkIdGame")
+                        .HasColumnName("fk_id_game")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdMap")
+                        .HasColumnName("fk_id_map")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdPlayer")
+                        .HasColumnName("fk_id_player")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdSeason")
+                        .HasColumnName("fk_id_season")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdStatsRound")
+                        .HasColumnName("fk_id_statsround")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdTeam")
+                        .HasColumnName("fk_id_team")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdWeek")
+                        .HasColumnName("fk_id_week")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("Loss")
+                        .HasColumnName("loss")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("Tie")
+                        .HasColumnName("tie")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("Win")
+                        .HasColumnName("win")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.HasKey("RoundRecordID")
+                        .HasName("PRIMARY");
+
+                    b.HasIndex("FkIdGame")
+                        .HasName("fk_PlayerRoundRecord_Game_idx");
+
+                    b.HasIndex("FkIdMap")
+                        .HasName("fk_PlayerRoundRecord_Map_idx");
+
+                    b.HasIndex("FkIdPlayer")
+                        .HasName("fk_PlayerRoundRecord_Player_idx");
+
+                    b.HasIndex("FkIdSeason")
+                        .HasName("fk_PlayerRoundRecord_Season_idx");
+
+                    b.HasIndex("FkIdStatsRound")
+                        .IsUnique()
+                        .HasName("fk_PlayerRoundRecord_StatsRounds_idx");
+
+                    b.HasIndex("FkIdTeam")
+                        .HasName("fk_PlayerRoundRecord_Team_idx");
+
+                    b.HasIndex("FkIdWeek")
+                        .HasName("fk_PlayerRoundRecord_Week_idx");
+
+                    b.HasIndex("RoundRecordID")
+                        .IsUnique()
+                        .HasName("id_gameteamstats_UNIQUE");
+
+                    b.ToTable("playerroundrecord");
+                });
+
+            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.PlayerTransactions", b =>
+                {
+                    b.Property<uint>("TransactionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("transaction_id")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdPlayer")
+                        .HasColumnName("fk_id_player")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdSeason")
+                        .HasColumnName("fk_id_season")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint?>("FkIdTeamTradedFrom")
+                        .HasColumnName("fk_id_team_traded_from")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint?>("FkIdTeamTradedTo")
+                        .HasColumnName("fk_id_team_traded_to")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdWeek")
+                        .HasColumnName("fk_id_week")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<byte>("PlayerPromotedCaptain")
+                        .HasColumnName("player_promoted_captain")
+                        .HasColumnType("tinyint(1) unsigned");
+
+                    b.HasKey("TransactionId")
+                        .HasName("PRIMARY");
+
+                    b.HasIndex("FkIdPlayer")
+                        .HasName("fk_playertransaction_player_idx");
+
+                    b.HasIndex("FkIdSeason")
+                        .HasName("fk_playertransaction_season_idx");
+
+                    b.HasIndex("FkIdTeamTradedFrom")
+                        .HasName("fk_playertransaction_teamtradedfrom_idx");
+
+                    b.HasIndex("FkIdTeamTradedTo")
+                        .HasName("fk_playertransaction_teamtradedto_idx");
+
+                    b.HasIndex("FkIdWeek")
+                        .HasName("fk_playertransaction_week_idx");
+
+                    b.HasIndex("TransactionId")
+                        .IsUnique()
+                        .HasName("transaction_id_UNIQUE");
+
+                    b.ToTable("playertransactions");
                 });
 
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.RoundFlagTouchCaptures", b =>
@@ -802,12 +1073,32 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnName("id_roundplayer")
                         .HasColumnType("int(10) unsigned");
 
+                    b.Property<uint>("FkIdGame")
+                        .HasColumnName("fk_id_game")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdMap")
+                        .HasColumnName("fk_id_map")
+                        .HasColumnType("int(10) unsigned");
+
                     b.Property<uint>("FkIdPlayer")
                         .HasColumnName("fk_id_player")
                         .HasColumnType("int(10) unsigned");
 
                     b.Property<uint>("FkIdRound")
                         .HasColumnName("fk_id_round")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdSeason")
+                        .HasColumnName("fk_id_season")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdTeam")
+                        .HasColumnName("fk_id_team")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("FkIdWeek")
+                        .HasColumnName("fk_id_week")
                         .HasColumnType("int(10) unsigned");
 
                     b.Property<uint>("RoundTicsDuration")
@@ -817,18 +1108,30 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.HasKey("IdRoundplayer")
                         .HasName("PRIMARY");
 
+                    b.HasIndex("FkIdGame")
+                        .HasName("fk_RoundPlayers_Game_idx");
+
+                    b.HasIndex("FkIdMap")
+                        .HasName("fk_RoundPlayers_Map_idx");
+
                     b.HasIndex("FkIdPlayer")
-                        .HasName("fk_stats_RoundPlayers_Players_idx");
+                        .HasName("fk_RoundPlayers_Player_idx");
 
                     b.HasIndex("FkIdRound")
-                        .HasName("fk_stats_RoundPlayers_Rounds_idx");
+                        .HasName("fk_RoundPlayers_Round_idx");
+
+                    b.HasIndex("FkIdSeason")
+                        .HasName("fk_RoundPlayers_Season_idx");
+
+                    b.HasIndex("FkIdTeam")
+                        .HasName("fk_RoundPlayers_Team_idx");
+
+                    b.HasIndex("FkIdWeek")
+                        .HasName("fk_RoundPlayers_Week_idx");
 
                     b.HasIndex("IdRoundplayer")
                         .IsUnique()
                         .HasName("id_roundplayer_UNIQUE");
-
-                    b.HasIndex("RoundTicsDuration")
-                        .HasName("fk_stats_RoundPlayers_Teams_idx");
 
                     b.ToTable("roundplayers");
                 });
@@ -900,7 +1203,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.ToTable("rounds");
                 });
 
-            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.Seasons", b =>
+            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.Season", b =>
                 {
                     b.Property<uint>("IdSeason")
                         .ValueGeneratedOnAdd()
@@ -909,7 +1212,14 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime>("DateStart")
                         .HasColumnName("date_start")
-                        .HasColumnType("date");
+                        .HasColumnType("timestamp");
+
+                    b.Property<string>("EnginePlayed")
+                        .IsRequired()
+                        .HasColumnName("engine_played")
+                        .HasColumnType("varchar(64)")
+                        .HasAnnotation("MySql:CharSet", "utf8mb4")
+                        .HasAnnotation("MySql:Collation", "utf8mb4_unicode_ci");
 
                     b.Property<int?>("FkIdTeamWinner")
                         .HasColumnName("fk_id_team_winner")
@@ -930,7 +1240,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdWadFile")
-                        .HasName("fk_stats_Seasons_WadFile_idx");
+                        .HasName("fk_Seasons_WadFile_idx");
 
                     b.HasIndex("IdSeason")
                         .IsUnique()
@@ -1245,262 +1555,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("id_stats_damage_UNIQUE");
 
                     b.ToTable("statskilldata");
-                });
-
-            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.StatsOverall", b =>
-                {
-                    b.Property<uint>("IdOverallStats")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("id_overall_stats")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("FkIdPlayer")
-                        .HasColumnName("fk_id_player")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("NumberRoundsPlayed")
-                        .HasColumnName("number_rounds_played")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("NumberTicsPlayed")
-                        .HasColumnName("number_tics_played")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalAssists")
-                        .HasColumnName("total_assists")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalCaptures")
-                        .HasColumnName("total_captures")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalCarrierDamage")
-                        .HasColumnName("total_carrier_damage")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalCarrierKills")
-                        .HasColumnName("total_carrier_kills")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalDamage")
-                        .HasColumnName("total_damage")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalDamageWithFlag")
-                        .HasColumnName("total_damage_with_flag")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalDeaths")
-                        .HasColumnName("total_deaths")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalEnvironmentDeaths")
-                        .HasColumnName("total_environment_deaths")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalFlagReturns")
-                        .HasColumnName("total_flag_returns")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalKills")
-                        .HasColumnName("total_kills")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalMultiDoubleKills")
-                        .HasColumnName("total_multi_double_kills")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalMultiMonsterKills")
-                        .HasColumnName("total_multi_monster_kills")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalMultiMultiKills")
-                        .HasColumnName("total_multi_multi_kills")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalMultiUltraKills")
-                        .HasColumnName("total_multi_ultra_kills")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalPickupCaptures")
-                        .HasColumnName("total_pickup_captures")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalPickupTouches")
-                        .HasColumnName("total_pickup_touches")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalPowerPickups")
-                        .HasColumnName("total_power_pickups")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalSpreeDominations")
-                        .HasColumnName("total_spree_dominations")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalSpreeGodlikes")
-                        .HasColumnName("total_spree_godlikes")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalSpreeKillingSprees")
-                        .HasColumnName("total_spree_killing_sprees")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalSpreeRampages")
-                        .HasColumnName("total_spree_rampages")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalSpreeUnstoppables")
-                        .HasColumnName("total_spree_unstoppables")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalSpreeWickedsicks")
-                        .HasColumnName("total_spree_wickedsicks")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalTouches")
-                        .HasColumnName("total_touches")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.HasKey("IdOverallStats")
-                        .HasName("PRIMARY");
-
-                    b.HasIndex("FkIdPlayer")
-                        .IsUnique()
-                        .HasName("fk_id_player");
-
-                    b.ToTable("statsoverall");
-                });
-
-            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.StatsOverallSeason", b =>
-                {
-                    b.Property<uint>("IdOverallStatsSeason")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("id_overall_stats_season")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("FkIdPlayer")
-                        .HasColumnName("fk_id_player")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("FkIdSeason")
-                        .HasColumnName("fk_id_season")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("NumberRoundsPlayed")
-                        .HasColumnName("number_rounds_played")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("NumberTicsPlayed")
-                        .HasColumnName("number_tics_played")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalAssists")
-                        .HasColumnName("total_assists")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalCaptures")
-                        .HasColumnName("total_captures")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalCarrierDamage")
-                        .HasColumnName("total_carrier_damage")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalCarrierKills")
-                        .HasColumnName("total_carrier_kills")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalDamage")
-                        .HasColumnName("total_damage")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalDamageWithFlag")
-                        .HasColumnName("total_damage_with_flag")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalDeaths")
-                        .HasColumnName("total_deaths")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalEnvironmentDeaths")
-                        .HasColumnName("total_environment_deaths")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalFlagReturns")
-                        .HasColumnName("total_flag_returns")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalKills")
-                        .HasColumnName("total_kills")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalMultiDoubleKills")
-                        .HasColumnName("total_multi_double_kills")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalMultiMonsterKills")
-                        .HasColumnName("total_multi_monster_kills")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalMultiMultiKills")
-                        .HasColumnName("total_multi_multi_kills")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalMultiUltraKills")
-                        .HasColumnName("total_multi_ultra_kills")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalPickupCaptures")
-                        .HasColumnName("total_pickup_captures")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalPickupTouches")
-                        .HasColumnName("total_pickup_touches")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalPowerPickups")
-                        .HasColumnName("total_power_pickups")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalSpreeDominations")
-                        .HasColumnName("total_spree_dominations")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalSpreeGodlikes")
-                        .HasColumnName("total_spree_godlikes")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalSpreeKillingSprees")
-                        .HasColumnName("total_spree_killing_sprees")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalSpreeRampages")
-                        .HasColumnName("total_spree_rampages")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalSpreeUnstoppables")
-                        .HasColumnName("total_spree_unstoppables")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalSpreeWickedsicks")
-                        .HasColumnName("total_spree_wickedsicks")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalTouches")
-                        .HasColumnName("total_touches")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.HasKey("IdOverallStatsSeason")
-                        .HasName("PRIMARY");
-
-                    b.HasIndex("FkIdPlayer")
-                        .HasName("fk_seasonstats_players_idx");
-
-                    b.HasIndex("FkIdSeason")
-                        .HasName("fk_seasonstats_season_idx");
-
-                    b.ToTable("statsoverallseason");
                 });
 
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.StatsPickupData", b =>
@@ -1872,25 +1926,25 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdGame")
-                        .HasName("fk_stats_StatsRounds_Games_idx");
+                        .HasName("fk_StatsRounds_Games_idx");
 
                     b.HasIndex("FkIdMap")
-                        .HasName("fk_stats_StatsRounds_Maps_idx");
+                        .HasName("fk_StatsRounds_Maps_idx");
 
                     b.HasIndex("FkIdPlayer")
-                        .HasName("fk_statround_player_idx");
+                        .HasName("fk_StatsRounds_Player_idx");
 
                     b.HasIndex("FkIdRound")
-                        .HasName("fk_statround_round_idx");
+                        .HasName("fk_StatsRounds_Round_idx");
 
                     b.HasIndex("FkIdSeason")
-                        .HasName("fk_stats_StatsRounds_Seasons_idx");
+                        .HasName("fk_StatsRounds_Seasons_idx");
 
                     b.HasIndex("FkIdTeam")
-                        .HasName("fk_stats_StatsRounds_Teams_idx");
+                        .HasName("fk_StatsRounds_Teams_idx");
 
                     b.HasIndex("FkIdWeek")
-                        .HasName("fk_stats_StatsRounds_Weeks_idx");
+                        .HasName("fk_StatsRounds_Weeks_idx");
 
                     b.HasIndex("IdStatsRound")
                         .IsUnique()
@@ -1910,15 +1964,15 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnName("fk_id_player_captain")
                         .HasColumnType("int(10) unsigned");
 
-                    b.Property<uint>("FkIdPlayerFirstpick")
+                    b.Property<uint?>("FkIdPlayerFirstpick")
                         .HasColumnName("fk_id_player_firstpick")
                         .HasColumnType("int(10) unsigned");
 
-                    b.Property<uint>("FkIdPlayerSecondpick")
+                    b.Property<uint?>("FkIdPlayerSecondpick")
                         .HasColumnName("fk_id_player_secondpick")
                         .HasColumnType("int(10) unsigned");
 
-                    b.Property<uint>("FkIdPlayerThirdpick")
+                    b.Property<uint?>("FkIdPlayerThirdpick")
                         .HasColumnName("fk_id_player_thirdpick")
                         .HasColumnType("int(10) unsigned");
 
@@ -1929,7 +1983,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.Property<string>("TeamAbbreviation")
                         .IsRequired()
                         .HasColumnName("team_abbreviation")
-                        .HasColumnType("varchar(16)")
+                        .HasColumnType("varchar(4)")
                         .HasAnnotation("MySql:CharSet", "utf8mb4")
                         .HasAnnotation("MySql:Collation", "utf8mb4_unicode_ci");
 
@@ -2210,47 +2264,52 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.GameMaps", b =>
+                {
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Games", "FkIdGameNavigation")
+                        .WithMany("GameMaps")
+                        .HasForeignKey("FkIdGame")
+                        .HasConstraintName("fk_GameMaps_Games")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Maps", "FkIdMapNavigation")
+                        .WithMany("GameMaps")
+                        .HasForeignKey("FkIdMap")
+                        .HasConstraintName("fk_GameMaps_Maps")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.GamePlayers", b =>
                 {
                     b.HasOne("WorldDoomLeague.Domain.Entities.Games", "FkIdGameNavigation")
                         .WithMany("GamePlayers")
                         .HasForeignKey("FkIdGame")
-                        .HasConstraintName("fk_stats_GamePlayers_Games")
-                        .IsRequired();
-
-                    b.HasOne("WorldDoomLeague.Domain.Entities.Maps", "FkIdMapNavigation")
-                        .WithMany("StatsTblGamePlayers")
-                        .HasForeignKey("FkIdMap")
-                        .HasConstraintName("fk_stats_GamePlayers_Maps")
+                        .HasConstraintName("fk_GamePlayers_Games")
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNavigation")
                         .WithMany("GamePlayers")
                         .HasForeignKey("FkIdPlayer")
-                        .HasConstraintName("fk_stats_GamePlayers_Players")
+                        .HasConstraintName("fk_GamePlayers_Players")
                         .IsRequired();
 
-                    b.HasOne("WorldDoomLeague.Domain.Entities.Seasons", "FkIdSeasonNavigation")
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
                         .WithMany("GamePlayers")
                         .HasForeignKey("FkIdSeason")
-                        .HasConstraintName("fk_stats_GamePlayers_Seasons")
+                        .HasConstraintName("fk_GamePlayers_Seasons")
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamNavigation")
                         .WithMany("GamePlayers")
                         .HasForeignKey("FkIdTeam")
-                        .HasConstraintName("fk_stats_GamePlayers_Teams")
+                        .HasConstraintName("fk_GamePlayers_Teams")
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Weeks", "FkIdWeekNavigation")
                         .WithMany("GamePlayers")
                         .HasForeignKey("FkIdWeek")
-                        .HasConstraintName("fk_stats_GamePlayers_Weeks")
+                        .HasConstraintName("fk_GamePlayers_Weeks")
                         .IsRequired();
-
-                    b.HasOne("WorldDoomLeague.Domain.Entities.Maps", null)
-                        .WithMany("GamePlayers")
-                        .HasForeignKey("MapsIdMap");
                 });
 
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.GameTeamStats", b =>
@@ -2258,43 +2317,37 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.HasOne("WorldDoomLeague.Domain.Entities.Games", "FkIdGameNavigation")
                         .WithMany("GameTeamStats")
                         .HasForeignKey("FkIdGame")
-                        .HasConstraintName("fk_stats_GameTeamStats_Games")
+                        .HasConstraintName("fk_GameTeamStats_Games")
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Maps", "FkIdMapNavigation")
                         .WithMany("GameTeamStats")
                         .HasForeignKey("FkIdMap")
-                        .HasConstraintName("fk_stats_GameTeamStats_Maps")
+                        .HasConstraintName("fk_GameTeamStats_Maps")
                         .IsRequired();
 
-                    b.HasOne("WorldDoomLeague.Domain.Entities.Seasons", "FkIdSeasonNavigation")
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
                         .WithMany("GameTeamStats")
                         .HasForeignKey("FkIdSeason")
-                        .HasConstraintName("fk_stats_GameTeamStats_Seasons")
+                        .HasConstraintName("fk_GameTeamStats_Seasons")
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamNavigation")
                         .WithMany("GameTeamStats")
                         .HasForeignKey("FkIdTeam")
-                        .HasConstraintName("fk_stats_GameTeamStats_Teams")
+                        .HasConstraintName("fk_GameTeamStats_Teams")
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Weeks", "FkIdWeekNavigation")
                         .WithMany("GameTeamStats")
                         .HasForeignKey("FkIdWeek")
-                        .HasConstraintName("fk_stats_GameTeamStats_Weeks")
+                        .HasConstraintName("fk_GameTeamStats_Weeks")
                         .IsRequired();
                 });
 
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.Games", b =>
                 {
-                    b.HasOne("WorldDoomLeague.Domain.Entities.Maps", "FkIdMapNavigation")
-                        .WithMany("Games")
-                        .HasForeignKey("FkIdMap")
-                        .HasConstraintName("fk_stats_Games_Maps")
-                        .IsRequired();
-
-                    b.HasOne("WorldDoomLeague.Domain.Entities.Seasons", "FkIdSeasonNavigation")
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
                         .WithMany("Games")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("fk_stats_Games_Seasons")
@@ -2322,24 +2375,196 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.Maps", b =>
                 {
                     b.HasOne("WorldDoomLeague.Domain.Entities.GameFiles", "FkIdFileNavigation")
-                        .WithMany("StatsTblMaps")
+                        .WithMany("Maps")
                         .HasForeignKey("FkIdFile")
-                        .HasConstraintName("fk_stats_Maps_Files")
+                        .HasConstraintName("fk_Maps_Files")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.PlayerDraft", b =>
+                {
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNominatedNavigation")
+                        .WithMany("DraftNominated")
+                        .HasForeignKey("FkIdPlayerNominated")
+                        .HasConstraintName("fk_Draft_Player_nominated")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNominatingNavigation")
+                        .WithMany("DraftNominating")
+                        .HasForeignKey("FkIdPlayerNominating")
+                        .HasConstraintName("fk_Draft_Player_nominating")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerSoldToNavigation")
+                        .WithMany("DraftSoldTo")
+                        .HasForeignKey("FkIdPlayerSoldTo")
+                        .HasConstraintName("fk_Draft_Player_sold_to")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
+                        .WithMany("Draft")
+                        .HasForeignKey("FkIdSeason")
+                        .HasConstraintName("fk_Draft_Season")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamSoldToNavigation")
+                        .WithMany("DraftTeamSoldTo")
+                        .HasForeignKey("FkIdTeamSoldTo")
+                        .HasConstraintName("fk_Draft_Team_sold_to")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.PlayerGameRecord", b =>
+                {
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Games", "FkIdGameNavigation")
+                        .WithMany("PlayerGameRecords")
+                        .HasForeignKey("FkIdGame")
+                        .HasConstraintName("Fk_PlayerGameRecord_Game")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNavigation")
+                        .WithMany("PlayerGameRecords")
+                        .HasForeignKey("FkIdPlayer")
+                        .HasConstraintName("Fk_PlayerGameRecord_Players")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
+                        .WithMany("PlayerGameRecords")
+                        .HasForeignKey("FkIdSeason")
+                        .HasConstraintName("Fk_PlayerGameRecord_Season")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamNavigation")
+                        .WithMany("PlayerGameRecords")
+                        .HasForeignKey("FkIdTeam")
+                        .HasConstraintName("Fk_PlayerGameRecord_Team")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Weeks", "FkIdWeekNavigation")
+                        .WithMany("PlayerGameRecords")
+                        .HasForeignKey("FkIdWeek")
+                        .HasConstraintName("Fk_PlayerGameRecord_Week")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.PlayerRoundRecord", b =>
+                {
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Games", "FkIdGameNavigation")
+                        .WithMany("PlayerRoundRecords")
+                        .HasForeignKey("FkIdGame")
+                        .HasConstraintName("fk_PlayerRound_Game")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Maps", "FkIdMapNavigation")
+                        .WithMany("PlayerRoundRecords")
+                        .HasForeignKey("FkIdMap")
+                        .HasConstraintName("fk_PlayerRound_Map")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNavigation")
+                        .WithMany("PlayerRoundRecords")
+                        .HasForeignKey("FkIdPlayer")
+                        .HasConstraintName("fk_PlayerRound_Player")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
+                        .WithMany("PlayerRoundRecords")
+                        .HasForeignKey("FkIdSeason")
+                        .HasConstraintName("fk_PlayerRound_Season")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.StatsRounds", "FkIdStatsRoundNavigation")
+                        .WithOne("FkIdPlayerRoundRecordNavigation")
+                        .HasForeignKey("WorldDoomLeague.Domain.Entities.PlayerRoundRecord", "FkIdStatsRound")
+                        .HasConstraintName("fk_StatsRounds_PlayerRoundRecord")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamNavigation")
+                        .WithMany("PlayerRoundRecords")
+                        .HasForeignKey("FkIdTeam")
+                        .HasConstraintName("fk_PlayerRound_Team")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Weeks", "FkIdWeekNavigation")
+                        .WithMany("PlayerRoundRecords")
+                        .HasForeignKey("FkIdWeek")
+                        .HasConstraintName("fk_PlayerRound_Week")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.PlayerTransactions", b =>
+                {
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNavigation")
+                        .WithMany("Transactions")
+                        .HasForeignKey("FkIdPlayer")
+                        .HasConstraintName("Fk_Transaction_Player")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
+                        .WithMany("Transactions")
+                        .HasForeignKey("FkIdSeason")
+                        .HasConstraintName("Fk_Transaction_Season")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamTradedFromNavigation")
+                        .WithMany("TransactionTeamTradedFrom")
+                        .HasForeignKey("FkIdTeamTradedFrom")
+                        .HasConstraintName("fk_Transaction_Team_traded_from");
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamTradedToNavigation")
+                        .WithMany("TransactionTeamTradedTo")
+                        .HasForeignKey("FkIdTeamTradedTo")
+                        .HasConstraintName("fk_Transaction_Team_traded_to");
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Weeks", "FkIdWeekNavigation")
+                        .WithMany("Transactions")
+                        .HasForeignKey("FkIdWeek")
+                        .HasConstraintName("Fk_Transaction_Week")
                         .IsRequired();
                 });
 
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.RoundPlayers", b =>
                 {
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Games", "FkIdGameNavigation")
+                        .WithMany("RoundPlayers")
+                        .HasForeignKey("FkIdGame")
+                        .HasConstraintName("fk_RoundPlayers_Games")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Maps", "FkIdMapNavigation")
+                        .WithMany("RoundPlayers")
+                        .HasForeignKey("FkIdMap")
+                        .HasConstraintName("fk_RoundPlayers_Maps")
+                        .IsRequired();
+
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNavigation")
                         .WithMany("RoundPlayers")
                         .HasForeignKey("FkIdPlayer")
-                        .HasConstraintName("fk_stats_RoundPlayers_Players")
+                        .HasConstraintName("fk_RoundPlayers_Players")
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Rounds", "FkIdRoundNavigation")
                         .WithMany("RoundPlayers")
                         .HasForeignKey("FkIdRound")
-                        .HasConstraintName("fk_stats_RoundPlayers_Rounds")
+                        .HasConstraintName("fk_RoundPlayers_Round")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
+                        .WithMany("RoundPlayers")
+                        .HasForeignKey("FkIdSeason")
+                        .HasConstraintName("fk_RoundPlayers_Seasons")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamNavigation")
+                        .WithMany("RoundPlayers")
+                        .HasForeignKey("FkIdTeam")
+                        .HasConstraintName("fk_RoundPlayers_Teams")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Weeks", "FkIdWeekNavigation")
+                        .WithMany("RoundPlayers")
+                        .HasForeignKey("FkIdWeek")
+                        .HasConstraintName("fk_RoundPlayers_Weeks")
                         .IsRequired();
                 });
 
@@ -2357,7 +2582,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasConstraintName("fk_stats_Rounds_Maps")
                         .IsRequired();
 
-                    b.HasOne("WorldDoomLeague.Domain.Entities.Seasons", "FkIdSeasonNavigation")
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
                         .WithMany("Rounds")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("fk_stats_Rounds_Seasons")
@@ -2370,12 +2595,12 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.Seasons", b =>
+            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.Season", b =>
                 {
                     b.HasOne("WorldDoomLeague.Domain.Entities.GameFiles", "FkIdFileNavigation")
-                        .WithMany("StatsTblSeasons")
+                        .WithMany("Seasons")
                         .HasForeignKey("FkIdWadFile")
-                        .HasConstraintName("fk_stats_Seasons_Files")
+                        .HasConstraintName("fk_Seasons_Files")
                         .IsRequired();
                 });
 
@@ -2489,7 +2714,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerAttackerNavigation")
                         .WithMany("StatsKillDataFkIdPlayerAttackerNavigation")
                         .HasForeignKey("FkIdPlayerAttacker")
-                        .HasConstraintName("fk_statskillplayer_attacker")
+                        .HasConstraintName("fk_statskill_player_attacker")
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerTargetNavigation")
@@ -2502,30 +2727,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("StatsKillData")
                         .HasForeignKey("FkIdRound")
                         .HasConstraintName("fk_statskill_round")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.StatsOverall", b =>
-                {
-                    b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNavigation")
-                        .WithOne("StatsOverall")
-                        .HasForeignKey("WorldDoomLeague.Domain.Entities.StatsOverall", "FkIdPlayer")
-                        .HasConstraintName("fk_stats_StatsOverall_Players")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.StatsOverallSeason", b =>
-                {
-                    b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNavigation")
-                        .WithMany("StatsOverallSeason")
-                        .HasForeignKey("FkIdPlayer")
-                        .HasConstraintName("fk_stats_StatsOverallSeason_Players")
-                        .IsRequired();
-
-                    b.HasOne("WorldDoomLeague.Domain.Entities.Seasons", "FkIdSeasonNavigation")
-                        .WithMany("StatsOverallSeason")
-                        .HasForeignKey("FkIdSeason")
-                        .HasConstraintName("fk_stats_StatsOverallSeason_Seasons")
                         .IsRequired();
                 });
 
@@ -2549,37 +2750,43 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.HasOne("WorldDoomLeague.Domain.Entities.Games", "FkIdGameNavigation")
                         .WithMany("StatsRounds")
                         .HasForeignKey("FkIdGame")
-                        .HasConstraintName("fk_stats_tblStatsRounds_tblGames")
+                        .HasConstraintName("fk_StatsRounds_Games")
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Maps", "FkIdMapNavigation")
                         .WithMany("StatsRounds")
                         .HasForeignKey("FkIdMap")
-                        .HasConstraintName("fk_stats_tblStatsRounds_tblMaps")
+                        .HasConstraintName("fk_StatsRounds_Maps")
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNavigation")
                         .WithMany("StatsRounds")
                         .HasForeignKey("FkIdPlayer")
-                        .HasConstraintName("fk_stats_tblStatsRounds_tblPlayers")
+                        .HasConstraintName("fk_StatsRounds_Players")
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Rounds", "FkIdRoundNavigation")
                         .WithMany("StatsRounds")
                         .HasForeignKey("FkIdRound")
-                        .HasConstraintName("fk_stats_tblStatsRounds_tblRounds")
+                        .HasConstraintName("fk_StatsRounds_Rounds")
                         .IsRequired();
 
-                    b.HasOne("WorldDoomLeague.Domain.Entities.Seasons", "FkIdSeasonNavigation")
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
                         .WithMany("StatsRounds")
                         .HasForeignKey("FkIdSeason")
-                        .HasConstraintName("fk_stats_tblStatsRounds_tblSeasons")
+                        .HasConstraintName("fk_StatsRounds_Seasons")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamNavigation")
+                        .WithMany("StatsRounds")
+                        .HasForeignKey("FkIdTeam")
+                        .HasConstraintName("fk_StatsRounds_Teams")
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Weeks", "FkIdWeekNavigation")
                         .WithMany("StatsRounds")
                         .HasForeignKey("FkIdWeek")
-                        .HasConstraintName("fk_stats_tblStatsRounds_tblWeeks")
+                        .HasConstraintName("fk_StatsRounds_Weeks")
                         .IsRequired();
                 });
 
@@ -2594,22 +2801,19 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerFirstpickNavigation")
                         .WithMany("TeamsFkIdPlayerFirstpickNavigation")
                         .HasForeignKey("FkIdPlayerFirstpick")
-                        .HasConstraintName("fk_stats_Teams_Players_2")
-                        .IsRequired();
+                        .HasConstraintName("fk_stats_Teams_Players_2");
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerSecondpickNavigation")
                         .WithMany("TeamsFkIdPlayerSecondpickNavigation")
                         .HasForeignKey("FkIdPlayerSecondpick")
-                        .HasConstraintName("fk_stats_Teams_Players_3")
-                        .IsRequired();
+                        .HasConstraintName("fk_stats_Teams_Players_3");
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerThirdpickNavigation")
                         .WithMany("TeamsFkIdPlayerThirdpickNavigation")
                         .HasForeignKey("FkIdPlayerThirdpick")
-                        .HasConstraintName("fk_stats_Teams_Players_4")
-                        .IsRequired();
+                        .HasConstraintName("fk_stats_Teams_Players_4");
 
-                    b.HasOne("WorldDoomLeague.Domain.Entities.Seasons", "FkIdSeasonNavigation")
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
                         .WithMany("Teams")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("fk_stats_Teams_Seasons")
@@ -2627,7 +2831,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.Weeks", b =>
                 {
-                    b.HasOne("WorldDoomLeague.Domain.Entities.Seasons", "FkIdSeasonNavigation")
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
                         .WithMany("Weeks")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("fk_stats_Weeks_Seasons")

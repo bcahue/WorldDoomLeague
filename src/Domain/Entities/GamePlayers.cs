@@ -6,7 +6,6 @@ namespace WorldDoomLeague.Domain.Entities
     public partial class GamePlayers
     {
         public uint IdGameplayer { get; set; }
-        public uint FkIdMap { get; set; }
         public uint FkIdSeason { get; set; }
         public uint FkIdWeek { get; set; }
         public uint FkIdGame { get; set; }
@@ -16,7 +15,6 @@ namespace WorldDoomLeague.Domain.Entities
         public string DemoFilePath { get; set; }
 
         public virtual Games FkIdGameNavigation { get; set; }
-        public virtual Maps FkIdMapNavigation { get; set; }
         public virtual Player FkIdPlayerNavigation { get; set; }
         public virtual Season FkIdSeasonNavigation { get; set; }
         public virtual Teams FkIdTeamNavigation { get; set; }

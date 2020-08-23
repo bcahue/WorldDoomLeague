@@ -14,7 +14,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.ToTable("maps");
 
             builder.HasIndex(e => e.FkIdFile)
-                .HasName("fk_stats_Maps_Files_idx");
+                .HasName("fk_Maps_Files_idx");
 
             builder.HasIndex(e => e.IdMap)
                 .HasName("id_map_UNIQUE")
@@ -47,10 +47,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasCollation("utf8mb4_unicode_ci");
 
             builder.HasOne(d => d.FkIdFileNavigation)
-                .WithMany(p => p.StatsTblMaps)
+                .WithMany(p => p.Maps)
                 .HasForeignKey(d => d.FkIdFile)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_stats_Maps_Files");
+                .HasConstraintName("fk_Maps_Files");
         }
     }
 }

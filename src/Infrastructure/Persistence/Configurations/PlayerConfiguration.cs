@@ -13,10 +13,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
 
             builder.ToTable("players");
 
-            builder.HasIndex(e => e.FdbkIdMember)
-                .HasName("fdbk_id_member")
-                .IsUnique();
-
             builder.HasIndex(e => e.Id)
                 .HasName("id_player_UNIQUE")
                 .IsUnique();
@@ -27,10 +23,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.Id)
                 .HasColumnName("id")
-                .HasColumnType("int(10) unsigned");
-
-            builder.Property(e => e.FdbkIdMember)
-                .HasColumnName("fdbk_id_member")
                 .HasColumnType("int(10) unsigned");
 
             builder.Property(e => e.PlayerAlias)

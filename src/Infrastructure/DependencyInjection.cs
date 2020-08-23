@@ -36,6 +36,7 @@ namespace WorldDoomLeague.Infrastructure
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
             services.AddTransient<IDateTime, DateTimeService>();
+            services.AddTransient<IDateTimeOffset, DateTimeOffsetService>();
             services.AddTransient<IIdentityService, IdentityService>();
             services.AddTransient<ICsvFileBuilder, CsvFileBuilder>();
 

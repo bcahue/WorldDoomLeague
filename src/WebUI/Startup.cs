@@ -13,8 +13,6 @@ using Microsoft.Extensions.Hosting;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using System.Linq;
-using IdentityServer4;
-using System;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 
 namespace WorldDoomLeague.Api

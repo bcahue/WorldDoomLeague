@@ -26,12 +26,15 @@ namespace WorldDoomLeague.Application.Common.Interfaces
         DbSet<StatsDamageData> StatsDamageData { get; set; }
         DbSet<StatsKillCarrierData> StatsKillCarrierData { get; set; }
         DbSet<StatsKillData> StatsKillData { get; set; }
-        DbSet<StatsOverall> StatsOverall { get; set; }
-        DbSet<StatsOverallSeason> StatsOverallSeason { get; set; }
         DbSet<StatsPickupData> StatsPickupData { get; set; }
         DbSet<StatsRounds> StatsRounds { get; set; }
         DbSet<Domain.Entities.Teams> Teams { get; set; }
         DbSet<Weeks> Weeks { get; set; }
+        DbSet<PlayerGameRecord> PlayerGameRecords { get; set; }
+        DbSet<PlayerRoundRecord> PlayerRoundRecords { get; set; }
+        DbSet<PlayerTransactions> PlayerTransactions { get; set; }
+        DbSet<PlayerDraft> PlayerDraft { get; set; }
+        DbSet<GameMaps> GameMaps { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }

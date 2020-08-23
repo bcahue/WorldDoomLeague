@@ -39,12 +39,12 @@ namespace WorldDoomLeague.Infrastructure.Persistence
                     }
                 });
             }
-
+            /*
             if (!context.Player.Any())
             {
                 context.Player.Add(new Player { Id = 0, PlayerName = "Tom" });
             }
-
+            */
             await context.SaveChangesAsync();
         }
     }

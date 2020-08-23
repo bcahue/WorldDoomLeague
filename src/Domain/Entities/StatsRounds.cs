@@ -1,4 +1,5 @@
-﻿
+﻿using System.Collections.Generic;
+
 namespace WorldDoomLeague.Domain.Entities
 {
     public partial class StatsRounds
@@ -90,5 +91,6 @@ namespace WorldDoomLeague.Domain.Entities
         public virtual Season FkIdSeasonNavigation { get; set; }
         public virtual Weeks FkIdWeekNavigation { get; set; }
         public virtual Teams FkIdTeamNavigation { get; set; }
+        public virtual PlayerRoundRecord FkIdPlayerRoundRecordNavigation { get; set; }
     }
 }

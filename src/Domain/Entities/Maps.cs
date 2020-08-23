@@ -7,11 +7,12 @@ namespace WorldDoomLeague.Domain.Entities
     {
         public Maps()
         {
-            GamePlayers = new HashSet<GamePlayers>();
+            RoundPlayers = new HashSet<RoundPlayers>();
             GameTeamStats = new HashSet<GameTeamStats>();
-            Games = new HashSet<Games>();
             Rounds = new HashSet<Rounds>();
             StatsRounds = new HashSet<StatsRounds>();
+            PlayerRoundRecords = new HashSet<PlayerRoundRecord>();
+            GameMaps = new HashSet<GameMaps>();
         }
 
         public uint IdMap { get; set; }
@@ -21,11 +22,11 @@ namespace WorldDoomLeague.Domain.Entities
         public uint MapNumber { get; set; }
 
         public virtual GameFiles FkIdFileNavigation { get; set; }
-        public virtual ICollection<GamePlayers> StatsTblGamePlayers { get; set; }
-        public HashSet<GamePlayers> GamePlayers { get; }
+        public virtual ICollection<RoundPlayers> RoundPlayers { get; set; }
         public virtual ICollection<GameTeamStats> GameTeamStats { get; set; }
-        public virtual ICollection<Games> Games { get; set; }
         public virtual ICollection<Rounds> Rounds { get; set; }
         public virtual ICollection<StatsRounds> StatsRounds { get; set; }
+        public virtual ICollection<PlayerRoundRecord> PlayerRoundRecords { get; set; }
+        public virtual ICollection<GameMaps> GameMaps { get; set; }
     }
 }

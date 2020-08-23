@@ -47,12 +47,15 @@ namespace WorldDoomLeague.Infrastructure.Persistence
         public virtual DbSet<StatsDamageData> StatsDamageData { get; set; }
         public virtual DbSet<StatsKillCarrierData> StatsKillCarrierData { get; set; }
         public virtual DbSet<StatsKillData> StatsKillData { get; set; }
-        public virtual DbSet<StatsOverall> StatsOverall { get; set; }
-        public virtual DbSet<StatsOverallSeason> StatsOverallSeason { get; set; }
         public virtual DbSet<StatsPickupData> StatsPickupData { get; set; }
         public virtual DbSet<StatsRounds> StatsRounds { get; set; }
         public virtual DbSet<Teams> Teams { get; set; }
         public virtual DbSet<Weeks> Weeks { get; set; }
+        public virtual DbSet<PlayerGameRecord> PlayerGameRecords { get; set; }
+        public virtual DbSet<PlayerRoundRecord> PlayerRoundRecords { get; set; }
+        public virtual DbSet<PlayerTransactions> PlayerTransactions { get; set; }
+        public virtual DbSet<PlayerDraft> PlayerDraft { get; set; }
+        public virtual DbSet<GameMaps> GameMaps { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

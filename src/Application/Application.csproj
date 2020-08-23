@@ -17,9 +17,9 @@
 
   <ItemGroup>
     <Folder Include="Common\Mappings\" />
+    <Folder Include="Files\Queries\" />
     <Folder Include="Matches\Commands\CreateMatch\" />
-    <Folder Include="Players\Commands\CreatePlayer\" />
-    <Folder Include="Players\Commands\UpdatePlayer\" />
+    <Folder Include="Stats\Queries\" />
   </ItemGroup>
 
   <ItemGroup>

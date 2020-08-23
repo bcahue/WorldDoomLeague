@@ -21,21 +21,24 @@ namespace WorldDoomLeague.Domain.Entities
             StatsKillCarrierDataFkIdPlayerTargetNavigation = new HashSet<StatsKillCarrierData>();
             StatsKillDataFkIdPlayerAttackerNavigation = new HashSet<StatsKillData>();
             StatsKillDataFkIdPlayerTargetNavigation = new HashSet<StatsKillData>();
-            StatsOverallSeason = new HashSet<StatsOverallSeason>();
             StatsPickupData = new HashSet<StatsPickupData>();
             StatsRounds = new HashSet<StatsRounds>();
             TeamsFkIdPlayerCaptainNavigation = new HashSet<Teams>();
             TeamsFkIdPlayerFirstpickNavigation = new HashSet<Teams>();
             TeamsFkIdPlayerSecondpickNavigation = new HashSet<Teams>();
             TeamsFkIdPlayerThirdpickNavigation = new HashSet<Teams>();
+            PlayerGameRecords = new HashSet<PlayerGameRecord>();
+            PlayerRoundRecords = new HashSet<PlayerRoundRecord>();
+            Transactions = new HashSet<PlayerTransactions>();
+            DraftNominated = new HashSet<PlayerDraft>();
+            DraftNominating = new HashSet<PlayerDraft>();
+            DraftSoldTo = new HashSet<PlayerDraft>();
         }
 
         public uint Id { get; set; }
         public string PlayerName { get; set; }
         public string PlayerAlias { get; set; }
-        public uint FdbkIdMember { get; set; }
 
-        public virtual StatsOverall StatsOverall { get; set; }
         public virtual ICollection<GamePlayers> GamePlayers { get; set; }
         public virtual ICollection<RoundPlayers> RoundPlayers { get; set; }
         public virtual ICollection<StatsAccuracyData> StatsAccuracyDataFkIdPlayerAttackerNavigation { get; set; }
@@ -50,7 +53,6 @@ namespace WorldDoomLeague.Domain.Entities
         public virtual ICollection<StatsKillCarrierData> StatsKillCarrierDataFkIdPlayerTargetNavigation { get; set; }
         public virtual ICollection<StatsKillData> StatsKillDataFkIdPlayerAttackerNavigation { get; set; }
         public virtual ICollection<StatsKillData> StatsKillDataFkIdPlayerTargetNavigation { get; set; }
-        public virtual ICollection<StatsOverallSeason> StatsOverallSeason { get; set; }
         public virtual ICollection<StatsPickupData> StatsPickupData { get; set; }
         public virtual ICollection<StatsRounds> StatsRounds { get; set; }
         public virtual ICollection<Teams> TeamsFkIdPlayerCaptainNavigation { get; set; }
@@ -58,5 +60,11 @@ namespace WorldDoomLeague.Domain.Entities
         public virtual ICollection<Teams> TeamsFkIdPlayerSecondpickNavigation { get; set; }
         public virtual ICollection<Teams> TeamsFkIdPlayerThirdpickNavigation { get; set; }
         public virtual ICollection<Demos> Demos { get; set; }
+        public virtual ICollection<PlayerGameRecord> PlayerGameRecords { get; set; }
+        public virtual ICollection<PlayerRoundRecord> PlayerRoundRecords { get; set; }
+        public virtual ICollection<PlayerTransactions> Transactions { get; set; }
+        public virtual ICollection<PlayerDraft> DraftNominated { get; set; }
+        public virtual ICollection<PlayerDraft> DraftNominating { get; set; }
+        public virtual ICollection<PlayerDraft> DraftSoldTo { get; set; }
     }
 }

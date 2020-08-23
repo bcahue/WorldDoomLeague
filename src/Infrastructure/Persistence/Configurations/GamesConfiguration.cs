@@ -13,9 +13,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
 
             builder.ToTable("games");
 
-            builder.HasIndex(e => e.FkIdMap)
-                .HasName("fk_stats_Games_Map_idx");
-
             builder.HasIndex(e => e.FkIdSeason)
                 .HasName("fk_stats_Games_Seasons_idx");
 
@@ -34,10 +31,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.IdGame)
                 .HasColumnName("id_game")
-                .HasColumnType("int(10) unsigned");
-
-            builder.Property(e => e.FkIdMap)
-                .HasColumnName("fk_id_map")
                 .HasColumnType("int(10) unsigned");
 
             builder.Property(e => e.FkIdSeason)
@@ -64,7 +57,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasColumnName("fk_id_week")
                 .HasColumnType("int(10) unsigned");
 
-            builder.Property(e => e.GameDatetime).HasColumnName("game_datetime");
+            builder.Property(e => e.GameDatetime)
+                .HasColumnName("game_datetime")
+                .HasColumnType("timestamp");
 
             builder.Property(e => e.GameType)
                 .IsRequired()
@@ -84,12 +79,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasColumnType("enum('r','b','t')")
                 .HasCharSet("utf8mb4")
                 .HasCollation("utf8mb4_unicode_ci");
-
-            builder.HasOne(d => d.FkIdMapNavigation)
-                .WithMany(p => p.Games)
-                .HasForeignKey(d => d.FkIdMap)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_stats_Games_Maps");
 
             builder.HasOne(d => d.FkIdSeasonNavigation)
                 .WithMany(p => p.Games)

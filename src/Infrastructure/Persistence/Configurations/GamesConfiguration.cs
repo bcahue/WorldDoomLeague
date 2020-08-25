@@ -59,7 +59,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.GameDatetime)
                 .HasColumnName("game_datetime")
-                .HasColumnType("timestamp");
+                .HasColumnType("datetime");
 
             builder.Property(e => e.GameType)
                 .IsRequired()

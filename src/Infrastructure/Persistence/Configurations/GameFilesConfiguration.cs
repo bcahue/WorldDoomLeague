@@ -34,7 +34,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.UploadDate)
                 .HasColumnName("upload_date")
-                .HasColumnType("timestamp");
+                .HasColumnType("datetime");
         }
     }
 }

@@ -28,8 +28,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence
             _dateTime = dateTime;
         }
 
-        public DbSet<TodoList> TodoLists { get; set; }
-        public DbSet<TodoItem> TodoItems { get; set; }
         public virtual DbSet<Demos> Demos { get; set; }
         public virtual DbSet<Games> Games { get; set; }
         public virtual DbSet<Maps> Maps { get; set; }

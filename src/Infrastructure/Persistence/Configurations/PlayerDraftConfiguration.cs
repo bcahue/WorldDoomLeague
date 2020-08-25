@@ -36,6 +36,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasColumnName("draftrecord_id")
                 .HasColumnType("int(10) unsigned");
 
+            builder.Property(e => e.DraftNominationPosition)
+                .HasColumnName("draft_nomination_position")
+                .HasColumnType("int(10) unsigned");
+
             builder.Property(e => e.FkIdPlayerNominated)
                 .HasColumnName("fk_id_player_nominated")
                 .HasColumnType("int(10) unsigned");
@@ -60,8 +64,8 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasColumnName("sell_price")
                 .HasColumnType("int(10) unsigned");
 
-            builder.Property(e => e.DraftPosition)
-                .HasColumnName("draft_position")
+            builder.Property(e => e.TeamDraftPosition)
+                .HasColumnName("team_draft_position")
                 .HasColumnType("int(10) unsigned");
 
             builder.HasOne(d => d.FkIdPlayerNominatedNavigation)

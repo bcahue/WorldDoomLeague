@@ -9,7 +9,7 @@ using WorldDoomLeague.Infrastructure.Persistence;
 namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200823032724_initial")]
+    [Migration("20200825061104_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -292,7 +292,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime>("UploadDate")
                         .HasColumnName("upload_date")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("datetime");
 
                     b.HasKey("IdFile")
                         .HasName("PRIMARY");
@@ -622,7 +622,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime?>("GameDatetime")
                         .HasColumnName("game_datetime")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("GameType")
                         .IsRequired()
@@ -748,8 +748,8 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnName("draftrecord_id")
                         .HasColumnType("int(10) unsigned");
 
-                    b.Property<uint>("DraftPosition")
-                        .HasColumnName("draft_position")
+                    b.Property<uint>("DraftNominationPosition")
+                        .HasColumnName("draft_nomination_position")
                         .HasColumnType("int(10) unsigned");
 
                     b.Property<uint>("FkIdPlayerNominated")
@@ -774,6 +774,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.Property<uint>("SellPrice")
                         .HasColumnName("sell_price")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("TeamDraftPosition")
+                        .HasColumnName("team_draft_position")
                         .HasColumnType("int(10) unsigned");
 
                     b.HasKey("DraftRecordId")
@@ -1214,7 +1218,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime>("DateStart")
                         .HasColumnName("date_start")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("EnginePlayed")
                         .IsRequired()
@@ -1962,7 +1966,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnName("id_team")
                         .HasColumnType("int(10) unsigned");
 
-                    b.Property<uint>("FkIdPlayerCaptain")
+                    b.Property<uint?>("FkIdPlayerCaptain")
                         .HasColumnName("fk_id_player_captain")
                         .HasColumnType("int(10) unsigned");
 
@@ -2019,82 +2023,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("id_team_UNIQUE");
 
                     b.ToTable("teams");
-                });
-
-            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.TodoItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<bool>("Done")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<int>("ListId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<int>("Priority")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("Reminder")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
-                        .HasMaxLength(200);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ListId");
-
-                    b.ToTable("TodoItems");
-                });
-
-            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.TodoList", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Colour")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
-                        .HasMaxLength(200);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TodoLists");
                 });
 
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.Weeks", b =>
@@ -2797,8 +2725,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerCaptainNavigation")
                         .WithMany("TeamsFkIdPlayerCaptainNavigation")
                         .HasForeignKey("FkIdPlayerCaptain")
-                        .HasConstraintName("fk_stats_Teams_Players_1")
-                        .IsRequired();
+                        .HasConstraintName("fk_stats_Teams_Players_1");
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerFirstpickNavigation")
                         .WithMany("TeamsFkIdPlayerFirstpickNavigation")
@@ -2819,15 +2746,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("Teams")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("fk_stats_Teams_Seasons")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("WorldDoomLeague.Domain.Entities.TodoItem", b =>
-                {
-                    b.HasOne("WorldDoomLeague.Domain.Entities.TodoList", "List")
-                        .WithMany("Items")
-                        .HasForeignKey("ListId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

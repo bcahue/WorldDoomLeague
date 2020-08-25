@@ -19,6 +19,7 @@ namespace WorldDoomLeague.Api.Filters
             {
                 { typeof(ValidationException), HandleValidationException },
                 { typeof(NotFoundException), HandleNotFoundException },
+                { typeof(InvalidDraftException), HandleInvalidDraftException },
             };
         }
 
@@ -84,6 +85,22 @@ namespace WorldDoomLeague.Api.Filters
             };
 
             context.Result = new NotFoundObjectResult(details);
+
+            context.ExceptionHandled = true;
+        }
+
+        private void HandleInvalidDraftException(ExceptionContext context)
+        {
+            var exception = context.Exception as InvalidDraftException;
+
+            var details = new ProblemDetails()
+            {
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+                Title = "The specified draft request was determined to be invalid.",
+                Detail = exception.Message
+            };
+
+            context.Result = new BadRequestObjectResult(details);
 
             context.ExceptionHandled = true;
         }

@@ -7,11 +7,9 @@ namespace WorldDoomLeague.Application.Common.Interfaces
 {
     public interface IApplicationDbContext
     {
-        DbSet<TodoList> TodoLists { get; set; }
-        DbSet<TodoItem> TodoItems { get; set; }
         DbSet<Demos> Demos { get; set; }
         DbSet<Games> Games { get; set; }
-        DbSet<Maps> Maps { get; set; }
+        DbSet<Domain.Entities.Maps> Maps { get; set; }
         DbSet<Player> Player { get; set; }
         DbSet<RoundPlayers> RoundPlayers { get; set; }
         DbSet<Domain.Entities.Rounds> Rounds { get; set; }

@@ -74,7 +74,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     file_name = table.Column<string>(type: "varchar(64)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                         .Annotation("MySql:Collation", "utf8mb4_unicode_ci"),
-                    upload_date = table.Column<DateTime>(type: "timestamp", nullable: false)
+                    upload_date = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -135,24 +135,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => x.id_roundflagtouchcapture);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TodoLists",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<string>(nullable: true),
-                    Created = table.Column<DateTime>(nullable: false),
-                    LastModifiedBy = table.Column<string>(nullable: true),
-                    LastModified = table.Column<DateTime>(nullable: true),
-                    Title = table.Column<string>(maxLength: 200, nullable: false),
-                    Colour = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TodoLists", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -300,7 +282,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     engine_played = table.Column<string>(type: "varchar(64)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                         .Annotation("MySql:Collation", "utf8mb4_unicode_ci"),
-                    date_start = table.Column<DateTime>(type: "timestamp", nullable: false),
+                    date_start = table.Column<DateTime>(type: "datetime", nullable: false),
                     fk_id_team_winner = table.Column<int>(type: "int(11)", nullable: true)
                 },
                 constraints: table =>
@@ -315,41 +297,13 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TodoItems",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreatedBy = table.Column<string>(nullable: true),
-                    Created = table.Column<DateTime>(nullable: false),
-                    LastModifiedBy = table.Column<string>(nullable: true),
-                    LastModified = table.Column<DateTime>(nullable: true),
-                    ListId = table.Column<int>(nullable: false),
-                    Title = table.Column<string>(maxLength: 200, nullable: false),
-                    Note = table.Column<string>(nullable: true),
-                    Done = table.Column<bool>(nullable: false),
-                    Reminder = table.Column<DateTime>(nullable: true),
-                    Priority = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TodoItems", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TodoItems_TodoLists_ListId",
-                        column: x => x.ListId,
-                        principalTable: "TodoLists",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "teams",
                 columns: table => new
                 {
                     id_team = table.Column<uint>(type: "int(10) unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     fk_id_season = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    fk_id_player_captain = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_player_captain = table.Column<uint>(type: "int(10) unsigned", nullable: true),
                     fk_id_player_firstpick = table.Column<uint>(type: "int(10) unsigned", nullable: true),
                     fk_id_player_secondpick = table.Column<uint>(type: "int(10) unsigned", nullable: true),
                     fk_id_player_thirdpick = table.Column<uint>(type: "int(10) unsigned", nullable: true),
@@ -425,13 +379,14 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 {
                     draftrecord_id = table.Column<uint>(type: "int(10) unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    draft_nomination_position = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     fk_id_player_nominating = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     fk_id_player_nominated = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     fk_id_player_sold_to = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     fk_id_team_sold_to = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     fk_id_season = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     sell_price = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    draft_position = table.Column<uint>(type: "int(10) unsigned", nullable: false)
+                    team_draft_position = table.Column<uint>(type: "int(10) unsigned", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -481,7 +436,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     game_type = table.Column<string>(type: "enum('n','p','f')", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                         .Annotation("MySql:Collation", "utf8mb4_unicode_ci"),
-                    game_datetime = table.Column<DateTime>(type: "timestamp", nullable: true),
+                    game_datetime = table.Column<DateTime>(type: "datetime", nullable: true),
                     fk_id_team_winner = table.Column<uint>(type: "int(10) unsigned", nullable: true),
                     team_winner_color = table.Column<string>(type: "enum('r','b','t')", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
@@ -2023,11 +1978,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_TodoItems_ListId",
-                table: "TodoItems",
-                column: "ListId");
-
-            migrationBuilder.CreateIndex(
                 name: "fk_stats_Weeks_Season_idx",
                 table: "weeks",
                 column: "fk_id_season");
@@ -2114,9 +2064,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 name: "statspickupdata");
 
             migrationBuilder.DropTable(
-                name: "TodoItems");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -2124,9 +2071,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "statsrounds");
-
-            migrationBuilder.DropTable(
-                name: "TodoLists");
 
             migrationBuilder.DropTable(
                 name: "rounds");

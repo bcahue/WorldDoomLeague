@@ -6,7 +6,7 @@ using WorldDoomLeague.Domain.Entities;
 
 namespace WorldDoomLeague.Application.Seasons.Queries.GetSeasonSummaryById
 {
-    public class SeasonMapDto : IMapFrom<Maps>
+    public class SeasonMapDto : IMapFrom<Domain.Entities.Maps>
     {
         public uint IdMap { get; set; }
         public string MapPack { get; set; }
@@ -15,7 +15,7 @@ namespace WorldDoomLeague.Application.Seasons.Queries.GetSeasonSummaryById
         public SeasonFileDto File { get; set; }
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Maps, SeasonMapDto>()
+            profile.CreateMap<Domain.Entities.Maps, SeasonMapDto>()
                 .ForMember(d => d.File, opt => opt.MapFrom(s => s.FkIdFileNavigation));
         }
     }

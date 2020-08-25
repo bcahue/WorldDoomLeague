@@ -22,7 +22,7 @@ namespace WorldDoomLeague.Domain.Entities
 
         public uint IdTeam { get; set; }
         public uint FkIdSeason { get; set; }
-        public uint FkIdPlayerCaptain { get; set; }
+        public uint? FkIdPlayerCaptain { get; set; }
         public uint? FkIdPlayerFirstpick { get; set; }
         public uint? FkIdPlayerSecondpick { get; set; }
         public uint? FkIdPlayerThirdpick { get; set; }

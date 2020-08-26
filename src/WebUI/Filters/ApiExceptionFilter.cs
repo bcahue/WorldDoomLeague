@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
 
-namespace WorldDoomLeague.Api.Filters
+namespace WorldDoomLeague.WebUI.Filters
 {
     public class ApiExceptionFilter : ExceptionFilterAttribute
     {

@@ -1,12 +1,12 @@
 ﻿using WorldDoomLeague.Application.LeaderboardStats.Queries.GetPlayerLeaderboardStatsBySeasonId;
 using WorldDoomLeague.Application.LeaderboardStats.Queries.GetPlayerLeaderboardStatsAllTime;
-using WorldDoomLeague.Api.QueryModel;
+using WorldDoomLeague.WebUI.QueryModel;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using WorldDoomLeague.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace WorldDoomLeague.Api.Controllers
+namespace WorldDoomLeague.WebUI.Controllers
 {
     public class LeaderboardStatsController : ApiController
     {

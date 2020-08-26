@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using WorldDoomLeague.Api.QueryModel;
+using WorldDoomLeague.WebUI.QueryModel;
 
-namespace WorldDoomLeague.Api.Controllers
+namespace WorldDoomLeague.WebUI.Controllers
 {
     public class RoundsController : ApiController
     {

@@ -2,8 +2,8 @@ using WorldDoomLeague.Application;
 using WorldDoomLeague.Application.Common.Interfaces;
 using WorldDoomLeague.Infrastructure;
 using WorldDoomLeague.Infrastructure.Persistence;
-using WorldDoomLeague.Api.Filters;
-using WorldDoomLeague.Api.Services;
+using WorldDoomLeague.WebUI.Filters;
+using WorldDoomLeague.WebUI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -14,8 +14,9 @@ using NSwag;
 using NSwag.Generation.Processors.Security;
 using System.Linq;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using WorldDoomLeague.WebUI.ConfigModels;
 
-namespace WorldDoomLeague.Api
+namespace WorldDoomLeague.WebUI
 {
     public class Startup
     {
@@ -42,6 +43,10 @@ namespace WorldDoomLeague.Api
             services.AddControllersWithViews(options => options.Filters.Add(new ApiExceptionFilter()));
 
             services.AddRazorPages();
+
+            var jsonDataDirectories = Configuration.GetSection("JsonDataDirectories");
+
+            services.Configure<JsonDataDirectories>(jsonDataDirectories);
 
             services.AddSpaStaticFiles(configuration =>
             {

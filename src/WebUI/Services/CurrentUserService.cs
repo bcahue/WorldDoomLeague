@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
-namespace WorldDoomLeague.Api.Services
+namespace WorldDoomLeague.WebUI.Services
 {
     public class CurrentUserService : ICurrentUserService
     {

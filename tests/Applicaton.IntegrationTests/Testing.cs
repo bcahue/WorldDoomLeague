@@ -1,7 +1,7 @@
 ﻿using WorldDoomLeague.Application.Common.Interfaces;
 using WorldDoomLeague.Infrastructure.Identity;
 using WorldDoomLeague.Infrastructure.Persistence;
-using WorldDoomLeague.Api;
+using WorldDoomLeague.WebUI;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;

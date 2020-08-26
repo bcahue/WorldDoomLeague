@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace WorldDoomLeague.Api.Controllers
+namespace WorldDoomLeague.WebUI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace WorldDoomLeague.Api.Extensions
+namespace WorldDoomLeague.WebUI.Extensions
 {
     public static class AuthExtensions
     {

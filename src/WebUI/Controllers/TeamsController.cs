@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace WorldDoomLeague.Api.Controllers
+namespace WorldDoomLeague.WebUI.Controllers
 {
     public class TeamsController : ApiController
     {

@@ -11,6 +11,7 @@ namespace WorldDoomLeague.Domain.Entities
         public uint FkIdWeek { get; set; }
         public uint FkIdGame { get; set; }
         public uint FkIdTeam { get; set; }
+        public uint FkIdOpponentTeam { get; set; }
         public uint Win { get; set; }
         public uint Tie { get; set; }
         public uint Loss { get; set; }
@@ -48,6 +49,7 @@ namespace WorldDoomLeague.Domain.Entities
         public virtual Maps FkIdMapNavigation { get; set; }
         public virtual Season FkIdSeasonNavigation { get; set; }
         public virtual Teams FkIdTeamNavigation { get; set; }
+        public virtual Teams FkIdOpponentTeamNavigation { get; set; }
         public virtual Weeks FkIdWeekNavigation { get; set; }
     }
 }

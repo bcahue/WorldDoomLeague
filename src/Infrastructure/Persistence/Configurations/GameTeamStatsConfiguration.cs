@@ -25,6 +25,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasIndex(e => e.FkIdTeam)
                 .HasName("fk_GameTeamStats_Teams_idx");
 
+            builder.HasIndex(e => e.FkIdTeam)
+                .HasName("fk_GameTeamStats_OpponentTeams_idx");
+
             builder.HasIndex(e => e.FkIdWeek)
                 .HasName("fk_GameTeamStats_Weeks_idx");
 
@@ -58,6 +61,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.FkIdTeam)
                 .HasColumnName("fk_id_team")
+                .HasColumnType("int(10) unsigned");
+
+            builder.Property(e => e.FkIdOpponentTeam)
+                .HasColumnName("fk_id_opponentteam")
                 .HasColumnType("int(10) unsigned");
 
             builder.Property(e => e.FkIdWeek)
@@ -214,6 +221,12 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasForeignKey(d => d.FkIdTeam)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_GameTeamStats_Teams");
+
+            builder.HasOne(d => d.FkIdOpponentTeamNavigation)
+                .WithMany(p => p.GameTeamStats)
+                .HasForeignKey(d => d.FkIdOpponentTeam)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_GameTeamStats_OpponentTeams");
 
             builder.HasOne(d => d.FkIdWeekNavigation)
                 .WithMany(p => p.GameTeamStats)

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using WorldDoomLeague.Domain.Enums;
 
-namespace WorldDoomLeague.Api.QueryModel
+namespace WorldDoomLeague.WebUI.QueryModel
 {
     public class RoundsOutputFileTypeQueryModel
     {

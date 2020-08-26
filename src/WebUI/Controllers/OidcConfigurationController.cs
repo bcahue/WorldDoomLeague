@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace WorldDoomLeague.Api.Controllers
+namespace WorldDoomLeague.WebUI.Controllers
 {
     [ApiExplorerSettings(IgnoreApi = true)]
     public class OidcConfigurationController : Controller

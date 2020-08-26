@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
-using WorldDoomLeague.Api.Extensions;
+using WorldDoomLeague.WebUI.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
-namespace WorldDoomLeague.Api.Controllers
+namespace WorldDoomLeague.WebUI.Controllers
 {
     // Since Swagger doesn't support OIDC yet, hide it.
     [ApiExplorerSettings(IgnoreApi = true)]

@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
-namespace WorldDoomLeague.Api
+namespace WorldDoomLeague.WebUI
 {
     public class Program
     {

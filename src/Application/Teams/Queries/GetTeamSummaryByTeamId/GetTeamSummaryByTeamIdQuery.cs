@@ -172,20 +172,8 @@ namespace WorldDoomLeague.Application.Teams.Queries.GetTeamSummaryByTeamId
                 PickupHealthGained      = seasonTeamStats.Sum(s => s.PickupHealthGained),
                 HealthFromNonPowerups   = seasonTeamStats.Sum(s => s.HealthFromNonpowerPickups),
                 // Sprees
-                KillingSprees   = seasonTeamStats.Sum(s => s.SpreeKillingSprees),
-                Rampages        = seasonTeamStats.Sum(s => s.SpreeRampage),
-                Dominatings     = seasonTeamStats.Sum(s => s.SpreeDominations),
-                Unstoppables    = seasonTeamStats.Sum(s => s.SpreeUnstoppables),
-                GodLikes        = seasonTeamStats.Sum(s => s.SpreeGodlikes),
-                WickedSicks     = seasonTeamStats.Sum(s => s.SpreeWickedsicks),
-
                 LongestSpree    = seasonTeamStats.Max(s => s.LongestSpree),
                 // Multi Kills
-                DoubleKills     = seasonTeamStats.Sum(s => s.MultiDoubleKills),
-                MultiKills      = seasonTeamStats.Sum(s => s.MultiMultiKills),
-                UltraKills      = seasonTeamStats.Sum(s => s.MultiUltraKills),
-                MonsterKills    = seasonTeamStats.Sum(s => s.MultiMonsterKills),
-
                 HighestMultiKill    = seasonTeamStats.Max(s => s.HighestMultiFrags),
                 // Metadata (used to find modes, like per minute stats, per round stats, etc.)
                 GamesPlayed         = seasonTeamStats.Select(c => c.FkIdGameNavigation).Distinct().Count(),

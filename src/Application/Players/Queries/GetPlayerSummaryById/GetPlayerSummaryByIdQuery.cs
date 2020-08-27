@@ -204,16 +204,8 @@ namespace WorldDoomLeague.Application.Players.Queries.GetPlayerSummaryById
                                         statsRounds.TotalPickupCaptures,
                                         statsRounds.TotalFlagReturns,
                                         statsRounds.TotalPowerPickups,
-                                        statsRounds.SpreeKillingSprees,
-                                        statsRounds.SpreeRampage,
-                                        statsRounds.SpreeDominations,
-                                        statsRounds.SpreeUnstoppables,
-                                        statsRounds.SpreeGodlikes,
-                                        statsRounds.SpreeWickedsicks,
-                                        statsRounds.MultiDoubleKills,
-                                        statsRounds.MultiMultiKills,
-                                        statsRounds.MultiUltraKills,
-                                        statsRounds.MultiMonsterKills,
+                                        statsRounds.LongestSpree,
+                                        statsRounds.HighestMultiFrags,
                                         statsRounds.FkIdSeason
                                     };
 
@@ -642,16 +634,8 @@ namespace WorldDoomLeague.Application.Players.Queries.GetPlayerSummaryById
                     allTimeStatsQuery.Sum(a => a.TotalPickupCaptures),
                     allTimeStatsQuery.Sum(a => a.TotalFlagReturns),
                     allTimeStatsQuery.Sum(a => a.TotalPowerPickups),
-                    allTimeStatsQuery.Sum(a => a.SpreeKillingSprees),
-                    allTimeStatsQuery.Sum(a => a.SpreeRampage),
-                    allTimeStatsQuery.Sum(a => a.SpreeDominations),
-                    allTimeStatsQuery.Sum(a => a.SpreeUnstoppables),
-                    allTimeStatsQuery.Sum(a => a.SpreeGodlikes),
-                    allTimeStatsQuery.Sum(a => a.SpreeWickedsicks),
-                    allTimeStatsQuery.Sum(a => a.MultiDoubleKills),
-                    allTimeStatsQuery.Sum(a => a.MultiMultiKills),
-                    allTimeStatsQuery.Sum(a => a.MultiUltraKills),
-                    allTimeStatsQuery.Sum(a => a.MultiMonsterKills)
+                    allTimeStatsQuery.Select(w => w.LongestSpree).DefaultIfEmpty().Max(),
+                    allTimeStatsQuery.Select(w => w.HighestMultiFrags).DefaultIfEmpty().Max()
                     );
             }
 
@@ -680,16 +664,8 @@ namespace WorldDoomLeague.Application.Players.Queries.GetPlayerSummaryById
                     seasonStatsQuery.Sum(a => a.TotalPickupCaptures),
                     seasonStatsQuery.Sum(a => a.TotalFlagReturns),
                     seasonStatsQuery.Sum(a => a.TotalPowerPickups),
-                    seasonStatsQuery.Sum(a => a.SpreeKillingSprees),
-                    seasonStatsQuery.Sum(a => a.SpreeRampage),
-                    seasonStatsQuery.Sum(a => a.SpreeDominations),
-                    seasonStatsQuery.Sum(a => a.SpreeUnstoppables),
-                    seasonStatsQuery.Sum(a => a.SpreeGodlikes),
-                    seasonStatsQuery.Sum(a => a.SpreeWickedsicks),
-                    seasonStatsQuery.Sum(a => a.MultiDoubleKills),
-                    seasonStatsQuery.Sum(a => a.MultiMultiKills),
-                    seasonStatsQuery.Sum(a => a.MultiUltraKills),
-                    seasonStatsQuery.Sum(a => a.MultiMonsterKills)
+                    seasonStatsQuery.Select(w => w.LongestSpree).DefaultIfEmpty().Max(),
+                    seasonStatsQuery.Select(w => w.HighestMultiFrags).DefaultIfEmpty().Max()
                     )));
             }
 

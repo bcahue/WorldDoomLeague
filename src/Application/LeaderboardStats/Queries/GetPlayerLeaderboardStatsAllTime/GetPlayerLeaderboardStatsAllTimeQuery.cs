@@ -43,13 +43,14 @@ namespace WorldDoomLeague.Application.LeaderboardStats.Queries.GetPlayerLeaderbo
             var playerStats = alltimeStatsRounds.GroupBy(g => g.FkIdPlayer).Where(w => w.Count() >= 5); // Players who have more than 5
                                                                                                         // stats rounds this season.
 
-            List<LeaderboardStatsConfiguration> statCategories = new List<LeaderboardStatsConfiguration>();
-
-            statCategories.Add(new LeaderboardStatsConfiguration(LeaderboardStatsType.Captures, request.Mode));
-            statCategories.Add(new LeaderboardStatsConfiguration(LeaderboardStatsType.Damage, request.Mode));
-            statCategories.Add(new LeaderboardStatsConfiguration(LeaderboardStatsType.FlagDefenses, request.Mode));
-            statCategories.Add(new LeaderboardStatsConfiguration(LeaderboardStatsType.FlagTouches, request.Mode));
-            statCategories.Add(new LeaderboardStatsConfiguration(LeaderboardStatsType.Frags, request.Mode));
+            List<LeaderboardStatsConfiguration> statCategories = new List<LeaderboardStatsConfiguration>
+            {
+                new LeaderboardStatsConfiguration(LeaderboardStatsType.Captures, request.Mode),
+                new LeaderboardStatsConfiguration(LeaderboardStatsType.Damage, request.Mode),
+                new LeaderboardStatsConfiguration(LeaderboardStatsType.FlagDefenses, request.Mode),
+                new LeaderboardStatsConfiguration(LeaderboardStatsType.FlagTouches, request.Mode),
+                new LeaderboardStatsConfiguration(LeaderboardStatsType.Frags, request.Mode)
+            };
 
             List<PlayerLeaderboardStatsDto> leaderboardStats = new List<PlayerLeaderboardStatsDto>();
 

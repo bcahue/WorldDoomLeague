@@ -71,6 +71,60 @@
         }
       }
     },
+    "/api/Files/json": {
+      "get": {
+        "tags": [
+          "Files"
+        ],
+        "operationId": "Files_GetRoundJsonFiles",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Files/json/rounddata": {
+      "get": {
+        "tags": [
+          "Files"
+        ],
+        "operationId": "Files_GetRoundObject",
+        "parameters": [
+          {
+            "name": "FileName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Round"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/LeaderboardStats/season/{seasonId}/players": {
       "get": {
         "tags": [
@@ -498,6 +552,49 @@
         }
       }
     },
+    "/api/Seasons/{seasonId}/weeks": {
+      "post": {
+        "tags": [
+          "Seasons"
+        ],
+        "operationId": "Seasons_CreateWeeks",
+        "parameters": [
+          {
+            "name": "seasonId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSeasonWeeksCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Seasons/{seasonId}/standings": {
       "get": {
         "tags": [
@@ -672,6 +769,806 @@
             "type": "integer"
           }
         }
+      },
+      "Round": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "metaData": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RoundMetaData"
+              }
+            ]
+          },
+          "redTeamStats": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TeamStats"
+              }
+            ]
+          },
+          "blueTeamStats": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TeamStats"
+              }
+            ]
+          },
+          "flagAssistTable": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/FlagAssistTable"
+              }
+            ]
+          },
+          "playerStats": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/PlayerStats"
+            }
+          }
+        }
+      },
+      "RoundMetaData": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "parserVersion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "mapNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapName": {
+            "type": "string",
+            "nullable": true
+          },
+          "durationTics": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "duration": {
+            "type": "string",
+            "format": "time-span"
+          }
+        }
+      },
+      "TeamStats": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "points": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "captures": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickupCaptures": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "assists": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "flagTouches": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickupFlagTouches": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCapturePercentage": {
+            "type": "number",
+            "format": "double"
+          },
+          "pickupCapturePercentage": {
+            "type": "number",
+            "format": "double"
+          },
+          "capturePercentage": {
+            "type": "number",
+            "format": "double"
+          },
+          "frags": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "deaths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "killDeathRatio": {
+            "type": "number",
+            "format": "double"
+          },
+          "damage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "flagDefenses": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "powerPickups": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "FlagAssistTable": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "flagTouchCaptures": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/FlagTouchCaptures"
+            }
+          }
+        }
+      },
+      "FlagTouchCaptures": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "timeCapturedTics": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timeCaptured": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "team": {
+            "$ref": "#/components/schemas/Teams"
+          },
+          "flagAssists": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/FlagAssistData"
+            }
+          }
+        }
+      },
+      "Teams": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Blue",
+          "Red",
+          "None"
+        ],
+        "enum": [
+          0,
+          1,
+          -1
+        ]
+      },
+      "FlagAssistData": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "flagTouchTimeTics": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "flagTouchTime": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "PlayerStats": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "team": {
+            "$ref": "#/components/schemas/Teams"
+          },
+          "completeHits": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "completeMisses": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "assists": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "captures": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickupCaptures": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "flagTouches": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickupFlagTouches": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "damageOutputBetweenTouchAndCaptureMin": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "damageOutputBetweenTouchAndCaptureMax": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "damageOutputBetweenTouchAndCaptureAvg": {
+            "type": "number",
+            "format": "double"
+          },
+          "captureTimeMin": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "captureTimeMax": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "captureTimeAvg": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "captureTimeMinTics": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "captureTimeMaxTics": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "captureTimeAvgTics": {
+            "type": "number",
+            "format": "double"
+          },
+          "captureHealthMin": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "captureHealthMax": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "captureHealthAvg": {
+            "type": "number",
+            "format": "double"
+          },
+          "captureGreenArmorMin": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "captureGreenArmorMax": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "captureGreenArmorAvg": {
+            "type": "number",
+            "format": "double"
+          },
+          "captureBlueArmorMin": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "captureBlueArmorMax": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "captureBlueArmorAvg": {
+            "type": "number",
+            "format": "double"
+          },
+          "flagCarriersKilledWhileHoldingFlag": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "highestKillsBeforeCapturing": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickupCaptureTimeMin": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "pickupCaptureTimeMax": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "pickupCaptureTimeAvg": {
+            "type": "string",
+            "format": "time-span"
+          },
+          "pickupCaptureTimeMinTics": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickupCaptureTimeMaxTics": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickupCaptureTimeAvgTics": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalDamage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "selfDamage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "selfDamageWithFlag": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalGreenArmorDamage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalBlueArmorDamage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalDamageToFlagCarriers": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalDamageAsFlagCarrier": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalDamageToFlagCarriersWhileHoldingFlag": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalDamageTakenFromEnvironment": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalDamageTakenFromEnvironmentAsFlagCarrier": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalFlagReturns": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalKills": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "killDeathRatio": {
+            "type": "number",
+            "format": "double"
+          },
+          "capturePercentage": {
+            "type": "number",
+            "format": "double"
+          },
+          "pickupCapturePercentage": {
+            "type": "number",
+            "format": "double"
+          },
+          "overallCapturePercentage": {
+            "type": "number",
+            "format": "double"
+          },
+          "flagDefenses": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalDeaths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "deaths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "suicides": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "suicidesWithFlag": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "environmentalDeaths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "environmentalDeathsAsFlagCarrier": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "teamKills": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "longestSpree": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "highestMultiKill": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPowerPickups": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalHealthFromPickups": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "healthFromNonPowerPickups": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "healthFromPowerPickups": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "touchHealthMin": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "touchHealthMax": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "touchHealthAvg": {
+            "type": "number",
+            "format": "double"
+          },
+          "touchGreenArmorMin": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "touchGreenArmorMax": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "touchGreenArmorAvg": {
+            "type": "number",
+            "format": "double"
+          },
+          "touchBlueArmorMin": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "touchBlueArmorMax": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "touchBlueArmorAvg": {
+            "type": "number",
+            "format": "double"
+          },
+          "touchHealthResultCaptureMin": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "touchHealthResultCaptureMax": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "touchHealthResultCaptureAvg": {
+            "type": "number",
+            "format": "double"
+          },
+          "touchesOverOneHundredHealth": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickupList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Pickup"
+            }
+          },
+          "damageList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Damage"
+            }
+          },
+          "damageWithFlagList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Damage"
+            }
+          },
+          "killsList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Kill"
+            }
+          },
+          "carrierKillList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Kill"
+            }
+          },
+          "accuracyList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Accuracy"
+            }
+          },
+          "accuracyWithFlagList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Accuracy"
+            }
+          }
+        }
+      },
+      "Pickup": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "pickupType": {
+            "$ref": "#/components/schemas/Pickups"
+          },
+          "pickupX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickupY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickupZ": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Pickups": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "SoulSphere",
+          "MegaSphere",
+          "BlueArmor",
+          "GreenArmor",
+          "Berserk",
+          "StimPack",
+          "MedKit",
+          "HealthBonus",
+          "ArmorBonus"
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      "Damage": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "damagedName": {
+            "type": "string",
+            "nullable": true
+          },
+          "damageType": {
+            "$ref": "#/components/schemas/Mods"
+          },
+          "armorType": {
+            "$ref": "#/components/schemas/Armor"
+          },
+          "hp": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "armor": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Mods": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Unknown",
+          "Fist",
+          "Pistol",
+          "Shotgun",
+          "Chaingun",
+          "Rocket",
+          "RocketSplash",
+          "PlasmaRifle",
+          "BfgBall",
+          "BfgSplash",
+          "Chainsaw",
+          "SuperShotgun",
+          "Water",
+          "Slime",
+          "Lava",
+          "Crusher",
+          "Telefrag",
+          "Falling",
+          "Suicide",
+          "Barrel",
+          "Exit",
+          "Splash",
+          "Hit",
+          "Railgun"
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23
+        ]
+      },
+      "Armor": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "None",
+          "GreenArmor",
+          "BlueArmor"
+        ],
+        "enum": [
+          0,
+          1,
+          2
+        ]
+      },
+      "Kill": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "killedByWeapon": {
+            "$ref": "#/components/schemas/Mods"
+          },
+          "killedName": {
+            "type": "string",
+            "nullable": true
+          },
+          "killedX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "killedY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "killedZ": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fraggerX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fraggerY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fraggerZ": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Accuracy": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "weapon": {
+            "$ref": "#/components/schemas/Weapons"
+          },
+          "hitMiss": {
+            "type": "boolean"
+          },
+          "spritePercent": {
+            "type": "number",
+            "format": "double"
+          },
+          "pinpointPercent": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "Weapons": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Fist",
+          "Pistol",
+          "Shotgun",
+          "Chaingun",
+          "Rocket",
+          "Plasma",
+          "Bfg",
+          "Chainsaw",
+          "SuperShotgun"
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
       },
       "PlayerLeaderboardSeasonStatsVm": {
         "type": "object",
@@ -1569,43 +2466,11 @@
             "type": "integer",
             "format": "int32"
           },
-          "killingSprees": {
+          "longestSpree": {
             "type": "integer",
             "format": "int32"
           },
-          "rampages": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "dominations": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "unstoppables": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "godLikes": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "wickedSicks": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "doubleKills": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "multiKills": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "ultraKills": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "monsterKills": {
+          "highestMultiKill": {
             "type": "integer",
             "format": "int32"
           }
@@ -1773,7 +2638,11 @@
             "type": "string",
             "nullable": true
           },
-          "dateStart": {
+          "enginePlayed": {
+            "type": "string",
+            "nullable": true
+          },
+          "seasonDateStart": {
             "type": "string",
             "format": "date-time"
           }
@@ -1796,6 +2665,25 @@
           "dateStart": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "CreateSeasonWeeksCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "seasonId": {
+            "type": "integer"
+          },
+          "weekOneDateStart": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "numWeeksRegularSeason": {
+            "type": "integer"
+          },
+          "numWeeksPlayoffs": {
+            "type": "integer"
           }
         }
       },

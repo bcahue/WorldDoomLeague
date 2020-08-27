@@ -2,14 +2,16 @@
 
 namespace WorldDoomLeague.WebUI.ConfigModels
 {
-    public sealed class JsonDataDirectories : ConfigurationSection
+    public sealed class DataDirectories : ConfigurationSection
     {
-        [ConfigurationProperty("jsonmatchdirectory",
+        public const string Name = "DataDirectories";
+
+        [ConfigurationProperty("JsonMatchDirectory",
              DefaultValue = "/odamex/wdl-json",
              IsRequired = true)]
-        public string JsonMatchData { get; set; }
+        public string JsonMatchDirectory { get; set; }
 
-        [ConfigurationProperty("demorepository",
+        [ConfigurationProperty("DemoRepository",
              DefaultValue = "/odamex/wdl-demos",
              IsRequired = true)]
         public string DemoRepository { get; set; }

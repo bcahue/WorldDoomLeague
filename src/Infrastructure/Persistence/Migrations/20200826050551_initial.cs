@@ -641,6 +641,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     fk_id_week = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     fk_id_game = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     fk_id_team = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_opponentteam = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     win = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     tie = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     loss = table.Column<uint>(type: "int(10) unsigned", nullable: false),
@@ -665,17 +666,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     total_captures = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     total_pickup_captures = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     total_flag_returns = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    total_spree_killing_sprees = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    total_spree_rampages = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    total_spree_dominations = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    total_spree_unstoppables = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    total_spree_godlikes = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    total_spree_wickedsicks = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    total_multi_double_kills = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    total_multi_multi_kills = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    total_multi_ultra_kills = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    total_multi_monster_kills = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    total_power_pickups = table.Column<uint>(type: "int(10) unsigned", nullable: false)
+                    total_power_pickups = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    longest_spree = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    highest_multi_kill = table.Column<uint>(type: "int(10) unsigned", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -691,6 +684,12 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         column: x => x.fk_id_map,
                         principalTable: "maps",
                         principalColumn: "id_map",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "fk_GameTeamStats_OpponentTeams",
+                        column: x => x.fk_id_opponentteam,
+                        principalTable: "teams",
+                        principalColumn: "id_team",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "fk_GameTeamStats_Seasons",
@@ -1140,6 +1139,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     total_captures = table.Column<int>(type: "int(11)", nullable: false),
                     damage_output_between_touch_capture_max = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'0'"),
                     damage_output_between_touch_capture_average = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'0'"),
+                    damage_output_between_touch_capture_min = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'0'"),
                     capture_tics_min = table.Column<int>(type: "int(11)", nullable: true),
                     capture_tics_max = table.Column<int>(type: "int(11)", nullable: true),
                     capture_tics_average = table.Column<double>(nullable: true),
@@ -1166,23 +1166,16 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     total_damage_taken_environment = table.Column<int>(type: "int(11)", nullable: false),
                     total_damage_carrier_taken_environment = table.Column<int>(type: "int(11)", nullable: false),
                     total_damage_with_flag = table.Column<int>(type: "int(11)", nullable: false),
+                    total_damage_to_flag_carriers_while_holding_flag = table.Column<int>(type: "int(11)", nullable: false),
                     total_flag_returns = table.Column<int>(type: "int(11)", nullable: false),
                     total_kills = table.Column<int>(type: "int(11)", nullable: false),
                     total_carrier_kills = table.Column<int>(type: "int(11)", nullable: false),
                     total_deaths = table.Column<int>(type: "int(11)", nullable: false),
+                    total_suicides = table.Column<int>(type: "int(11)", nullable: false),
+                    total_suicides_with_flag = table.Column<int>(type: "int(11)", nullable: false),
                     total_environment_deaths = table.Column<int>(type: "int(11)", nullable: false),
                     total_environment_carrier_deaths = table.Column<int>(type: "int(11)", nullable: false),
                     amount_team_kills = table.Column<int>(type: "int(11)", nullable: false),
-                    spree_killing_sprees = table.Column<int>(type: "int(11)", nullable: false),
-                    spree_rampage = table.Column<int>(type: "int(11)", nullable: false),
-                    spree_dominations = table.Column<int>(type: "int(11)", nullable: false),
-                    spree_unstoppables = table.Column<int>(type: "int(11)", nullable: false),
-                    spree_godlikes = table.Column<int>(type: "int(11)", nullable: false),
-                    spree_wickedsicks = table.Column<int>(type: "int(11)", nullable: false),
-                    multi_double_kills = table.Column<int>(type: "int(11)", nullable: false),
-                    multi_multi_kills = table.Column<int>(type: "int(11)", nullable: false),
-                    multi_ultra_kills = table.Column<int>(type: "int(11)", nullable: false),
-                    multi_monster_kills = table.Column<int>(type: "int(11)", nullable: false),
                     longest_spree = table.Column<int>(type: "int(11)", nullable: false),
                     highest_multi_frags = table.Column<int>(type: "int(11)", nullable: false),
                     total_power_pickups = table.Column<int>(type: "int(11)", nullable: false),
@@ -1202,8 +1195,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     touch_health_result_capture_min = table.Column<int>(type: "int(11)", nullable: true),
                     touch_health_result_capture_max = table.Column<int>(type: "int(11)", nullable: true),
                     touch_health_result_capture_average = table.Column<double>(nullable: true),
-                    touches_with_over_hundred_health = table.Column<int>(type: "int(11)", nullable: false),
-                    efficiency_points = table.Column<int>(type: "int(11)", nullable: false)
+                    touches_with_over_hundred_health = table.Column<int>(type: "int(11)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1471,12 +1463,17 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 column: "fk_id_map");
 
             migrationBuilder.CreateIndex(
+                name: "IX_gameteamstats_fk_id_opponentteam",
+                table: "gameteamstats",
+                column: "fk_id_opponentteam");
+
+            migrationBuilder.CreateIndex(
                 name: "fk_GameTeamStats_Seasons_idx",
                 table: "gameteamstats",
                 column: "fk_id_season");
 
             migrationBuilder.CreateIndex(
-                name: "fk_GameTeamStats_Teams_idx",
+                name: "fk_GameTeamStats_OpponentTeams_idx",
                 table: "gameteamstats",
                 column: "fk_id_team");
 

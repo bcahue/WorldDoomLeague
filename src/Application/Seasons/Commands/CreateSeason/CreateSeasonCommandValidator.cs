@@ -20,7 +20,11 @@ namespace WorldDoomLeague.Application.Seasons.Commands.CreateSeason
                 .MaximumLength(64).WithMessage("SeasonName must not exceed 64 characters.")
                 .MustAsync(BeUniqueSeasonName).WithMessage("The specified player name already exists.");
 
-            RuleFor(v => v.DateStart)
+            RuleFor(v => v.EnginePlayed)
+                .NotEmpty().WithMessage("EnginePlayed is required.")
+                .MaximumLength(64).WithMessage("EnginePlayed must not exceed 64 characters.");
+
+            RuleFor(v => v.SeasonDateStart)
                 .NotEmpty().WithMessage("DateStart is required.");
 
             RuleFor(v => v.WadId)

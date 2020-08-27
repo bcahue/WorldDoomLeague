@@ -31,7 +31,7 @@ namespace WorldDoomLeague.Application.Seasons.Commands.UpdateSeason
 
             if (entity == null)
             {
-                throw new NotFoundException(nameof(Player), request.SeasonId);
+                throw new NotFoundException(nameof(Season), request.SeasonId);
             }
 
             entity.SeasonName  = request.SeasonName;

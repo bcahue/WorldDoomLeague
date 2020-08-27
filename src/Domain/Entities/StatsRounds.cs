@@ -19,6 +19,7 @@ namespace WorldDoomLeague.Domain.Entities
         public int TotalCaptures { get; set; }
         public int? DamageOutputBetweenTouchCaptureMax { get; set; }
         public int? DamageOutputBetweenTouchCaptureAverage { get; set; }
+        public int? DamageOutputBetweenTouchCaptureMin { get; set; }
         public int? CaptureTicsMin { get; set; }
         public int? CaptureTicsMax { get; set; }
         public double? CaptureTicsAverage { get; set; }
@@ -45,23 +46,16 @@ namespace WorldDoomLeague.Domain.Entities
         public int TotalDamageTakenEnvironment { get; set; }
         public int TotalDamageCarrierTakenEnvironment { get; set; }
         public int TotalDamageWithFlag { get; set; }
+        public int TotalDamageToFlagCarriersWhileHoldingFlag { get; set; }
         public int TotalFlagReturns { get; set; }
         public int TotalKills { get; set; }
         public int TotalCarrierKills { get; set; }
         public int TotalDeaths { get; set; }
+        public int TotalSuicides { get; set; }
+        public int TotalSuicidesWithFlag { get; set; }
         public int TotalEnvironmentDeaths { get; set; }
         public int TotalEnvironmentCarrierDeaths { get; set; }
         public int AmountTeamKills { get; set; }
-        public int SpreeKillingSprees { get; set; }
-        public int SpreeRampage { get; set; }
-        public int SpreeDominations { get; set; }
-        public int SpreeUnstoppables { get; set; }
-        public int SpreeGodlikes { get; set; }
-        public int SpreeWickedsicks { get; set; }
-        public int MultiDoubleKills { get; set; }
-        public int MultiMultiKills { get; set; }
-        public int MultiUltraKills { get; set; }
-        public int MultiMonsterKills { get; set; }
         public int LongestSpree { get; set; }
         public int HighestMultiFrags { get; set; }
         public int TotalPowerPickups { get; set; }
@@ -82,7 +76,6 @@ namespace WorldDoomLeague.Domain.Entities
         public int? TouchHealthResultCaptureMax { get; set; }
         public double? TouchHealthResultCaptureAverage { get; set; }
         public int TouchesWithOverHundredHealth { get; set; }
-        public int EfficiencyPoints { get; set; }
 
         public virtual Games FkIdGameNavigation { get; set; }
         public virtual Maps FkIdMapNavigation { get; set; }

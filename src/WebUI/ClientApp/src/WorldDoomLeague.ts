@@ -62,6 +62,8 @@ export class DraftClient implements IDraftClient {
 
 export interface IFilesClient {
     create(command: CreateFileCommand): Promise<number>;
+    getRoundJsonFiles(): Promise<string[]>;
+    getRoundObject(fileName: string | null | undefined): Promise<Round>;
 }
 
 export class FilesClient implements IFilesClient {
@@ -110,6 +112,80 @@ export class FilesClient implements IFilesClient {
             });
         }
         return Promise.resolve<number>(<any>null);
+    }
+
+    getRoundJsonFiles(): Promise<string[]> {
+        let url_ = this.baseUrl + "/api/Files/json";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetRoundJsonFiles(_response);
+        });
+    }
+
+    protected processGetRoundJsonFiles(response: Response): Promise<string[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string[]>(<any>null);
+    }
+
+    getRoundObject(fileName: string | null | undefined): Promise<Round> {
+        let url_ = this.baseUrl + "/api/Files/json/rounddata?";
+        if (fileName !== undefined && fileName !== null)
+            url_ += "FileName=" + encodeURIComponent("" + fileName) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetRoundObject(_response);
+        });
+    }
+
+    protected processGetRoundObject(response: Response): Promise<Round> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Round.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Round>(<any>null);
     }
 }
 
@@ -533,6 +609,7 @@ export interface ISeasonsClient {
     create(command: CreateSeasonCommand): Promise<number>;
     update(seasonId: number, command: UpdateSeasonCommand): Promise<FileResponse>;
     getSeasonSummaryById(seasonId: number): Promise<SeasonSummaryVm>;
+    createWeeks(seasonId: number, command: CreateSeasonWeeksCommand): Promise<number>;
     getSeasonStandingsById(seasonId: number): Promise<SeasonStandingsVm>;
     getSeasonPlayers(seasonId: number): Promise<SeasonPlayersVm>;
 }
@@ -693,6 +770,47 @@ export class SeasonsClient implements ISeasonsClient {
             });
         }
         return Promise.resolve<SeasonSummaryVm>(<any>null);
+    }
+
+    createWeeks(seasonId: number, command: CreateSeasonWeeksCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Seasons/{seasonId}/weeks";
+        if (seasonId === undefined || seasonId === null)
+            throw new Error("The parameter 'seasonId' must be defined.");
+        url_ = url_.replace("{seasonId}", encodeURIComponent("" + seasonId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateWeeks(_response);
+        });
+    }
+
+    protected processCreateWeeks(response: Response): Promise<number> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(<any>null);
     }
 
     getSeasonStandingsById(seasonId: number): Promise<SeasonStandingsVm> {
@@ -995,6 +1113,1061 @@ export class CreateFileCommand implements ICreateFileCommand {
 export interface ICreateFileCommand {
     fileName?: string | undefined;
     fileSize?: number;
+}
+
+export class Round implements IRound {
+    metaData?: RoundMetaData | undefined;
+    redTeamStats?: TeamStats | undefined;
+    blueTeamStats?: TeamStats | undefined;
+    flagAssistTable?: FlagAssistTable | undefined;
+    playerStats?: PlayerStats[] | undefined;
+
+    constructor(data?: IRound) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.metaData = _data["metaData"] ? RoundMetaData.fromJS(_data["metaData"]) : <any>undefined;
+            this.redTeamStats = _data["redTeamStats"] ? TeamStats.fromJS(_data["redTeamStats"]) : <any>undefined;
+            this.blueTeamStats = _data["blueTeamStats"] ? TeamStats.fromJS(_data["blueTeamStats"]) : <any>undefined;
+            this.flagAssistTable = _data["flagAssistTable"] ? FlagAssistTable.fromJS(_data["flagAssistTable"]) : <any>undefined;
+            if (Array.isArray(_data["playerStats"])) {
+                this.playerStats = [] as any;
+                for (let item of _data["playerStats"])
+                    this.playerStats!.push(PlayerStats.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): Round {
+        data = typeof data === 'object' ? data : {};
+        let result = new Round();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["metaData"] = this.metaData ? this.metaData.toJSON() : <any>undefined;
+        data["redTeamStats"] = this.redTeamStats ? this.redTeamStats.toJSON() : <any>undefined;
+        data["blueTeamStats"] = this.blueTeamStats ? this.blueTeamStats.toJSON() : <any>undefined;
+        data["flagAssistTable"] = this.flagAssistTable ? this.flagAssistTable.toJSON() : <any>undefined;
+        if (Array.isArray(this.playerStats)) {
+            data["playerStats"] = [];
+            for (let item of this.playerStats)
+                data["playerStats"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IRound {
+    metaData?: RoundMetaData | undefined;
+    redTeamStats?: TeamStats | undefined;
+    blueTeamStats?: TeamStats | undefined;
+    flagAssistTable?: FlagAssistTable | undefined;
+    playerStats?: PlayerStats[] | undefined;
+}
+
+export class RoundMetaData implements IRoundMetaData {
+    parserVersion?: number;
+    date?: Date;
+    mapNumber?: string | undefined;
+    mapName?: string | undefined;
+    durationTics?: number;
+    duration?: string;
+
+    constructor(data?: IRoundMetaData) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.parserVersion = _data["parserVersion"];
+            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+            this.mapNumber = _data["mapNumber"];
+            this.mapName = _data["mapName"];
+            this.durationTics = _data["durationTics"];
+            this.duration = _data["duration"];
+        }
+    }
+
+    static fromJS(data: any): RoundMetaData {
+        data = typeof data === 'object' ? data : {};
+        let result = new RoundMetaData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["parserVersion"] = this.parserVersion;
+        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        data["mapNumber"] = this.mapNumber;
+        data["mapName"] = this.mapName;
+        data["durationTics"] = this.durationTics;
+        data["duration"] = this.duration;
+        return data; 
+    }
+}
+
+export interface IRoundMetaData {
+    parserVersion?: number;
+    date?: Date;
+    mapNumber?: string | undefined;
+    mapName?: string | undefined;
+    durationTics?: number;
+    duration?: string;
+}
+
+export class TeamStats implements ITeamStats {
+    points?: number;
+    captures?: number;
+    pickupCaptures?: number;
+    assists?: number;
+    flagTouches?: number;
+    pickupFlagTouches?: number;
+    totalCapturePercentage?: number;
+    pickupCapturePercentage?: number;
+    capturePercentage?: number;
+    frags?: number;
+    deaths?: number;
+    killDeathRatio?: number;
+    damage?: number;
+    flagDefenses?: number;
+    powerPickups?: number;
+
+    constructor(data?: ITeamStats) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.points = _data["points"];
+            this.captures = _data["captures"];
+            this.pickupCaptures = _data["pickupCaptures"];
+            this.assists = _data["assists"];
+            this.flagTouches = _data["flagTouches"];
+            this.pickupFlagTouches = _data["pickupFlagTouches"];
+            this.totalCapturePercentage = _data["totalCapturePercentage"];
+            this.pickupCapturePercentage = _data["pickupCapturePercentage"];
+            this.capturePercentage = _data["capturePercentage"];
+            this.frags = _data["frags"];
+            this.deaths = _data["deaths"];
+            this.killDeathRatio = _data["killDeathRatio"];
+            this.damage = _data["damage"];
+            this.flagDefenses = _data["flagDefenses"];
+            this.powerPickups = _data["powerPickups"];
+        }
+    }
+
+    static fromJS(data: any): TeamStats {
+        data = typeof data === 'object' ? data : {};
+        let result = new TeamStats();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["points"] = this.points;
+        data["captures"] = this.captures;
+        data["pickupCaptures"] = this.pickupCaptures;
+        data["assists"] = this.assists;
+        data["flagTouches"] = this.flagTouches;
+        data["pickupFlagTouches"] = this.pickupFlagTouches;
+        data["totalCapturePercentage"] = this.totalCapturePercentage;
+        data["pickupCapturePercentage"] = this.pickupCapturePercentage;
+        data["capturePercentage"] = this.capturePercentage;
+        data["frags"] = this.frags;
+        data["deaths"] = this.deaths;
+        data["killDeathRatio"] = this.killDeathRatio;
+        data["damage"] = this.damage;
+        data["flagDefenses"] = this.flagDefenses;
+        data["powerPickups"] = this.powerPickups;
+        return data; 
+    }
+}
+
+export interface ITeamStats {
+    points?: number;
+    captures?: number;
+    pickupCaptures?: number;
+    assists?: number;
+    flagTouches?: number;
+    pickupFlagTouches?: number;
+    totalCapturePercentage?: number;
+    pickupCapturePercentage?: number;
+    capturePercentage?: number;
+    frags?: number;
+    deaths?: number;
+    killDeathRatio?: number;
+    damage?: number;
+    flagDefenses?: number;
+    powerPickups?: number;
+}
+
+export class FlagAssistTable implements IFlagAssistTable {
+    flagTouchCaptures?: FlagTouchCaptures[] | undefined;
+
+    constructor(data?: IFlagAssistTable) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["flagTouchCaptures"])) {
+                this.flagTouchCaptures = [] as any;
+                for (let item of _data["flagTouchCaptures"])
+                    this.flagTouchCaptures!.push(FlagTouchCaptures.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): FlagAssistTable {
+        data = typeof data === 'object' ? data : {};
+        let result = new FlagAssistTable();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.flagTouchCaptures)) {
+            data["flagTouchCaptures"] = [];
+            for (let item of this.flagTouchCaptures)
+                data["flagTouchCaptures"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IFlagAssistTable {
+    flagTouchCaptures?: FlagTouchCaptures[] | undefined;
+}
+
+export class FlagTouchCaptures implements IFlagTouchCaptures {
+    timeCapturedTics?: number;
+    timeCaptured?: string;
+    team?: Teams;
+    flagAssists?: FlagAssistData[] | undefined;
+
+    constructor(data?: IFlagTouchCaptures) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.timeCapturedTics = _data["timeCapturedTics"];
+            this.timeCaptured = _data["timeCaptured"];
+            this.team = _data["team"];
+            if (Array.isArray(_data["flagAssists"])) {
+                this.flagAssists = [] as any;
+                for (let item of _data["flagAssists"])
+                    this.flagAssists!.push(FlagAssistData.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): FlagTouchCaptures {
+        data = typeof data === 'object' ? data : {};
+        let result = new FlagTouchCaptures();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["timeCapturedTics"] = this.timeCapturedTics;
+        data["timeCaptured"] = this.timeCaptured;
+        data["team"] = this.team;
+        if (Array.isArray(this.flagAssists)) {
+            data["flagAssists"] = [];
+            for (let item of this.flagAssists)
+                data["flagAssists"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IFlagTouchCaptures {
+    timeCapturedTics?: number;
+    timeCaptured?: string;
+    team?: Teams;
+    flagAssists?: FlagAssistData[] | undefined;
+}
+
+export enum Teams {
+    Blue = 0,
+    Red = 1,
+    None = -1,
+}
+
+export class FlagAssistData implements IFlagAssistData {
+    flagTouchTimeTics?: number;
+    flagTouchTime?: string;
+    playerName?: string | undefined;
+
+    constructor(data?: IFlagAssistData) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.flagTouchTimeTics = _data["flagTouchTimeTics"];
+            this.flagTouchTime = _data["flagTouchTime"];
+            this.playerName = _data["playerName"];
+        }
+    }
+
+    static fromJS(data: any): FlagAssistData {
+        data = typeof data === 'object' ? data : {};
+        let result = new FlagAssistData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["flagTouchTimeTics"] = this.flagTouchTimeTics;
+        data["flagTouchTime"] = this.flagTouchTime;
+        data["playerName"] = this.playerName;
+        return data; 
+    }
+}
+
+export interface IFlagAssistData {
+    flagTouchTimeTics?: number;
+    flagTouchTime?: string;
+    playerName?: string | undefined;
+}
+
+export class PlayerStats implements IPlayerStats {
+    name?: string | undefined;
+    team?: Teams;
+    completeHits?: number;
+    completeMisses?: number;
+    assists?: number;
+    captures?: number;
+    pickupCaptures?: number;
+    flagTouches?: number;
+    pickupFlagTouches?: number;
+    damageOutputBetweenTouchAndCaptureMin?: number;
+    damageOutputBetweenTouchAndCaptureMax?: number;
+    damageOutputBetweenTouchAndCaptureAvg?: number;
+    captureTimeMin?: string;
+    captureTimeMax?: string;
+    captureTimeAvg?: string;
+    captureTimeMinTics?: number;
+    captureTimeMaxTics?: number;
+    captureTimeAvgTics?: number;
+    captureHealthMin?: number;
+    captureHealthMax?: number;
+    captureHealthAvg?: number;
+    captureGreenArmorMin?: number;
+    captureGreenArmorMax?: number;
+    captureGreenArmorAvg?: number;
+    captureBlueArmorMin?: number;
+    captureBlueArmorMax?: number;
+    captureBlueArmorAvg?: number;
+    flagCarriersKilledWhileHoldingFlag?: number;
+    highestKillsBeforeCapturing?: number;
+    pickupCaptureTimeMin?: string;
+    pickupCaptureTimeMax?: string;
+    pickupCaptureTimeAvg?: string;
+    pickupCaptureTimeMinTics?: number;
+    pickupCaptureTimeMaxTics?: number;
+    pickupCaptureTimeAvgTics?: number;
+    totalDamage?: number;
+    selfDamage?: number;
+    selfDamageWithFlag?: number;
+    totalGreenArmorDamage?: number;
+    totalBlueArmorDamage?: number;
+    totalDamageToFlagCarriers?: number;
+    totalDamageAsFlagCarrier?: number;
+    totalDamageToFlagCarriersWhileHoldingFlag?: number;
+    totalDamageTakenFromEnvironment?: number;
+    totalDamageTakenFromEnvironmentAsFlagCarrier?: number;
+    totalFlagReturns?: number;
+    totalKills?: number;
+    killDeathRatio?: number;
+    capturePercentage?: number;
+    pickupCapturePercentage?: number;
+    overallCapturePercentage?: number;
+    flagDefenses?: number;
+    totalDeaths?: number;
+    deaths?: number;
+    suicides?: number;
+    suicidesWithFlag?: number;
+    environmentalDeaths?: number;
+    environmentalDeathsAsFlagCarrier?: number;
+    teamKills?: number;
+    longestSpree?: number;
+    highestMultiKill?: number;
+    totalPowerPickups?: number;
+    totalHealthFromPickups?: number;
+    healthFromNonPowerPickups?: number;
+    healthFromPowerPickups?: number;
+    touchHealthMin?: number;
+    touchHealthMax?: number;
+    touchHealthAvg?: number;
+    touchGreenArmorMin?: number;
+    touchGreenArmorMax?: number;
+    touchGreenArmorAvg?: number;
+    touchBlueArmorMin?: number;
+    touchBlueArmorMax?: number;
+    touchBlueArmorAvg?: number;
+    touchHealthResultCaptureMin?: number;
+    touchHealthResultCaptureMax?: number;
+    touchHealthResultCaptureAvg?: number;
+    touchesOverOneHundredHealth?: number;
+    pickupList?: Pickup[] | undefined;
+    damageList?: Damage[] | undefined;
+    damageWithFlagList?: Damage[] | undefined;
+    killsList?: Kill[] | undefined;
+    carrierKillList?: Kill[] | undefined;
+    accuracyList?: Accuracy[] | undefined;
+    accuracyWithFlagList?: Accuracy[] | undefined;
+
+    constructor(data?: IPlayerStats) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.team = _data["team"];
+            this.completeHits = _data["completeHits"];
+            this.completeMisses = _data["completeMisses"];
+            this.assists = _data["assists"];
+            this.captures = _data["captures"];
+            this.pickupCaptures = _data["pickupCaptures"];
+            this.flagTouches = _data["flagTouches"];
+            this.pickupFlagTouches = _data["pickupFlagTouches"];
+            this.damageOutputBetweenTouchAndCaptureMin = _data["damageOutputBetweenTouchAndCaptureMin"];
+            this.damageOutputBetweenTouchAndCaptureMax = _data["damageOutputBetweenTouchAndCaptureMax"];
+            this.damageOutputBetweenTouchAndCaptureAvg = _data["damageOutputBetweenTouchAndCaptureAvg"];
+            this.captureTimeMin = _data["captureTimeMin"];
+            this.captureTimeMax = _data["captureTimeMax"];
+            this.captureTimeAvg = _data["captureTimeAvg"];
+            this.captureTimeMinTics = _data["captureTimeMinTics"];
+            this.captureTimeMaxTics = _data["captureTimeMaxTics"];
+            this.captureTimeAvgTics = _data["captureTimeAvgTics"];
+            this.captureHealthMin = _data["captureHealthMin"];
+            this.captureHealthMax = _data["captureHealthMax"];
+            this.captureHealthAvg = _data["captureHealthAvg"];
+            this.captureGreenArmorMin = _data["captureGreenArmorMin"];
+            this.captureGreenArmorMax = _data["captureGreenArmorMax"];
+            this.captureGreenArmorAvg = _data["captureGreenArmorAvg"];
+            this.captureBlueArmorMin = _data["captureBlueArmorMin"];
+            this.captureBlueArmorMax = _data["captureBlueArmorMax"];
+            this.captureBlueArmorAvg = _data["captureBlueArmorAvg"];
+            this.flagCarriersKilledWhileHoldingFlag = _data["flagCarriersKilledWhileHoldingFlag"];
+            this.highestKillsBeforeCapturing = _data["highestKillsBeforeCapturing"];
+            this.pickupCaptureTimeMin = _data["pickupCaptureTimeMin"];
+            this.pickupCaptureTimeMax = _data["pickupCaptureTimeMax"];
+            this.pickupCaptureTimeAvg = _data["pickupCaptureTimeAvg"];
+            this.pickupCaptureTimeMinTics = _data["pickupCaptureTimeMinTics"];
+            this.pickupCaptureTimeMaxTics = _data["pickupCaptureTimeMaxTics"];
+            this.pickupCaptureTimeAvgTics = _data["pickupCaptureTimeAvgTics"];
+            this.totalDamage = _data["totalDamage"];
+            this.selfDamage = _data["selfDamage"];
+            this.selfDamageWithFlag = _data["selfDamageWithFlag"];
+            this.totalGreenArmorDamage = _data["totalGreenArmorDamage"];
+            this.totalBlueArmorDamage = _data["totalBlueArmorDamage"];
+            this.totalDamageToFlagCarriers = _data["totalDamageToFlagCarriers"];
+            this.totalDamageAsFlagCarrier = _data["totalDamageAsFlagCarrier"];
+            this.totalDamageToFlagCarriersWhileHoldingFlag = _data["totalDamageToFlagCarriersWhileHoldingFlag"];
+            this.totalDamageTakenFromEnvironment = _data["totalDamageTakenFromEnvironment"];
+            this.totalDamageTakenFromEnvironmentAsFlagCarrier = _data["totalDamageTakenFromEnvironmentAsFlagCarrier"];
+            this.totalFlagReturns = _data["totalFlagReturns"];
+            this.totalKills = _data["totalKills"];
+            this.killDeathRatio = _data["killDeathRatio"];
+            this.capturePercentage = _data["capturePercentage"];
+            this.pickupCapturePercentage = _data["pickupCapturePercentage"];
+            this.overallCapturePercentage = _data["overallCapturePercentage"];
+            this.flagDefenses = _data["flagDefenses"];
+            this.totalDeaths = _data["totalDeaths"];
+            this.deaths = _data["deaths"];
+            this.suicides = _data["suicides"];
+            this.suicidesWithFlag = _data["suicidesWithFlag"];
+            this.environmentalDeaths = _data["environmentalDeaths"];
+            this.environmentalDeathsAsFlagCarrier = _data["environmentalDeathsAsFlagCarrier"];
+            this.teamKills = _data["teamKills"];
+            this.longestSpree = _data["longestSpree"];
+            this.highestMultiKill = _data["highestMultiKill"];
+            this.totalPowerPickups = _data["totalPowerPickups"];
+            this.totalHealthFromPickups = _data["totalHealthFromPickups"];
+            this.healthFromNonPowerPickups = _data["healthFromNonPowerPickups"];
+            this.healthFromPowerPickups = _data["healthFromPowerPickups"];
+            this.touchHealthMin = _data["touchHealthMin"];
+            this.touchHealthMax = _data["touchHealthMax"];
+            this.touchHealthAvg = _data["touchHealthAvg"];
+            this.touchGreenArmorMin = _data["touchGreenArmorMin"];
+            this.touchGreenArmorMax = _data["touchGreenArmorMax"];
+            this.touchGreenArmorAvg = _data["touchGreenArmorAvg"];
+            this.touchBlueArmorMin = _data["touchBlueArmorMin"];
+            this.touchBlueArmorMax = _data["touchBlueArmorMax"];
+            this.touchBlueArmorAvg = _data["touchBlueArmorAvg"];
+            this.touchHealthResultCaptureMin = _data["touchHealthResultCaptureMin"];
+            this.touchHealthResultCaptureMax = _data["touchHealthResultCaptureMax"];
+            this.touchHealthResultCaptureAvg = _data["touchHealthResultCaptureAvg"];
+            this.touchesOverOneHundredHealth = _data["touchesOverOneHundredHealth"];
+            if (Array.isArray(_data["pickupList"])) {
+                this.pickupList = [] as any;
+                for (let item of _data["pickupList"])
+                    this.pickupList!.push(Pickup.fromJS(item));
+            }
+            if (Array.isArray(_data["damageList"])) {
+                this.damageList = [] as any;
+                for (let item of _data["damageList"])
+                    this.damageList!.push(Damage.fromJS(item));
+            }
+            if (Array.isArray(_data["damageWithFlagList"])) {
+                this.damageWithFlagList = [] as any;
+                for (let item of _data["damageWithFlagList"])
+                    this.damageWithFlagList!.push(Damage.fromJS(item));
+            }
+            if (Array.isArray(_data["killsList"])) {
+                this.killsList = [] as any;
+                for (let item of _data["killsList"])
+                    this.killsList!.push(Kill.fromJS(item));
+            }
+            if (Array.isArray(_data["carrierKillList"])) {
+                this.carrierKillList = [] as any;
+                for (let item of _data["carrierKillList"])
+                    this.carrierKillList!.push(Kill.fromJS(item));
+            }
+            if (Array.isArray(_data["accuracyList"])) {
+                this.accuracyList = [] as any;
+                for (let item of _data["accuracyList"])
+                    this.accuracyList!.push(Accuracy.fromJS(item));
+            }
+            if (Array.isArray(_data["accuracyWithFlagList"])) {
+                this.accuracyWithFlagList = [] as any;
+                for (let item of _data["accuracyWithFlagList"])
+                    this.accuracyWithFlagList!.push(Accuracy.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PlayerStats {
+        data = typeof data === 'object' ? data : {};
+        let result = new PlayerStats();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["team"] = this.team;
+        data["completeHits"] = this.completeHits;
+        data["completeMisses"] = this.completeMisses;
+        data["assists"] = this.assists;
+        data["captures"] = this.captures;
+        data["pickupCaptures"] = this.pickupCaptures;
+        data["flagTouches"] = this.flagTouches;
+        data["pickupFlagTouches"] = this.pickupFlagTouches;
+        data["damageOutputBetweenTouchAndCaptureMin"] = this.damageOutputBetweenTouchAndCaptureMin;
+        data["damageOutputBetweenTouchAndCaptureMax"] = this.damageOutputBetweenTouchAndCaptureMax;
+        data["damageOutputBetweenTouchAndCaptureAvg"] = this.damageOutputBetweenTouchAndCaptureAvg;
+        data["captureTimeMin"] = this.captureTimeMin;
+        data["captureTimeMax"] = this.captureTimeMax;
+        data["captureTimeAvg"] = this.captureTimeAvg;
+        data["captureTimeMinTics"] = this.captureTimeMinTics;
+        data["captureTimeMaxTics"] = this.captureTimeMaxTics;
+        data["captureTimeAvgTics"] = this.captureTimeAvgTics;
+        data["captureHealthMin"] = this.captureHealthMin;
+        data["captureHealthMax"] = this.captureHealthMax;
+        data["captureHealthAvg"] = this.captureHealthAvg;
+        data["captureGreenArmorMin"] = this.captureGreenArmorMin;
+        data["captureGreenArmorMax"] = this.captureGreenArmorMax;
+        data["captureGreenArmorAvg"] = this.captureGreenArmorAvg;
+        data["captureBlueArmorMin"] = this.captureBlueArmorMin;
+        data["captureBlueArmorMax"] = this.captureBlueArmorMax;
+        data["captureBlueArmorAvg"] = this.captureBlueArmorAvg;
+        data["flagCarriersKilledWhileHoldingFlag"] = this.flagCarriersKilledWhileHoldingFlag;
+        data["highestKillsBeforeCapturing"] = this.highestKillsBeforeCapturing;
+        data["pickupCaptureTimeMin"] = this.pickupCaptureTimeMin;
+        data["pickupCaptureTimeMax"] = this.pickupCaptureTimeMax;
+        data["pickupCaptureTimeAvg"] = this.pickupCaptureTimeAvg;
+        data["pickupCaptureTimeMinTics"] = this.pickupCaptureTimeMinTics;
+        data["pickupCaptureTimeMaxTics"] = this.pickupCaptureTimeMaxTics;
+        data["pickupCaptureTimeAvgTics"] = this.pickupCaptureTimeAvgTics;
+        data["totalDamage"] = this.totalDamage;
+        data["selfDamage"] = this.selfDamage;
+        data["selfDamageWithFlag"] = this.selfDamageWithFlag;
+        data["totalGreenArmorDamage"] = this.totalGreenArmorDamage;
+        data["totalBlueArmorDamage"] = this.totalBlueArmorDamage;
+        data["totalDamageToFlagCarriers"] = this.totalDamageToFlagCarriers;
+        data["totalDamageAsFlagCarrier"] = this.totalDamageAsFlagCarrier;
+        data["totalDamageToFlagCarriersWhileHoldingFlag"] = this.totalDamageToFlagCarriersWhileHoldingFlag;
+        data["totalDamageTakenFromEnvironment"] = this.totalDamageTakenFromEnvironment;
+        data["totalDamageTakenFromEnvironmentAsFlagCarrier"] = this.totalDamageTakenFromEnvironmentAsFlagCarrier;
+        data["totalFlagReturns"] = this.totalFlagReturns;
+        data["totalKills"] = this.totalKills;
+        data["killDeathRatio"] = this.killDeathRatio;
+        data["capturePercentage"] = this.capturePercentage;
+        data["pickupCapturePercentage"] = this.pickupCapturePercentage;
+        data["overallCapturePercentage"] = this.overallCapturePercentage;
+        data["flagDefenses"] = this.flagDefenses;
+        data["totalDeaths"] = this.totalDeaths;
+        data["deaths"] = this.deaths;
+        data["suicides"] = this.suicides;
+        data["suicidesWithFlag"] = this.suicidesWithFlag;
+        data["environmentalDeaths"] = this.environmentalDeaths;
+        data["environmentalDeathsAsFlagCarrier"] = this.environmentalDeathsAsFlagCarrier;
+        data["teamKills"] = this.teamKills;
+        data["longestSpree"] = this.longestSpree;
+        data["highestMultiKill"] = this.highestMultiKill;
+        data["totalPowerPickups"] = this.totalPowerPickups;
+        data["totalHealthFromPickups"] = this.totalHealthFromPickups;
+        data["healthFromNonPowerPickups"] = this.healthFromNonPowerPickups;
+        data["healthFromPowerPickups"] = this.healthFromPowerPickups;
+        data["touchHealthMin"] = this.touchHealthMin;
+        data["touchHealthMax"] = this.touchHealthMax;
+        data["touchHealthAvg"] = this.touchHealthAvg;
+        data["touchGreenArmorMin"] = this.touchGreenArmorMin;
+        data["touchGreenArmorMax"] = this.touchGreenArmorMax;
+        data["touchGreenArmorAvg"] = this.touchGreenArmorAvg;
+        data["touchBlueArmorMin"] = this.touchBlueArmorMin;
+        data["touchBlueArmorMax"] = this.touchBlueArmorMax;
+        data["touchBlueArmorAvg"] = this.touchBlueArmorAvg;
+        data["touchHealthResultCaptureMin"] = this.touchHealthResultCaptureMin;
+        data["touchHealthResultCaptureMax"] = this.touchHealthResultCaptureMax;
+        data["touchHealthResultCaptureAvg"] = this.touchHealthResultCaptureAvg;
+        data["touchesOverOneHundredHealth"] = this.touchesOverOneHundredHealth;
+        if (Array.isArray(this.pickupList)) {
+            data["pickupList"] = [];
+            for (let item of this.pickupList)
+                data["pickupList"].push(item.toJSON());
+        }
+        if (Array.isArray(this.damageList)) {
+            data["damageList"] = [];
+            for (let item of this.damageList)
+                data["damageList"].push(item.toJSON());
+        }
+        if (Array.isArray(this.damageWithFlagList)) {
+            data["damageWithFlagList"] = [];
+            for (let item of this.damageWithFlagList)
+                data["damageWithFlagList"].push(item.toJSON());
+        }
+        if (Array.isArray(this.killsList)) {
+            data["killsList"] = [];
+            for (let item of this.killsList)
+                data["killsList"].push(item.toJSON());
+        }
+        if (Array.isArray(this.carrierKillList)) {
+            data["carrierKillList"] = [];
+            for (let item of this.carrierKillList)
+                data["carrierKillList"].push(item.toJSON());
+        }
+        if (Array.isArray(this.accuracyList)) {
+            data["accuracyList"] = [];
+            for (let item of this.accuracyList)
+                data["accuracyList"].push(item.toJSON());
+        }
+        if (Array.isArray(this.accuracyWithFlagList)) {
+            data["accuracyWithFlagList"] = [];
+            for (let item of this.accuracyWithFlagList)
+                data["accuracyWithFlagList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPlayerStats {
+    name?: string | undefined;
+    team?: Teams;
+    completeHits?: number;
+    completeMisses?: number;
+    assists?: number;
+    captures?: number;
+    pickupCaptures?: number;
+    flagTouches?: number;
+    pickupFlagTouches?: number;
+    damageOutputBetweenTouchAndCaptureMin?: number;
+    damageOutputBetweenTouchAndCaptureMax?: number;
+    damageOutputBetweenTouchAndCaptureAvg?: number;
+    captureTimeMin?: string;
+    captureTimeMax?: string;
+    captureTimeAvg?: string;
+    captureTimeMinTics?: number;
+    captureTimeMaxTics?: number;
+    captureTimeAvgTics?: number;
+    captureHealthMin?: number;
+    captureHealthMax?: number;
+    captureHealthAvg?: number;
+    captureGreenArmorMin?: number;
+    captureGreenArmorMax?: number;
+    captureGreenArmorAvg?: number;
+    captureBlueArmorMin?: number;
+    captureBlueArmorMax?: number;
+    captureBlueArmorAvg?: number;
+    flagCarriersKilledWhileHoldingFlag?: number;
+    highestKillsBeforeCapturing?: number;
+    pickupCaptureTimeMin?: string;
+    pickupCaptureTimeMax?: string;
+    pickupCaptureTimeAvg?: string;
+    pickupCaptureTimeMinTics?: number;
+    pickupCaptureTimeMaxTics?: number;
+    pickupCaptureTimeAvgTics?: number;
+    totalDamage?: number;
+    selfDamage?: number;
+    selfDamageWithFlag?: number;
+    totalGreenArmorDamage?: number;
+    totalBlueArmorDamage?: number;
+    totalDamageToFlagCarriers?: number;
+    totalDamageAsFlagCarrier?: number;
+    totalDamageToFlagCarriersWhileHoldingFlag?: number;
+    totalDamageTakenFromEnvironment?: number;
+    totalDamageTakenFromEnvironmentAsFlagCarrier?: number;
+    totalFlagReturns?: number;
+    totalKills?: number;
+    killDeathRatio?: number;
+    capturePercentage?: number;
+    pickupCapturePercentage?: number;
+    overallCapturePercentage?: number;
+    flagDefenses?: number;
+    totalDeaths?: number;
+    deaths?: number;
+    suicides?: number;
+    suicidesWithFlag?: number;
+    environmentalDeaths?: number;
+    environmentalDeathsAsFlagCarrier?: number;
+    teamKills?: number;
+    longestSpree?: number;
+    highestMultiKill?: number;
+    totalPowerPickups?: number;
+    totalHealthFromPickups?: number;
+    healthFromNonPowerPickups?: number;
+    healthFromPowerPickups?: number;
+    touchHealthMin?: number;
+    touchHealthMax?: number;
+    touchHealthAvg?: number;
+    touchGreenArmorMin?: number;
+    touchGreenArmorMax?: number;
+    touchGreenArmorAvg?: number;
+    touchBlueArmorMin?: number;
+    touchBlueArmorMax?: number;
+    touchBlueArmorAvg?: number;
+    touchHealthResultCaptureMin?: number;
+    touchHealthResultCaptureMax?: number;
+    touchHealthResultCaptureAvg?: number;
+    touchesOverOneHundredHealth?: number;
+    pickupList?: Pickup[] | undefined;
+    damageList?: Damage[] | undefined;
+    damageWithFlagList?: Damage[] | undefined;
+    killsList?: Kill[] | undefined;
+    carrierKillList?: Kill[] | undefined;
+    accuracyList?: Accuracy[] | undefined;
+    accuracyWithFlagList?: Accuracy[] | undefined;
+}
+
+export class Pickup implements IPickup {
+    pickupType?: Pickups;
+    pickupX?: number;
+    pickupY?: number;
+    pickupZ?: number;
+
+    constructor(data?: IPickup) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.pickupType = _data["pickupType"];
+            this.pickupX = _data["pickupX"];
+            this.pickupY = _data["pickupY"];
+            this.pickupZ = _data["pickupZ"];
+        }
+    }
+
+    static fromJS(data: any): Pickup {
+        data = typeof data === 'object' ? data : {};
+        let result = new Pickup();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["pickupType"] = this.pickupType;
+        data["pickupX"] = this.pickupX;
+        data["pickupY"] = this.pickupY;
+        data["pickupZ"] = this.pickupZ;
+        return data; 
+    }
+}
+
+export interface IPickup {
+    pickupType?: Pickups;
+    pickupX?: number;
+    pickupY?: number;
+    pickupZ?: number;
+}
+
+export enum Pickups {
+    SoulSphere = 0,
+    MegaSphere = 1,
+    BlueArmor = 2,
+    GreenArmor = 3,
+    Berserk = 4,
+    StimPack = 5,
+    MedKit = 6,
+    HealthBonus = 7,
+    ArmorBonus = 8,
+}
+
+export class Damage implements IDamage {
+    damagedName?: string | undefined;
+    damageType?: Mods;
+    armorType?: Armor;
+    hp?: number;
+    armor?: number;
+
+    constructor(data?: IDamage) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.damagedName = _data["damagedName"];
+            this.damageType = _data["damageType"];
+            this.armorType = _data["armorType"];
+            this.hp = _data["hp"];
+            this.armor = _data["armor"];
+        }
+    }
+
+    static fromJS(data: any): Damage {
+        data = typeof data === 'object' ? data : {};
+        let result = new Damage();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["damagedName"] = this.damagedName;
+        data["damageType"] = this.damageType;
+        data["armorType"] = this.armorType;
+        data["hp"] = this.hp;
+        data["armor"] = this.armor;
+        return data; 
+    }
+}
+
+export interface IDamage {
+    damagedName?: string | undefined;
+    damageType?: Mods;
+    armorType?: Armor;
+    hp?: number;
+    armor?: number;
+}
+
+export enum Mods {
+    Unknown = 0,
+    Fist = 1,
+    Pistol = 2,
+    Shotgun = 3,
+    Chaingun = 4,
+    Rocket = 5,
+    RocketSplash = 6,
+    PlasmaRifle = 7,
+    BfgBall = 8,
+    BfgSplash = 9,
+    Chainsaw = 10,
+    SuperShotgun = 11,
+    Water = 12,
+    Slime = 13,
+    Lava = 14,
+    Crusher = 15,
+    Telefrag = 16,
+    Falling = 17,
+    Suicide = 18,
+    Barrel = 19,
+    Exit = 20,
+    Splash = 21,
+    Hit = 22,
+    Railgun = 23,
+}
+
+export enum Armor {
+    None = 0,
+    GreenArmor = 1,
+    BlueArmor = 2,
+}
+
+export class Kill implements IKill {
+    killedByWeapon?: Mods;
+    killedName?: string | undefined;
+    killedX?: number;
+    killedY?: number;
+    killedZ?: number;
+    fraggerX?: number;
+    fraggerY?: number;
+    fraggerZ?: number;
+
+    constructor(data?: IKill) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.killedByWeapon = _data["killedByWeapon"];
+            this.killedName = _data["killedName"];
+            this.killedX = _data["killedX"];
+            this.killedY = _data["killedY"];
+            this.killedZ = _data["killedZ"];
+            this.fraggerX = _data["fraggerX"];
+            this.fraggerY = _data["fraggerY"];
+            this.fraggerZ = _data["fraggerZ"];
+        }
+    }
+
+    static fromJS(data: any): Kill {
+        data = typeof data === 'object' ? data : {};
+        let result = new Kill();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["killedByWeapon"] = this.killedByWeapon;
+        data["killedName"] = this.killedName;
+        data["killedX"] = this.killedX;
+        data["killedY"] = this.killedY;
+        data["killedZ"] = this.killedZ;
+        data["fraggerX"] = this.fraggerX;
+        data["fraggerY"] = this.fraggerY;
+        data["fraggerZ"] = this.fraggerZ;
+        return data; 
+    }
+}
+
+export interface IKill {
+    killedByWeapon?: Mods;
+    killedName?: string | undefined;
+    killedX?: number;
+    killedY?: number;
+    killedZ?: number;
+    fraggerX?: number;
+    fraggerY?: number;
+    fraggerZ?: number;
+}
+
+export class Accuracy implements IAccuracy {
+    weapon?: Weapons;
+    hitMiss?: boolean;
+    spritePercent?: number;
+    pinpointPercent?: number;
+
+    constructor(data?: IAccuracy) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.weapon = _data["weapon"];
+            this.hitMiss = _data["hitMiss"];
+            this.spritePercent = _data["spritePercent"];
+            this.pinpointPercent = _data["pinpointPercent"];
+        }
+    }
+
+    static fromJS(data: any): Accuracy {
+        data = typeof data === 'object' ? data : {};
+        let result = new Accuracy();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["weapon"] = this.weapon;
+        data["hitMiss"] = this.hitMiss;
+        data["spritePercent"] = this.spritePercent;
+        data["pinpointPercent"] = this.pinpointPercent;
+        return data; 
+    }
+}
+
+export interface IAccuracy {
+    weapon?: Weapons;
+    hitMiss?: boolean;
+    spritePercent?: number;
+    pinpointPercent?: number;
+}
+
+export enum Weapons {
+    Fist = 0,
+    Pistol = 1,
+    Shotgun = 2,
+    Chaingun = 3,
+    Rocket = 4,
+    Plasma = 5,
+    Bfg = 6,
+    Chainsaw = 7,
+    SuperShotgun = 8,
 }
 
 export class PlayerLeaderboardSeasonStatsVm implements IPlayerLeaderboardSeasonStatsVm {
@@ -2366,16 +3539,8 @@ export class StatsDto implements IStatsDto {
     pickupCaptures?: number;
     flagReturns?: number;
     powerPickups?: number;
-    killingSprees?: number;
-    rampages?: number;
-    dominations?: number;
-    unstoppables?: number;
-    godLikes?: number;
-    wickedSicks?: number;
-    doubleKills?: number;
-    multiKills?: number;
-    ultraKills?: number;
-    monsterKills?: number;
+    longestSpree?: number;
+    highestMultiKill?: number;
 
     constructor(data?: IStatsDto) {
         if (data) {
@@ -2405,16 +3570,8 @@ export class StatsDto implements IStatsDto {
             this.pickupCaptures = _data["pickupCaptures"];
             this.flagReturns = _data["flagReturns"];
             this.powerPickups = _data["powerPickups"];
-            this.killingSprees = _data["killingSprees"];
-            this.rampages = _data["rampages"];
-            this.dominations = _data["dominations"];
-            this.unstoppables = _data["unstoppables"];
-            this.godLikes = _data["godLikes"];
-            this.wickedSicks = _data["wickedSicks"];
-            this.doubleKills = _data["doubleKills"];
-            this.multiKills = _data["multiKills"];
-            this.ultraKills = _data["ultraKills"];
-            this.monsterKills = _data["monsterKills"];
+            this.longestSpree = _data["longestSpree"];
+            this.highestMultiKill = _data["highestMultiKill"];
         }
     }
 
@@ -2444,16 +3601,8 @@ export class StatsDto implements IStatsDto {
         data["pickupCaptures"] = this.pickupCaptures;
         data["flagReturns"] = this.flagReturns;
         data["powerPickups"] = this.powerPickups;
-        data["killingSprees"] = this.killingSprees;
-        data["rampages"] = this.rampages;
-        data["dominations"] = this.dominations;
-        data["unstoppables"] = this.unstoppables;
-        data["godLikes"] = this.godLikes;
-        data["wickedSicks"] = this.wickedSicks;
-        data["doubleKills"] = this.doubleKills;
-        data["multiKills"] = this.multiKills;
-        data["ultraKills"] = this.ultraKills;
-        data["monsterKills"] = this.monsterKills;
+        data["longestSpree"] = this.longestSpree;
+        data["highestMultiKill"] = this.highestMultiKill;
         return data; 
     }
 }
@@ -2476,16 +3625,8 @@ export interface IStatsDto {
     pickupCaptures?: number;
     flagReturns?: number;
     powerPickups?: number;
-    killingSprees?: number;
-    rampages?: number;
-    dominations?: number;
-    unstoppables?: number;
-    godLikes?: number;
-    wickedSicks?: number;
-    doubleKills?: number;
-    multiKills?: number;
-    ultraKills?: number;
-    monsterKills?: number;
+    longestSpree?: number;
+    highestMultiKill?: number;
 }
 
 export class PlayerCaptainRecordDto implements IPlayerCaptainRecordDto {
@@ -2831,7 +3972,8 @@ export interface ISeasonDto {
 export class CreateSeasonCommand implements ICreateSeasonCommand {
     wadId?: number;
     seasonName?: string | undefined;
-    dateStart?: Date;
+    enginePlayed?: string | undefined;
+    seasonDateStart?: Date;
 
     constructor(data?: ICreateSeasonCommand) {
         if (data) {
@@ -2846,7 +3988,8 @@ export class CreateSeasonCommand implements ICreateSeasonCommand {
         if (_data) {
             this.wadId = _data["wadId"];
             this.seasonName = _data["seasonName"];
-            this.dateStart = _data["dateStart"] ? new Date(_data["dateStart"].toString()) : <any>undefined;
+            this.enginePlayed = _data["enginePlayed"];
+            this.seasonDateStart = _data["seasonDateStart"] ? new Date(_data["seasonDateStart"].toString()) : <any>undefined;
         }
     }
 
@@ -2861,7 +4004,8 @@ export class CreateSeasonCommand implements ICreateSeasonCommand {
         data = typeof data === 'object' ? data : {};
         data["wadId"] = this.wadId;
         data["seasonName"] = this.seasonName;
-        data["dateStart"] = this.dateStart ? this.dateStart.toISOString() : <any>undefined;
+        data["enginePlayed"] = this.enginePlayed;
+        data["seasonDateStart"] = this.seasonDateStart ? this.seasonDateStart.toISOString() : <any>undefined;
         return data; 
     }
 }
@@ -2869,7 +4013,8 @@ export class CreateSeasonCommand implements ICreateSeasonCommand {
 export interface ICreateSeasonCommand {
     wadId?: number;
     seasonName?: string | undefined;
-    dateStart?: Date;
+    enginePlayed?: string | undefined;
+    seasonDateStart?: Date;
 }
 
 export class UpdateSeasonCommand implements IUpdateSeasonCommand {
@@ -2918,6 +4063,54 @@ export interface IUpdateSeasonCommand {
     wadId?: number;
     seasonName?: string | undefined;
     dateStart?: Date;
+}
+
+export class CreateSeasonWeeksCommand implements ICreateSeasonWeeksCommand {
+    seasonId?: number;
+    weekOneDateStart?: Date;
+    numWeeksRegularSeason?: number;
+    numWeeksPlayoffs?: number;
+
+    constructor(data?: ICreateSeasonWeeksCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.seasonId = _data["seasonId"];
+            this.weekOneDateStart = _data["weekOneDateStart"] ? new Date(_data["weekOneDateStart"].toString()) : <any>undefined;
+            this.numWeeksRegularSeason = _data["numWeeksRegularSeason"];
+            this.numWeeksPlayoffs = _data["numWeeksPlayoffs"];
+        }
+    }
+
+    static fromJS(data: any): CreateSeasonWeeksCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateSeasonWeeksCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["seasonId"] = this.seasonId;
+        data["weekOneDateStart"] = this.weekOneDateStart ? this.weekOneDateStart.toISOString() : <any>undefined;
+        data["numWeeksRegularSeason"] = this.numWeeksRegularSeason;
+        data["numWeeksPlayoffs"] = this.numWeeksPlayoffs;
+        return data; 
+    }
+}
+
+export interface ICreateSeasonWeeksCommand {
+    seasonId?: number;
+    weekOneDateStart?: Date;
+    numWeeksRegularSeason?: number;
+    numWeeksPlayoffs?: number;
 }
 
 export class SeasonSummaryVm implements ISeasonSummaryVm {

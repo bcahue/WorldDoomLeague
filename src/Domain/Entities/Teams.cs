@@ -37,6 +37,7 @@ namespace WorldDoomLeague.Domain.Entities
         public virtual ICollection<GamePlayers> GamePlayers { get; set; }
         public virtual ICollection<RoundPlayers> RoundPlayers { get; set; }
         public virtual ICollection<GameTeamStats> GameTeamStats { get; set; }
+        public virtual ICollection<GameTeamStats> GameTeamStatsOpponents { get; set; }
         public virtual ICollection<StatsRounds> StatsRounds { get; set; }
         public virtual ICollection<Games> GamesFkIdTeamBlueNavigation { get; set; }
         public virtual ICollection<Games> GamesFkIdTeamRedNavigation { get; set; }

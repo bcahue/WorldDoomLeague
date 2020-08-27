@@ -4,6 +4,7 @@ using WorldDoomLeague.Application.Seasons.Queries.GetSeasonStandingsById;
 using WorldDoomLeague.Application.Seasons.Queries.GetSeasonPlayersBySeasonId;
 using WorldDoomLeague.Application.Seasons.Commands.CreateSeason;
 using WorldDoomLeague.Application.Seasons.Commands.UpdateSeason;
+using WorldDoomLeague.Application.SeasonWeeks.Commands.CreateSeasonWeeks;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -35,6 +36,17 @@ namespace WorldDoomLeague.WebUI.Controllers
             await Mediator.Send(command);
 
             return NoContent();
+        }
+
+        [HttpPost("{seasonId}/weeks")]
+        public async Task<ActionResult<uint>> CreateWeeks(uint seasonId, CreateSeasonWeeksCommand command)
+        {
+            if (seasonId != command.SeasonId)
+            {
+                return BadRequest();
+            }
+
+            return await Mediator.Send(command);
         }
 
         [HttpGet("{seasonId}")]

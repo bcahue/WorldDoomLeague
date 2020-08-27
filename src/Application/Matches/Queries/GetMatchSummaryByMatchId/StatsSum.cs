@@ -77,20 +77,8 @@ namespace WorldDoomLeague.Application.Matches.Queries.GetMatchSummaryByMatchId
                 PickupHealthGained = statsRounds.Sum(s => s.PickupHealthGained),
                 HealthFromNonPowerups = statsRounds.Sum(s => s.HealthFromNonpowerPickups),
                 // Sprees
-                KillingSprees = statsRounds.Sum(s => s.SpreeKillingSprees),
-                Rampages = statsRounds.Sum(s => s.SpreeRampage),
-                Dominatings = statsRounds.Sum(s => s.SpreeDominations),
-                Unstoppables = statsRounds.Sum(s => s.SpreeUnstoppables),
-                GodLikes = statsRounds.Sum(s => s.SpreeGodlikes),
-                WickedSicks = statsRounds.Sum(s => s.SpreeWickedsicks),
-
                 LongestSpree = statsRounds.Where(w => w.LongestSpree > 0).Select(w => w.LongestSpree).DefaultIfEmpty().Max(),
                 // Multi Kills
-                DoubleKills = statsRounds.Sum(s => s.MultiDoubleKills),
-                MultiKills = statsRounds.Sum(s => s.MultiMultiKills),
-                UltraKills = statsRounds.Sum(s => s.MultiUltraKills),
-                MonsterKills = statsRounds.Sum(s => s.MultiMonsterKills),
-
                 HighestMultiKill = statsRounds.Where(w => w.HighestMultiFrags > 0).Select(w => w.HighestMultiFrags).DefaultIfEmpty().Max(),
                 // Metadata (used to find per minute stat modes, like per minute or per 8 or per 24 stats etc.)
                 TimePlayed = TimeSpan.FromSeconds((double)statsRounds.Select(s => s.FkIdRoundNavigation).Distinct().Sum(s => s.RoundTicsDuration) / 35)

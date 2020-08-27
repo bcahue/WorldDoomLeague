@@ -9,7 +9,7 @@ using WorldDoomLeague.Infrastructure.Persistence;
 namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200825061104_initial")]
+    [Migration("20200826050551_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -425,6 +425,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnName("fk_id_map")
                         .HasColumnType("int(10) unsigned");
 
+                    b.Property<uint>("FkIdOpponentTeam")
+                        .HasColumnName("fk_id_opponentteam")
+                        .HasColumnType("int(10) unsigned");
+
                     b.Property<uint>("FkIdSeason")
                         .HasColumnName("fk_id_season")
                         .HasColumnType("int(10) unsigned");
@@ -435,6 +439,14 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.Property<uint>("FkIdWeek")
                         .HasColumnName("fk_id_week")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("HighestMultiKill")
+                        .HasColumnName("highest_multi_kill")
+                        .HasColumnType("int(10) unsigned");
+
+                    b.Property<uint>("LongestSpree")
+                        .HasColumnName("longest_spree")
                         .HasColumnType("int(10) unsigned");
 
                     b.Property<uint>("Loss")
@@ -504,22 +516,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnName("total_kills")
                         .HasColumnType("int(10) unsigned");
 
-                    b.Property<uint>("TotalMultiDoubleKills")
-                        .HasColumnName("total_multi_double_kills")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalMultiMonsterKills")
-                        .HasColumnName("total_multi_monster_kills")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalMultiMultiKills")
-                        .HasColumnName("total_multi_multi_kills")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalMultiUltraKills")
-                        .HasColumnName("total_multi_ultra_kills")
-                        .HasColumnType("int(10) unsigned");
-
                     b.Property<uint>("TotalPickupCaptures")
                         .HasColumnName("total_pickup_captures")
                         .HasColumnType("int(10) unsigned");
@@ -530,30 +526,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.Property<uint>("TotalPowerPickups")
                         .HasColumnName("total_power_pickups")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalSpreeDominations")
-                        .HasColumnName("total_spree_dominations")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalSpreeGodlikes")
-                        .HasColumnName("total_spree_godlikes")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalSpreeKillingSprees")
-                        .HasColumnName("total_spree_killing_sprees")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalSpreeRampages")
-                        .HasColumnName("total_spree_rampages")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalSpreeUnstoppables")
-                        .HasColumnName("total_spree_unstoppables")
-                        .HasColumnType("int(10) unsigned");
-
-                    b.Property<uint>("TotalSpreeWickedsicks")
-                        .HasColumnName("total_spree_wickedsicks")
                         .HasColumnType("int(10) unsigned");
 
                     b.Property<uint>("TotalTouches")
@@ -573,11 +545,13 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.HasIndex("FkIdMap")
                         .HasName("fk_GameTeamStats_Maps_idx");
 
+                    b.HasIndex("FkIdOpponentTeam");
+
                     b.HasIndex("FkIdSeason")
                         .HasName("fk_GameTeamStats_Seasons_idx");
 
                     b.HasIndex("FkIdTeam")
-                        .HasName("fk_GameTeamStats_Teams_idx");
+                        .HasName("fk_GameTeamStats_OpponentTeams_idx");
 
                     b.HasIndex("FkIdWeek")
                         .HasName("fk_GameTeamStats_Weeks_idx");
@@ -1689,9 +1663,11 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnType("int(11)")
                         .HasDefaultValueSql("'0'");
 
-                    b.Property<int>("EfficiencyPoints")
-                        .HasColumnName("efficiency_points")
-                        .HasColumnType("int(11)");
+                    b.Property<int?>("DamageOutputBetweenTouchCaptureMin")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("damage_output_between_touch_capture_min")
+                        .HasColumnType("int(11)")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<uint>("FkIdGame")
                         .HasColumnName("fk_id_game")
@@ -1737,22 +1713,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnName("longest_spree")
                         .HasColumnType("int(11)");
 
-                    b.Property<int>("MultiDoubleKills")
-                        .HasColumnName("multi_double_kills")
-                        .HasColumnType("int(11)");
-
-                    b.Property<int>("MultiMonsterKills")
-                        .HasColumnName("multi_monster_kills")
-                        .HasColumnType("int(11)");
-
-                    b.Property<int>("MultiMultiKills")
-                        .HasColumnName("multi_multi_kills")
-                        .HasColumnType("int(11)");
-
-                    b.Property<int>("MultiUltraKills")
-                        .HasColumnName("multi_ultra_kills")
-                        .HasColumnType("int(11)");
-
                     b.Property<double?>("PickupCaptureTicsAverage")
                         .HasColumnName("pickup_capture_tics_average")
                         .HasColumnType("double");
@@ -1767,30 +1727,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.Property<int>("PickupHealthGained")
                         .HasColumnName("pickup_health_gained")
-                        .HasColumnType("int(11)");
-
-                    b.Property<int>("SpreeDominations")
-                        .HasColumnName("spree_dominations")
-                        .HasColumnType("int(11)");
-
-                    b.Property<int>("SpreeGodlikes")
-                        .HasColumnName("spree_godlikes")
-                        .HasColumnType("int(11)");
-
-                    b.Property<int>("SpreeKillingSprees")
-                        .HasColumnName("spree_killing_sprees")
-                        .HasColumnType("int(11)");
-
-                    b.Property<int>("SpreeRampage")
-                        .HasColumnName("spree_rampage")
-                        .HasColumnType("int(11)");
-
-                    b.Property<int>("SpreeUnstoppables")
-                        .HasColumnName("spree_unstoppables")
-                        .HasColumnType("int(11)");
-
-                    b.Property<int>("SpreeWickedsicks")
-                        .HasColumnName("spree_wickedsicks")
                         .HasColumnType("int(11)");
 
                     b.Property<string>("Team")
@@ -1836,6 +1772,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnName("total_damage_taken_environment")
                         .HasColumnType("int(11)");
 
+                    b.Property<int>("TotalDamageToFlagCarriersWhileHoldingFlag")
+                        .HasColumnName("total_damage_to_flag_carriers_while_holding_flag")
+                        .HasColumnType("int(11)");
+
                     b.Property<int>("TotalDamageWithFlag")
                         .HasColumnName("total_damage_with_flag")
                         .HasColumnType("int(11)");
@@ -1870,6 +1810,14 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.Property<int>("TotalPowerPickups")
                         .HasColumnName("total_power_pickups")
+                        .HasColumnType("int(11)");
+
+                    b.Property<int>("TotalSuicides")
+                        .HasColumnName("total_suicides")
+                        .HasColumnType("int(11)");
+
+                    b.Property<int>("TotalSuicidesWithFlag")
+                        .HasColumnName("total_suicides_with_flag")
                         .HasColumnType("int(11)");
 
                     b.Property<int>("TotalTouches")
@@ -2254,6 +2202,12 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("GameTeamStats")
                         .HasForeignKey("FkIdMap")
                         .HasConstraintName("fk_GameTeamStats_Maps")
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdOpponentTeamNavigation")
+                        .WithMany("GameTeamStatsOpponents")
+                        .HasForeignKey("FkIdOpponentTeam")
+                        .HasConstraintName("fk_GameTeamStats_OpponentTeams")
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")

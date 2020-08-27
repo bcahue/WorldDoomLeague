@@ -39,6 +39,8 @@ namespace WorldDoomLeague.Infrastructure
             services.AddTransient<IDateTimeOffset, DateTimeOffsetService>();
             services.AddTransient<IIdentityService, IdentityService>();
             services.AddTransient<ICsvFileBuilder, CsvFileBuilder>();
+            services.AddTransient<IDirectoryBrowser, DirectoryBrowser>();
+            services.AddTransient<IGetMatchJson, GetMatchJson>();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();

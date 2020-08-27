@@ -34,17 +34,9 @@ namespace WorldDoomLeague.Domain.Entities
         public uint TotalCaptures { get; set; }
         public uint TotalPickupCaptures { get; set; }
         public uint TotalFlagReturns { get; set; }
-        public uint TotalSpreeKillingSprees { get; set; }
-        public uint TotalSpreeRampages { get; set; }
-        public uint TotalSpreeDominations { get; set; }
-        public uint TotalSpreeUnstoppables { get; set; }
-        public uint TotalSpreeGodlikes { get; set; }
-        public uint TotalSpreeWickedsicks { get; set; }
-        public uint TotalMultiDoubleKills { get; set; }
-        public uint TotalMultiMultiKills { get; set; }
-        public uint TotalMultiUltraKills { get; set; }
-        public uint TotalMultiMonsterKills { get; set; }
         public uint TotalPowerPickups { get; set; }
+        public uint LongestSpree { get; set; }
+        public uint HighestMultiKill { get; set; }
         public virtual Games FkIdGameNavigation { get; set; }
         public virtual Maps FkIdMapNavigation { get; set; }
         public virtual Season FkIdSeasonNavigation { get; set; }

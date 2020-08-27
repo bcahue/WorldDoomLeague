@@ -4,6 +4,7 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
 
 namespace WorldDoomLeague.Application.Seasons.Commands.CreateSeason
 {
@@ -11,7 +12,8 @@ namespace WorldDoomLeague.Application.Seasons.Commands.CreateSeason
     {
         public uint WadId { get; set; }
         public string SeasonName { get; set; }
-        public DateTime DateStart { get; set; }
+        public string EnginePlayed { get; set; }
+        public DateTime SeasonDateStart { get; set; }
     }
 
     public class CreateSeasonCommandHandler : IRequestHandler<CreateSeasonCommand, uint>
@@ -29,7 +31,8 @@ namespace WorldDoomLeague.Application.Seasons.Commands.CreateSeason
             {
                 SeasonName = request.SeasonName,
                 FkIdWadFile = request.WadId,
-                DateStart = request.DateStart
+                DateStart = request.SeasonDateStart,
+                EnginePlayed = request.EnginePlayed
             };
 
             _context.Season.Add(entity);

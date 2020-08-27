@@ -23,16 +23,8 @@ namespace WorldDoomLeague.Application.Players.Queries.GetPlayerSummaryById
         public int PickupCaptures { get; set; }
         public int FlagReturns { get; set; }
         public int PowerPickups { get; set; }
-        public int KillingSprees { get; set; }
-        public int Rampages { get; set; }
-        public int Dominations { get; set; }
-        public int Unstoppables { get; set; }
-        public int GodLikes { get; set; }
-        public int WickedSicks { get; set; }
-        public int DoubleKills { get; set; }
-        public int MultiKills { get; set; }
-        public int UltraKills { get; set; }
-        public int MonsterKills { get; set; }
+        public int LongestSpree { get; set; }
+        public int HighestMultiKill { get; set; }
 
         public StatsDto(
             int roundsPlayed,
@@ -52,16 +44,8 @@ namespace WorldDoomLeague.Application.Players.Queries.GetPlayerSummaryById
             int pickupCaptures,
             int flagReturns,
             int powerPickups,
-            int killingSprees,
-            int rampages,
-            int dominations,
-            int unstoppables,
-            int godLikes,
-            int wickedSicks,
-            int doubleKills,
-            int multiKills,
-            int ultraKills,
-            int monsterKills)
+            int longestSpree,
+            int highestMultiKill)
         {
             RoundsPlayed = roundsPlayed;
             TotalTimePlayed = totalTimePlayed;
@@ -80,16 +64,8 @@ namespace WorldDoomLeague.Application.Players.Queries.GetPlayerSummaryById
             PickupCaptures = pickupCaptures;
             FlagReturns = flagReturns;
             PowerPickups = powerPickups;
-            KillingSprees = killingSprees;
-            Rampages = rampages;
-            Dominations = dominations;
-            Unstoppables = unstoppables;
-            GodLikes = godLikes;
-            WickedSicks = wickedSicks;
-            DoubleKills = doubleKills;
-            MultiKills = multiKills;
-            UltraKills = ultraKills;
-            MonsterKills = monsterKills;
+            LongestSpree = longestSpree;
+            HighestMultiKill = highestMultiKill;
         }
     }
 }

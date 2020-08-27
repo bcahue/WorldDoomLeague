@@ -138,20 +138,8 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasColumnName("total_kills")
                 .HasColumnType("int(10) unsigned");
 
-            builder.Property(e => e.TotalMultiDoubleKills)
-                .HasColumnName("total_multi_double_kills")
-                .HasColumnType("int(10) unsigned");
-
-            builder.Property(e => e.TotalMultiMonsterKills)
-                .HasColumnName("total_multi_monster_kills")
-                .HasColumnType("int(10) unsigned");
-
-            builder.Property(e => e.TotalMultiMultiKills)
-                .HasColumnName("total_multi_multi_kills")
-                .HasColumnType("int(10) unsigned");
-
-            builder.Property(e => e.TotalMultiUltraKills)
-                .HasColumnName("total_multi_ultra_kills")
+            builder.Property(e => e.HighestMultiKill)
+                .HasColumnName("highest_multi_kill")
                 .HasColumnType("int(10) unsigned");
 
             builder.Property(e => e.TotalPickupCaptures)
@@ -166,28 +154,8 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasColumnName("total_power_pickups")
                 .HasColumnType("int(10) unsigned");
 
-            builder.Property(e => e.TotalSpreeDominations)
-                .HasColumnName("total_spree_dominations")
-                .HasColumnType("int(10) unsigned");
-
-            builder.Property(e => e.TotalSpreeGodlikes)
-                .HasColumnName("total_spree_godlikes")
-                .HasColumnType("int(10) unsigned");
-
-            builder.Property(e => e.TotalSpreeKillingSprees)
-                .HasColumnName("total_spree_killing_sprees")
-                .HasColumnType("int(10) unsigned");
-
-            builder.Property(e => e.TotalSpreeRampages)
-                .HasColumnName("total_spree_rampages")
-                .HasColumnType("int(10) unsigned");
-
-            builder.Property(e => e.TotalSpreeUnstoppables)
-                .HasColumnName("total_spree_unstoppables")
-                .HasColumnType("int(10) unsigned");
-
-            builder.Property(e => e.TotalSpreeWickedsicks)
-                .HasColumnName("total_spree_wickedsicks")
+            builder.Property(e => e.LongestSpree)
+                .HasColumnName("longest_spree")
                 .HasColumnType("int(10) unsigned");
 
             builder.Property(e => e.TotalTouches)
@@ -223,7 +191,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasConstraintName("fk_GameTeamStats_Teams");
 
             builder.HasOne(d => d.FkIdOpponentTeamNavigation)
-                .WithMany(p => p.GameTeamStats)
+                .WithMany(p => p.GameTeamStatsOpponents)
                 .HasForeignKey(d => d.FkIdOpponentTeam)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_GameTeamStats_OpponentTeams");

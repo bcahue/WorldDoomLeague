@@ -2,8 +2,10 @@ using WorldDoomLeague.Application;
 using WorldDoomLeague.Application.Common.Interfaces;
 using WorldDoomLeague.Infrastructure;
 using WorldDoomLeague.Infrastructure.Persistence;
+using WorldDoomLeague.Infrastructure.Files;
 using WorldDoomLeague.WebUI.Filters;
 using WorldDoomLeague.WebUI.Services;
+using WorldDoomLeague.WebUI.ConfigModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +16,6 @@ using NSwag;
 using NSwag.Generation.Processors.Security;
 using System.Linq;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
-using WorldDoomLeague.WebUI.ConfigModels;
 
 namespace WorldDoomLeague.WebUI
 {
@@ -40,13 +41,12 @@ namespace WorldDoomLeague.WebUI
             services.AddHealthChecks()
                 .AddDbContextCheck<ApplicationDbContext>();
 
-            services.AddControllersWithViews(options => options.Filters.Add(new ApiExceptionFilter()));
+            services.Configure<DataDirectories>(Configuration.GetSection(DataDirectories.Name));
+
+            services.AddControllersWithViews(options => options.Filters.Add(new ApiExceptionFilter()))
+                .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new TimeSpanToStringConverter()));
 
             services.AddRazorPages();
-
-            var jsonDataDirectories = Configuration.GetSection("JsonDataDirectories");
-
-            services.Configure<JsonDataDirectories>(jsonDataDirectories);
 
             services.AddSpaStaticFiles(configuration =>
             {

@@ -112,9 +112,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasColumnType("int(11)")
                 .HasDefaultValueSql("'0'");
 
-            builder.Property(e => e.EfficiencyPoints)
-                .HasColumnName("efficiency_points")
-                .HasColumnType("int(11)");
+            builder.Property(e => e.DamageOutputBetweenTouchCaptureMin)
+                .HasColumnName("damage_output_between_touch_capture_min")
+                .HasColumnType("int(11)")
+                .HasDefaultValueSql("'0'");
 
             builder.Property(e => e.FkIdGame)
                 .HasColumnName("fk_id_game")
@@ -160,22 +161,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasColumnName("longest_spree")
                 .HasColumnType("int(11)");
 
-            builder.Property(e => e.MultiDoubleKills)
-                .HasColumnName("multi_double_kills")
-                .HasColumnType("int(11)");
-
-            builder.Property(e => e.MultiMonsterKills)
-                .HasColumnName("multi_monster_kills")
-                .HasColumnType("int(11)");
-
-            builder.Property(e => e.MultiMultiKills)
-                .HasColumnName("multi_multi_kills")
-                .HasColumnType("int(11)");
-
-            builder.Property(e => e.MultiUltraKills)
-                .HasColumnName("multi_ultra_kills")
-                .HasColumnType("int(11)");
-
             builder.Property(e => e.PickupCaptureTicsAverage).HasColumnName("pickup_capture_tics_average");
 
             builder.Property(e => e.PickupCaptureTicsMax)
@@ -188,30 +173,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.PickupHealthGained)
                 .HasColumnName("pickup_health_gained")
-                .HasColumnType("int(11)");
-
-            builder.Property(e => e.SpreeDominations)
-                .HasColumnName("spree_dominations")
-                .HasColumnType("int(11)");
-
-            builder.Property(e => e.SpreeGodlikes)
-                .HasColumnName("spree_godlikes")
-                .HasColumnType("int(11)");
-
-            builder.Property(e => e.SpreeKillingSprees)
-                .HasColumnName("spree_killing_sprees")
-                .HasColumnType("int(11)");
-
-            builder.Property(e => e.SpreeRampage)
-                .HasColumnName("spree_rampage")
-                .HasColumnType("int(11)");
-
-            builder.Property(e => e.SpreeUnstoppables)
-                .HasColumnName("spree_unstoppables")
-                .HasColumnType("int(11)");
-
-            builder.Property(e => e.SpreeWickedsicks)
-                .HasColumnName("spree_wickedsicks")
                 .HasColumnType("int(11)");
 
             builder.Property(e => e.Team)
@@ -261,8 +222,20 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasColumnName("total_damage_with_flag")
                 .HasColumnType("int(11)");
 
+            builder.Property(e => e.TotalDamageToFlagCarriersWhileHoldingFlag)
+                .HasColumnName("total_damage_to_flag_carriers_while_holding_flag")
+                .HasColumnType("int(11)");
+
             builder.Property(e => e.TotalDeaths)
                 .HasColumnName("total_deaths")
+                .HasColumnType("int(11)");
+
+            builder.Property(e => e.TotalSuicides)
+                .HasColumnName("total_suicides")
+                .HasColumnType("int(11)");
+
+            builder.Property(e => e.TotalSuicidesWithFlag)
+                .HasColumnName("total_suicides_with_flag")
                 .HasColumnType("int(11)");
 
             builder.Property(e => e.TotalEnvironmentCarrierDeaths)

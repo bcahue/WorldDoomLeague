@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
-using WorldDoomLeague.WebUI.ConfigModels;
 using Microsoft.Extensions.Configuration;
 using System.Configuration;
 using WorldDoomLeague.Application.MatchModel;
@@ -14,13 +13,6 @@ namespace WorldDoomLeague.WebUI.Controllers
 {
     public class FilesController : ApiController
     {
-        private readonly DataDirectories _options;
-
-        public FilesController(IOptions<DataDirectories> options)
-        {
-            _options = options.Value;
-        }
-
         /*
         [HttpGet]
         public async Task<PlayersVm> Get()
@@ -49,13 +41,13 @@ namespace WorldDoomLeague.WebUI.Controllers
         [HttpGet("json")]
         public async Task<IEnumerable<string>> GetRoundJsonFiles()
         {
-            return await Mediator.Send(new GetRoundJsonFilesQuery(_options.JsonMatchDirectory));
+            return await Mediator.Send(new GetRoundJsonFilesQuery());
         }
 
         [HttpGet("json/rounddata")]
         public async Task<Round> GetRoundObject([FromQuery(Name = "FileName")] string fileName)
         {
-            return await Mediator.Send(new GetRoundObjectQuery(_options.JsonMatchDirectory, fileName));
+            return await Mediator.Send(new GetRoundObjectQuery(fileName));
         }
         /*
         [HttpPut("{playerId}")]

@@ -12,5 +12,8 @@ namespace WorldDoomLeague.Application.MatchModel
         public TeamStats BlueTeamStats { get; set; }
         public FlagAssistTable FlagAssistTable { get; set; }
         public List<PlayerStats> PlayerStats { get; set; }
+        public List<KillDeathEvent> PlayerKillDeath { get; set; }
+        public List<KillDeathEvent> PlayerFlagCarrierKillDeath { get; set; }
+        public List<GameEvents> GameEvents { get; set; }
     }
 }

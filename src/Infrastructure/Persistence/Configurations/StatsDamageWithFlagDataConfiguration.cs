@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
 {
-    public class StatsDamageCarrierDataConfiguration : IEntityTypeConfiguration<StatsDamageCarrierData>
+    public class StatsDamageWithFlagDataConfiguration : IEntityTypeConfiguration<StatsDamageWithFlagData>
     {
-        public void Configure(EntityTypeBuilder<StatsDamageCarrierData> builder)
+        public void Configure(EntityTypeBuilder<StatsDamageWithFlagData> builder)
         {
             builder.HasKey(e => e.IdStatsCarrierDamage)
                     .HasName("PRIMARY");
 
-            builder.ToTable("statsdamagecarrierdata");
+            builder.ToTable("statsdamagewithflagdata");
 
             builder.HasIndex(e => e.FkIdPlayerAttacker)
                 .HasName("fk_statsdamage_player_attacker_idx");

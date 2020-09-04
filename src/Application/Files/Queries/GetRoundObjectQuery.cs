@@ -4,17 +4,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using WorldDoomLeague.Application.MatchModel;
+using Microsoft.Extensions.Options;
+using WorldDoomLeague.Application.ConfigModels;
 
 namespace WorldDoomLeague.Application.Files.Queries.GetRoundObject
 {
     public class GetRoundObjectQuery : IRequest<Round>
     {
-        public string JsonDirectory { get; }
         public string FileName { get; }
 
-        public GetRoundObjectQuery(string jsonDirectory, string fileName)
+        public GetRoundObjectQuery(string fileName)
         {
-            JsonDirectory = jsonDirectory;
             FileName = fileName;
         }
     }
@@ -22,15 +22,17 @@ namespace WorldDoomLeague.Application.Files.Queries.GetRoundObject
     public class GetRoundJsonFilesQueryHandler : IRequestHandler<GetRoundObjectQuery, Round>
     {
         private readonly IGetMatchJson _getMatchJson;
+        private readonly IOptionsSnapshot<DataDirectories> _optionsDelegate;
 
-        public GetRoundJsonFilesQueryHandler(IGetMatchJson getMatchJson)
+        public GetRoundJsonFilesQueryHandler(IGetMatchJson getMatchJson, IOptionsSnapshot<DataDirectories> optionsDelegate)
         {
             _getMatchJson = getMatchJson;
+            _optionsDelegate = optionsDelegate;
         }
 
         public async Task<Round> Handle(GetRoundObjectQuery request, CancellationToken cancellationToken)
         {
-            return await _getMatchJson.GetRoundObject(request.JsonDirectory, request.FileName);
+            return await _getMatchJson.GetRoundObject(_optionsDelegate.Value.JsonMatchDirectory, request.FileName);
         }
     }
 }

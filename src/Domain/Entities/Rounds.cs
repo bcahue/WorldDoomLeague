@@ -9,8 +9,8 @@ namespace WorldDoomLeague.Domain.Entities
         {
             RoundPlayers = new HashSet<RoundPlayers>();
             StatsAccuracyData = new HashSet<StatsAccuracyData>();
-            StatsAccuracyFlagOutData = new HashSet<StatsAccuracyFlagOutData>();
-            StatsDamageCarrierData = new HashSet<StatsDamageCarrierData>();
+            StatsAccuracyFlagOutData = new HashSet<StatsAccuracyWithFlagData>();
+            StatsDamageCarrierData = new HashSet<StatsDamageWithFlagData>();
             StatsDamageData = new HashSet<StatsDamageData>();
             StatsKillCarrierData = new HashSet<StatsKillCarrierData>();
             StatsKillData = new HashSet<StatsKillData>();
@@ -35,8 +35,8 @@ namespace WorldDoomLeague.Domain.Entities
         public virtual Weeks FkIdWeekNavigation { get; set; }
         public virtual ICollection<RoundPlayers> RoundPlayers { get; set; }
         public virtual ICollection<StatsAccuracyData> StatsAccuracyData { get; set; }
-        public virtual ICollection<StatsAccuracyFlagOutData> StatsAccuracyFlagOutData { get; set; }
-        public virtual ICollection<StatsDamageCarrierData> StatsDamageCarrierData { get; set; }
+        public virtual ICollection<StatsAccuracyWithFlagData> StatsAccuracyFlagOutData { get; set; }
+        public virtual ICollection<StatsDamageWithFlagData> StatsDamageCarrierData { get; set; }
         public virtual ICollection<StatsDamageData> StatsDamageData { get; set; }
         public virtual ICollection<StatsKillCarrierData> StatsKillCarrierData { get; set; }
         public virtual ICollection<StatsKillData> StatsKillData { get; set; }

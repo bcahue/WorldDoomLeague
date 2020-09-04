@@ -267,6 +267,70 @@
         }
       }
     },
+    "/api/Matches/create": {
+      "post": {
+        "tags": [
+          "Matches"
+        ],
+        "operationId": "Matches_Create",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMatchCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Matches/process": {
+      "post": {
+        "tags": [
+          "Matches"
+        ],
+        "operationId": "Matches_Process",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProcessMatchCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Players": {
       "get": {
         "tags": [
@@ -812,6 +876,27 @@
             "items": {
               "$ref": "#/components/schemas/PlayerStats"
             }
+          },
+          "playerKillDeath": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/KillDeathEvent"
+            }
+          },
+          "playerFlagCarrierKillDeath": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/KillDeathEvent"
+            }
+          },
+          "gameEvents": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/GameEvents"
+            }
           }
         }
       },
@@ -1031,18 +1116,6 @@
             "type": "number",
             "format": "double"
           },
-          "captureTimeMin": {
-            "type": "string",
-            "format": "time-span"
-          },
-          "captureTimeMax": {
-            "type": "string",
-            "format": "time-span"
-          },
-          "captureTimeAvg": {
-            "type": "string",
-            "format": "time-span"
-          },
           "captureTimeMinTics": {
             "type": "integer",
             "format": "int32"
@@ -1098,18 +1171,6 @@
           "highestKillsBeforeCapturing": {
             "type": "integer",
             "format": "int32"
-          },
-          "pickupCaptureTimeMin": {
-            "type": "string",
-            "format": "time-span"
-          },
-          "pickupCaptureTimeMax": {
-            "type": "string",
-            "format": "time-span"
-          },
-          "pickupCaptureTimeAvg": {
-            "type": "string",
-            "format": "time-span"
           },
           "pickupCaptureTimeMinTics": {
             "type": "integer",
@@ -1196,6 +1257,10 @@
             "format": "int32"
           },
           "deaths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "flagCarrierDeaths": {
             "type": "integer",
             "format": "int32"
           },
@@ -1299,69 +1364,61 @@
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/Pickup"
+              "$ref": "#/components/schemas/PickupAggregate"
             }
           },
           "damageList": {
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/Damage"
+              "$ref": "#/components/schemas/DamageAggregate"
             }
           },
           "damageWithFlagList": {
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/Damage"
+              "$ref": "#/components/schemas/DamageAggregate"
             }
           },
           "killsList": {
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/Kill"
+              "$ref": "#/components/schemas/KillAggregate"
             }
           },
           "carrierKillList": {
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/Kill"
+              "$ref": "#/components/schemas/KillAggregate"
             }
           },
           "accuracyList": {
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/Accuracy"
+              "$ref": "#/components/schemas/AccuracyAggregate"
             }
           },
           "accuracyWithFlagList": {
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/Accuracy"
+              "$ref": "#/components/schemas/AccuracyAggregate"
             }
           }
         }
       },
-      "Pickup": {
+      "PickupAggregate": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "pickupType": {
             "$ref": "#/components/schemas/Pickups"
           },
-          "pickupX": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pickupY": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pickupZ": {
+          "totalPickups": {
             "type": "integer",
             "format": "int32"
           }
@@ -1393,27 +1450,28 @@
           8
         ]
       },
-      "Damage": {
+      "DamageAggregate": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "damagedName": {
+          "totalDamage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalDamageGreenArmor": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalDamageBlueArmor": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "targetName": {
             "type": "string",
             "nullable": true
           },
-          "damageType": {
+          "weapon": {
             "$ref": "#/components/schemas/Mods"
-          },
-          "armorType": {
-            "$ref": "#/components/schemas/Armor"
-          },
-          "hp": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "armor": {
-            "type": "integer",
-            "format": "int32"
           }
         }
       },
@@ -1473,74 +1531,49 @@
           23
         ]
       },
-      "Armor": {
-        "type": "integer",
-        "description": "",
-        "x-enumNames": [
-          "None",
-          "GreenArmor",
-          "BlueArmor"
-        ],
-        "enum": [
-          0,
-          1,
-          2
-        ]
-      },
-      "Kill": {
+      "KillAggregate": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "killedByWeapon": {
-            "$ref": "#/components/schemas/Mods"
+          "totalKills": {
+            "type": "integer",
+            "format": "int32"
           },
-          "killedName": {
+          "targetName": {
             "type": "string",
             "nullable": true
           },
-          "killedX": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "killedY": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "killedZ": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "fraggerX": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "fraggerY": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "fraggerZ": {
-            "type": "integer",
-            "format": "int32"
+          "weapon": {
+            "$ref": "#/components/schemas/Mods"
           }
         }
       },
-      "Accuracy": {
+      "AccuracyAggregate": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "pinpointPercentage": {
+            "type": "number",
+            "format": "double"
+          },
+          "spritePercentage": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalHits": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalMisses": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hitMissRatio": {
+            "type": "number",
+            "format": "double"
+          },
           "weapon": {
             "$ref": "#/components/schemas/Weapons"
-          },
-          "hitMiss": {
-            "type": "boolean"
-          },
-          "spritePercent": {
-            "type": "number",
-            "format": "double"
-          },
-          "pinpointPercent": {
-            "type": "number",
-            "format": "double"
           }
         }
       },
@@ -1569,6 +1602,417 @@
           7,
           8
         ]
+      },
+      "KillDeathEvent": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "killerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "killerX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "killerY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "killerZ": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "targetName": {
+            "type": "string",
+            "nullable": true
+          },
+          "targetX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "targetY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "targetZ": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "weapon": {
+            "$ref": "#/components/schemas/Mods"
+          }
+        }
+      },
+      "GameEvents": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "gameTic": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "accuracyEvents": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/AccuracyEvent"
+            }
+          },
+          "kills": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/KillEvent"
+            }
+          },
+          "carrierKills": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/KillEvent"
+            }
+          },
+          "suicides": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/KillEvent"
+            }
+          },
+          "suicidesWithFlag": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/KillEvent"
+            }
+          },
+          "environmentalDeaths": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/KillEvent"
+            }
+          },
+          "environmentalDeathsWithFlag": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/KillEvent"
+            }
+          },
+          "damage": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/DamageEvent"
+            }
+          },
+          "selfDamage": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/DamageEvent"
+            }
+          },
+          "selfDamageWithFlag": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/DamageEvent"
+            }
+          },
+          "environmentalDamage": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/DamageEvent"
+            }
+          },
+          "environmentalDamageWithFlag": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/DamageEvent"
+            }
+          },
+          "pickups": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/PickupEvent"
+            }
+          },
+          "pickupFlagTouches": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/FlagTouchEvent"
+            }
+          },
+          "flagTouches": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/FlagTouchEvent"
+            }
+          },
+          "flagCaptures": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/FlagCaptureEvent"
+            }
+          },
+          "flagReturns": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/FlagReturnEvent"
+            }
+          }
+        }
+      },
+      "AccuracyEvent": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "shooterName": {
+            "type": "string",
+            "nullable": true
+          },
+          "targetName": {
+            "type": "string",
+            "nullable": true
+          },
+          "weapon": {
+            "$ref": "#/components/schemas/Weapons"
+          },
+          "hitMiss": {
+            "type": "boolean"
+          },
+          "spritePercent": {
+            "type": "number",
+            "format": "double"
+          },
+          "pinpointPercent": {
+            "type": "number",
+            "format": "double"
+          },
+          "angleBits": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activatorX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activatorY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activatorZ": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "targetX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "targetY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "targetZ": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "KillEvent": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "shooterName": {
+            "type": "string",
+            "nullable": true
+          },
+          "targetName": {
+            "type": "string",
+            "nullable": true
+          },
+          "weapon": {
+            "$ref": "#/components/schemas/Mods"
+          },
+          "activatorX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activatorY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activatorZ": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "targetX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "targetY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "targetZ": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "DamageEvent": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "shooterName": {
+            "type": "string",
+            "nullable": true
+          },
+          "targetName": {
+            "type": "string",
+            "nullable": true
+          },
+          "damageType": {
+            "$ref": "#/components/schemas/Mods"
+          },
+          "activatorX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activatorY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activatorZ": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "targetX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "targetY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "targetZ": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hp": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "blueArmor": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "greenArmor": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PickupEvent": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/Pickups"
+          },
+          "activatorX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activatorY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activatorZ": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "FlagTouchEvent": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "activatorX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activatorY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activatorZ": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "FlagCaptureEvent": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "activatorX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activatorY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activatorZ": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "FlagReturnEvent": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "activatorX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activatorY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activatorZ": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
       },
       "PlayerLeaderboardSeasonStatsVm": {
         "type": "object",
@@ -2255,6 +2699,75 @@
             "type": "boolean"
           },
           "demoFilePath": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CreateMatchCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "season": {
+            "type": "integer"
+          },
+          "week": {
+            "type": "integer"
+          },
+          "redTeam": {
+            "type": "integer"
+          },
+          "blueTeam": {
+            "type": "integer"
+          },
+          "gameDateTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "ProcessMatchCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "matchId": {
+            "type": "integer"
+          },
+          "flipTeams": {
+            "type": "boolean"
+          },
+          "gameRounds": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/RoundObject"
+            }
+          }
+        }
+      },
+      "RoundObject": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "redTeamPlayerIds": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "integer"
+            }
+          },
+          "blueTeamPlayerIds": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "integer"
+            }
+          },
+          "map": {
+            "type": "integer"
+          },
+          "roundFileName": {
             "type": "string",
             "nullable": true
           }

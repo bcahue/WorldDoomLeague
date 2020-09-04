@@ -3,9 +3,9 @@ using WorldDoomLeague.Application.Common.Interfaces;
 using WorldDoomLeague.Infrastructure;
 using WorldDoomLeague.Infrastructure.Persistence;
 using WorldDoomLeague.Infrastructure.Files;
+using WorldDoomLeague.Application.ConfigModels;
 using WorldDoomLeague.WebUI.Filters;
 using WorldDoomLeague.WebUI.Services;
-using WorldDoomLeague.WebUI.ConfigModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +41,7 @@ namespace WorldDoomLeague.WebUI
             services.AddHealthChecks()
                 .AddDbContextCheck<ApplicationDbContext>();
 
-            services.Configure<DataDirectories>(Configuration.GetSection(DataDirectories.Name));
+            services.Configure<DataDirectories>(Configuration.GetSection("DataDirectories"));
 
             services.AddControllersWithViews(options => options.Filters.Add(new ApiExceptionFilter()))
                 .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new TimeSpanToStringConverter()));

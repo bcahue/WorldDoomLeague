@@ -20,9 +20,6 @@ namespace WorldDoomLeague.Application.MatchModel
         public int DamageOutputBetweenTouchAndCaptureMin { get; set; }
         public int DamageOutputBetweenTouchAndCaptureMax { get; set; }
         public double DamageOutputBetweenTouchAndCaptureAvg { get; set; }
-        public TimeSpan CaptureTimeMin { get; set; }
-        public TimeSpan CaptureTimeMax { get; set; }
-        public TimeSpan CaptureTimeAvg { get; set; }
         public int CaptureTimeMinTics { get; set; }
         public int CaptureTimeMaxTics { get; set; }
         public double CaptureTimeAvgTics { get; set; }
@@ -37,9 +34,6 @@ namespace WorldDoomLeague.Application.MatchModel
         public double CaptureBlueArmorAvg { get; set; }
         public int FlagCarriersKilledWhileHoldingFlag { get; set; }
         public int HighestKillsBeforeCapturing { get; set; }
-        public TimeSpan PickupCaptureTimeMin { get; set; }
-        public TimeSpan PickupCaptureTimeMax { get; set; }
-        public TimeSpan PickupCaptureTimeAvg { get; set; }
         public int PickupCaptureTimeMinTics { get; set; }
         public int PickupCaptureTimeMaxTics { get; set; }
         public double PickupCaptureTimeAvgTics { get; set; }
@@ -62,6 +56,7 @@ namespace WorldDoomLeague.Application.MatchModel
         public int FlagDefenses { get; set; }
         public int TotalDeaths { get; set; }
         public int Deaths { get; set; }
+        public int FlagCarrierDeaths { get; set; }
         public int Suicides { get; set; }
         public int SuicidesWithFlag { get; set; }
         public int EnvironmentalDeaths { get; set; }
@@ -86,12 +81,12 @@ namespace WorldDoomLeague.Application.MatchModel
         public int TouchHealthResultCaptureMax { get; set; }
         public double TouchHealthResultCaptureAvg { get; set; }
         public int TouchesOverOneHundredHealth { get; set; }
-        public List<Pickup> PickupList { get; set; }
-        public List<Damage> DamageList { get; set; }
-        public List<Damage> DamageWithFlagList { get; set; }
-        public List<Kill> KillsList { get; set; }
-        public List<Kill> CarrierKillList { get; set; }
-        public List<Accuracy> AccuracyList { get; set; }
-        public List<Accuracy> AccuracyWithFlagList { get; set; }
+        public List<PickupAggregate> PickupList { get; set; }
+        public List<DamageAggregate> DamageList { get; set; }
+        public List<DamageAggregate> DamageWithFlagList { get; set; }
+        public List<KillAggregate> KillsList { get; set; }
+        public List<KillAggregate> CarrierKillList { get; set; }
+        public List<AccuracyAggregate> AccuracyList { get; set; }
+        public List<AccuracyAggregate> AccuracyWithFlagList { get; set; }
     }
 }

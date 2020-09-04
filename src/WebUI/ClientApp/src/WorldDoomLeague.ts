@@ -339,6 +339,8 @@ export class MapsClient implements IMapsClient {
 
 export interface IMatchesClient {
     get(matchId: number): Promise<MatchSummaryVm>;
+    create(command: CreateMatchCommand): Promise<number>;
+    process(command: ProcessMatchCommand): Promise<number>;
 }
 
 export class MatchesClient implements IMatchesClient {
@@ -386,6 +388,82 @@ export class MatchesClient implements IMatchesClient {
             });
         }
         return Promise.resolve<MatchSummaryVm>(<any>null);
+    }
+
+    create(command: CreateMatchCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Matches/create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreate(_response);
+        });
+    }
+
+    protected processCreate(response: Response): Promise<number> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(<any>null);
+    }
+
+    process(command: ProcessMatchCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Matches/process";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processProcess(_response);
+        });
+    }
+
+    protected processProcess(response: Response): Promise<number> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(<any>null);
     }
 }
 
@@ -1121,6 +1199,9 @@ export class Round implements IRound {
     blueTeamStats?: TeamStats | undefined;
     flagAssistTable?: FlagAssistTable | undefined;
     playerStats?: PlayerStats[] | undefined;
+    playerKillDeath?: KillDeathEvent[] | undefined;
+    playerFlagCarrierKillDeath?: KillDeathEvent[] | undefined;
+    gameEvents?: GameEvents[] | undefined;
 
     constructor(data?: IRound) {
         if (data) {
@@ -1141,6 +1222,21 @@ export class Round implements IRound {
                 this.playerStats = [] as any;
                 for (let item of _data["playerStats"])
                     this.playerStats!.push(PlayerStats.fromJS(item));
+            }
+            if (Array.isArray(_data["playerKillDeath"])) {
+                this.playerKillDeath = [] as any;
+                for (let item of _data["playerKillDeath"])
+                    this.playerKillDeath!.push(KillDeathEvent.fromJS(item));
+            }
+            if (Array.isArray(_data["playerFlagCarrierKillDeath"])) {
+                this.playerFlagCarrierKillDeath = [] as any;
+                for (let item of _data["playerFlagCarrierKillDeath"])
+                    this.playerFlagCarrierKillDeath!.push(KillDeathEvent.fromJS(item));
+            }
+            if (Array.isArray(_data["gameEvents"])) {
+                this.gameEvents = [] as any;
+                for (let item of _data["gameEvents"])
+                    this.gameEvents!.push(GameEvents.fromJS(item));
             }
         }
     }
@@ -1163,6 +1259,21 @@ export class Round implements IRound {
             for (let item of this.playerStats)
                 data["playerStats"].push(item.toJSON());
         }
+        if (Array.isArray(this.playerKillDeath)) {
+            data["playerKillDeath"] = [];
+            for (let item of this.playerKillDeath)
+                data["playerKillDeath"].push(item.toJSON());
+        }
+        if (Array.isArray(this.playerFlagCarrierKillDeath)) {
+            data["playerFlagCarrierKillDeath"] = [];
+            for (let item of this.playerFlagCarrierKillDeath)
+                data["playerFlagCarrierKillDeath"].push(item.toJSON());
+        }
+        if (Array.isArray(this.gameEvents)) {
+            data["gameEvents"] = [];
+            for (let item of this.gameEvents)
+                data["gameEvents"].push(item.toJSON());
+        }
         return data; 
     }
 }
@@ -1173,6 +1284,9 @@ export interface IRound {
     blueTeamStats?: TeamStats | undefined;
     flagAssistTable?: FlagAssistTable | undefined;
     playerStats?: PlayerStats[] | undefined;
+    playerKillDeath?: KillDeathEvent[] | undefined;
+    playerFlagCarrierKillDeath?: KillDeathEvent[] | undefined;
+    gameEvents?: GameEvents[] | undefined;
 }
 
 export class RoundMetaData implements IRoundMetaData {
@@ -1486,9 +1600,6 @@ export class PlayerStats implements IPlayerStats {
     damageOutputBetweenTouchAndCaptureMin?: number;
     damageOutputBetweenTouchAndCaptureMax?: number;
     damageOutputBetweenTouchAndCaptureAvg?: number;
-    captureTimeMin?: string;
-    captureTimeMax?: string;
-    captureTimeAvg?: string;
     captureTimeMinTics?: number;
     captureTimeMaxTics?: number;
     captureTimeAvgTics?: number;
@@ -1503,9 +1614,6 @@ export class PlayerStats implements IPlayerStats {
     captureBlueArmorAvg?: number;
     flagCarriersKilledWhileHoldingFlag?: number;
     highestKillsBeforeCapturing?: number;
-    pickupCaptureTimeMin?: string;
-    pickupCaptureTimeMax?: string;
-    pickupCaptureTimeAvg?: string;
     pickupCaptureTimeMinTics?: number;
     pickupCaptureTimeMaxTics?: number;
     pickupCaptureTimeAvgTics?: number;
@@ -1528,6 +1636,7 @@ export class PlayerStats implements IPlayerStats {
     flagDefenses?: number;
     totalDeaths?: number;
     deaths?: number;
+    flagCarrierDeaths?: number;
     suicides?: number;
     suicidesWithFlag?: number;
     environmentalDeaths?: number;
@@ -1552,13 +1661,13 @@ export class PlayerStats implements IPlayerStats {
     touchHealthResultCaptureMax?: number;
     touchHealthResultCaptureAvg?: number;
     touchesOverOneHundredHealth?: number;
-    pickupList?: Pickup[] | undefined;
-    damageList?: Damage[] | undefined;
-    damageWithFlagList?: Damage[] | undefined;
-    killsList?: Kill[] | undefined;
-    carrierKillList?: Kill[] | undefined;
-    accuracyList?: Accuracy[] | undefined;
-    accuracyWithFlagList?: Accuracy[] | undefined;
+    pickupList?: PickupAggregate[] | undefined;
+    damageList?: DamageAggregate[] | undefined;
+    damageWithFlagList?: DamageAggregate[] | undefined;
+    killsList?: KillAggregate[] | undefined;
+    carrierKillList?: KillAggregate[] | undefined;
+    accuracyList?: AccuracyAggregate[] | undefined;
+    accuracyWithFlagList?: AccuracyAggregate[] | undefined;
 
     constructor(data?: IPlayerStats) {
         if (data) {
@@ -1583,9 +1692,6 @@ export class PlayerStats implements IPlayerStats {
             this.damageOutputBetweenTouchAndCaptureMin = _data["damageOutputBetweenTouchAndCaptureMin"];
             this.damageOutputBetweenTouchAndCaptureMax = _data["damageOutputBetweenTouchAndCaptureMax"];
             this.damageOutputBetweenTouchAndCaptureAvg = _data["damageOutputBetweenTouchAndCaptureAvg"];
-            this.captureTimeMin = _data["captureTimeMin"];
-            this.captureTimeMax = _data["captureTimeMax"];
-            this.captureTimeAvg = _data["captureTimeAvg"];
             this.captureTimeMinTics = _data["captureTimeMinTics"];
             this.captureTimeMaxTics = _data["captureTimeMaxTics"];
             this.captureTimeAvgTics = _data["captureTimeAvgTics"];
@@ -1600,9 +1706,6 @@ export class PlayerStats implements IPlayerStats {
             this.captureBlueArmorAvg = _data["captureBlueArmorAvg"];
             this.flagCarriersKilledWhileHoldingFlag = _data["flagCarriersKilledWhileHoldingFlag"];
             this.highestKillsBeforeCapturing = _data["highestKillsBeforeCapturing"];
-            this.pickupCaptureTimeMin = _data["pickupCaptureTimeMin"];
-            this.pickupCaptureTimeMax = _data["pickupCaptureTimeMax"];
-            this.pickupCaptureTimeAvg = _data["pickupCaptureTimeAvg"];
             this.pickupCaptureTimeMinTics = _data["pickupCaptureTimeMinTics"];
             this.pickupCaptureTimeMaxTics = _data["pickupCaptureTimeMaxTics"];
             this.pickupCaptureTimeAvgTics = _data["pickupCaptureTimeAvgTics"];
@@ -1625,6 +1728,7 @@ export class PlayerStats implements IPlayerStats {
             this.flagDefenses = _data["flagDefenses"];
             this.totalDeaths = _data["totalDeaths"];
             this.deaths = _data["deaths"];
+            this.flagCarrierDeaths = _data["flagCarrierDeaths"];
             this.suicides = _data["suicides"];
             this.suicidesWithFlag = _data["suicidesWithFlag"];
             this.environmentalDeaths = _data["environmentalDeaths"];
@@ -1652,37 +1756,37 @@ export class PlayerStats implements IPlayerStats {
             if (Array.isArray(_data["pickupList"])) {
                 this.pickupList = [] as any;
                 for (let item of _data["pickupList"])
-                    this.pickupList!.push(Pickup.fromJS(item));
+                    this.pickupList!.push(PickupAggregate.fromJS(item));
             }
             if (Array.isArray(_data["damageList"])) {
                 this.damageList = [] as any;
                 for (let item of _data["damageList"])
-                    this.damageList!.push(Damage.fromJS(item));
+                    this.damageList!.push(DamageAggregate.fromJS(item));
             }
             if (Array.isArray(_data["damageWithFlagList"])) {
                 this.damageWithFlagList = [] as any;
                 for (let item of _data["damageWithFlagList"])
-                    this.damageWithFlagList!.push(Damage.fromJS(item));
+                    this.damageWithFlagList!.push(DamageAggregate.fromJS(item));
             }
             if (Array.isArray(_data["killsList"])) {
                 this.killsList = [] as any;
                 for (let item of _data["killsList"])
-                    this.killsList!.push(Kill.fromJS(item));
+                    this.killsList!.push(KillAggregate.fromJS(item));
             }
             if (Array.isArray(_data["carrierKillList"])) {
                 this.carrierKillList = [] as any;
                 for (let item of _data["carrierKillList"])
-                    this.carrierKillList!.push(Kill.fromJS(item));
+                    this.carrierKillList!.push(KillAggregate.fromJS(item));
             }
             if (Array.isArray(_data["accuracyList"])) {
                 this.accuracyList = [] as any;
                 for (let item of _data["accuracyList"])
-                    this.accuracyList!.push(Accuracy.fromJS(item));
+                    this.accuracyList!.push(AccuracyAggregate.fromJS(item));
             }
             if (Array.isArray(_data["accuracyWithFlagList"])) {
                 this.accuracyWithFlagList = [] as any;
                 for (let item of _data["accuracyWithFlagList"])
-                    this.accuracyWithFlagList!.push(Accuracy.fromJS(item));
+                    this.accuracyWithFlagList!.push(AccuracyAggregate.fromJS(item));
             }
         }
     }
@@ -1708,9 +1812,6 @@ export class PlayerStats implements IPlayerStats {
         data["damageOutputBetweenTouchAndCaptureMin"] = this.damageOutputBetweenTouchAndCaptureMin;
         data["damageOutputBetweenTouchAndCaptureMax"] = this.damageOutputBetweenTouchAndCaptureMax;
         data["damageOutputBetweenTouchAndCaptureAvg"] = this.damageOutputBetweenTouchAndCaptureAvg;
-        data["captureTimeMin"] = this.captureTimeMin;
-        data["captureTimeMax"] = this.captureTimeMax;
-        data["captureTimeAvg"] = this.captureTimeAvg;
         data["captureTimeMinTics"] = this.captureTimeMinTics;
         data["captureTimeMaxTics"] = this.captureTimeMaxTics;
         data["captureTimeAvgTics"] = this.captureTimeAvgTics;
@@ -1725,9 +1826,6 @@ export class PlayerStats implements IPlayerStats {
         data["captureBlueArmorAvg"] = this.captureBlueArmorAvg;
         data["flagCarriersKilledWhileHoldingFlag"] = this.flagCarriersKilledWhileHoldingFlag;
         data["highestKillsBeforeCapturing"] = this.highestKillsBeforeCapturing;
-        data["pickupCaptureTimeMin"] = this.pickupCaptureTimeMin;
-        data["pickupCaptureTimeMax"] = this.pickupCaptureTimeMax;
-        data["pickupCaptureTimeAvg"] = this.pickupCaptureTimeAvg;
         data["pickupCaptureTimeMinTics"] = this.pickupCaptureTimeMinTics;
         data["pickupCaptureTimeMaxTics"] = this.pickupCaptureTimeMaxTics;
         data["pickupCaptureTimeAvgTics"] = this.pickupCaptureTimeAvgTics;
@@ -1750,6 +1848,7 @@ export class PlayerStats implements IPlayerStats {
         data["flagDefenses"] = this.flagDefenses;
         data["totalDeaths"] = this.totalDeaths;
         data["deaths"] = this.deaths;
+        data["flagCarrierDeaths"] = this.flagCarrierDeaths;
         data["suicides"] = this.suicides;
         data["suicidesWithFlag"] = this.suicidesWithFlag;
         data["environmentalDeaths"] = this.environmentalDeaths;
@@ -1826,9 +1925,6 @@ export interface IPlayerStats {
     damageOutputBetweenTouchAndCaptureMin?: number;
     damageOutputBetweenTouchAndCaptureMax?: number;
     damageOutputBetweenTouchAndCaptureAvg?: number;
-    captureTimeMin?: string;
-    captureTimeMax?: string;
-    captureTimeAvg?: string;
     captureTimeMinTics?: number;
     captureTimeMaxTics?: number;
     captureTimeAvgTics?: number;
@@ -1843,9 +1939,6 @@ export interface IPlayerStats {
     captureBlueArmorAvg?: number;
     flagCarriersKilledWhileHoldingFlag?: number;
     highestKillsBeforeCapturing?: number;
-    pickupCaptureTimeMin?: string;
-    pickupCaptureTimeMax?: string;
-    pickupCaptureTimeAvg?: string;
     pickupCaptureTimeMinTics?: number;
     pickupCaptureTimeMaxTics?: number;
     pickupCaptureTimeAvgTics?: number;
@@ -1868,6 +1961,7 @@ export interface IPlayerStats {
     flagDefenses?: number;
     totalDeaths?: number;
     deaths?: number;
+    flagCarrierDeaths?: number;
     suicides?: number;
     suicidesWithFlag?: number;
     environmentalDeaths?: number;
@@ -1892,22 +1986,20 @@ export interface IPlayerStats {
     touchHealthResultCaptureMax?: number;
     touchHealthResultCaptureAvg?: number;
     touchesOverOneHundredHealth?: number;
-    pickupList?: Pickup[] | undefined;
-    damageList?: Damage[] | undefined;
-    damageWithFlagList?: Damage[] | undefined;
-    killsList?: Kill[] | undefined;
-    carrierKillList?: Kill[] | undefined;
-    accuracyList?: Accuracy[] | undefined;
-    accuracyWithFlagList?: Accuracy[] | undefined;
+    pickupList?: PickupAggregate[] | undefined;
+    damageList?: DamageAggregate[] | undefined;
+    damageWithFlagList?: DamageAggregate[] | undefined;
+    killsList?: KillAggregate[] | undefined;
+    carrierKillList?: KillAggregate[] | undefined;
+    accuracyList?: AccuracyAggregate[] | undefined;
+    accuracyWithFlagList?: AccuracyAggregate[] | undefined;
 }
 
-export class Pickup implements IPickup {
+export class PickupAggregate implements IPickupAggregate {
     pickupType?: Pickups;
-    pickupX?: number;
-    pickupY?: number;
-    pickupZ?: number;
+    totalPickups?: number;
 
-    constructor(data?: IPickup) {
+    constructor(data?: IPickupAggregate) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1919,15 +2011,13 @@ export class Pickup implements IPickup {
     init(_data?: any) {
         if (_data) {
             this.pickupType = _data["pickupType"];
-            this.pickupX = _data["pickupX"];
-            this.pickupY = _data["pickupY"];
-            this.pickupZ = _data["pickupZ"];
+            this.totalPickups = _data["totalPickups"];
         }
     }
 
-    static fromJS(data: any): Pickup {
+    static fromJS(data: any): PickupAggregate {
         data = typeof data === 'object' ? data : {};
-        let result = new Pickup();
+        let result = new PickupAggregate();
         result.init(data);
         return result;
     }
@@ -1935,18 +2025,14 @@ export class Pickup implements IPickup {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["pickupType"] = this.pickupType;
-        data["pickupX"] = this.pickupX;
-        data["pickupY"] = this.pickupY;
-        data["pickupZ"] = this.pickupZ;
+        data["totalPickups"] = this.totalPickups;
         return data; 
     }
 }
 
-export interface IPickup {
+export interface IPickupAggregate {
     pickupType?: Pickups;
-    pickupX?: number;
-    pickupY?: number;
-    pickupZ?: number;
+    totalPickups?: number;
 }
 
 export enum Pickups {
@@ -1961,14 +2047,14 @@ export enum Pickups {
     ArmorBonus = 8,
 }
 
-export class Damage implements IDamage {
-    damagedName?: string | undefined;
-    damageType?: Mods;
-    armorType?: Armor;
-    hp?: number;
-    armor?: number;
+export class DamageAggregate implements IDamageAggregate {
+    totalDamage?: number;
+    totalDamageGreenArmor?: number;
+    totalDamageBlueArmor?: number;
+    targetName?: string | undefined;
+    weapon?: Mods;
 
-    constructor(data?: IDamage) {
+    constructor(data?: IDamageAggregate) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1979,38 +2065,38 @@ export class Damage implements IDamage {
 
     init(_data?: any) {
         if (_data) {
-            this.damagedName = _data["damagedName"];
-            this.damageType = _data["damageType"];
-            this.armorType = _data["armorType"];
-            this.hp = _data["hp"];
-            this.armor = _data["armor"];
+            this.totalDamage = _data["totalDamage"];
+            this.totalDamageGreenArmor = _data["totalDamageGreenArmor"];
+            this.totalDamageBlueArmor = _data["totalDamageBlueArmor"];
+            this.targetName = _data["targetName"];
+            this.weapon = _data["weapon"];
         }
     }
 
-    static fromJS(data: any): Damage {
+    static fromJS(data: any): DamageAggregate {
         data = typeof data === 'object' ? data : {};
-        let result = new Damage();
+        let result = new DamageAggregate();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["damagedName"] = this.damagedName;
-        data["damageType"] = this.damageType;
-        data["armorType"] = this.armorType;
-        data["hp"] = this.hp;
-        data["armor"] = this.armor;
+        data["totalDamage"] = this.totalDamage;
+        data["totalDamageGreenArmor"] = this.totalDamageGreenArmor;
+        data["totalDamageBlueArmor"] = this.totalDamageBlueArmor;
+        data["targetName"] = this.targetName;
+        data["weapon"] = this.weapon;
         return data; 
     }
 }
 
-export interface IDamage {
-    damagedName?: string | undefined;
-    damageType?: Mods;
-    armorType?: Armor;
-    hp?: number;
-    armor?: number;
+export interface IDamageAggregate {
+    totalDamage?: number;
+    totalDamageGreenArmor?: number;
+    totalDamageBlueArmor?: number;
+    targetName?: string | undefined;
+    weapon?: Mods;
 }
 
 export enum Mods {
@@ -2040,23 +2126,12 @@ export enum Mods {
     Railgun = 23,
 }
 
-export enum Armor {
-    None = 0,
-    GreenArmor = 1,
-    BlueArmor = 2,
-}
+export class KillAggregate implements IKillAggregate {
+    totalKills?: number;
+    targetName?: string | undefined;
+    weapon?: Mods;
 
-export class Kill implements IKill {
-    killedByWeapon?: Mods;
-    killedName?: string | undefined;
-    killedX?: number;
-    killedY?: number;
-    killedZ?: number;
-    fraggerX?: number;
-    fraggerY?: number;
-    fraggerZ?: number;
-
-    constructor(data?: IKill) {
+    constructor(data?: IKillAggregate) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2067,95 +2142,88 @@ export class Kill implements IKill {
 
     init(_data?: any) {
         if (_data) {
-            this.killedByWeapon = _data["killedByWeapon"];
-            this.killedName = _data["killedName"];
-            this.killedX = _data["killedX"];
-            this.killedY = _data["killedY"];
-            this.killedZ = _data["killedZ"];
-            this.fraggerX = _data["fraggerX"];
-            this.fraggerY = _data["fraggerY"];
-            this.fraggerZ = _data["fraggerZ"];
-        }
-    }
-
-    static fromJS(data: any): Kill {
-        data = typeof data === 'object' ? data : {};
-        let result = new Kill();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["killedByWeapon"] = this.killedByWeapon;
-        data["killedName"] = this.killedName;
-        data["killedX"] = this.killedX;
-        data["killedY"] = this.killedY;
-        data["killedZ"] = this.killedZ;
-        data["fraggerX"] = this.fraggerX;
-        data["fraggerY"] = this.fraggerY;
-        data["fraggerZ"] = this.fraggerZ;
-        return data; 
-    }
-}
-
-export interface IKill {
-    killedByWeapon?: Mods;
-    killedName?: string | undefined;
-    killedX?: number;
-    killedY?: number;
-    killedZ?: number;
-    fraggerX?: number;
-    fraggerY?: number;
-    fraggerZ?: number;
-}
-
-export class Accuracy implements IAccuracy {
-    weapon?: Weapons;
-    hitMiss?: boolean;
-    spritePercent?: number;
-    pinpointPercent?: number;
-
-    constructor(data?: IAccuracy) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
+            this.totalKills = _data["totalKills"];
+            this.targetName = _data["targetName"];
             this.weapon = _data["weapon"];
-            this.hitMiss = _data["hitMiss"];
-            this.spritePercent = _data["spritePercent"];
-            this.pinpointPercent = _data["pinpointPercent"];
         }
     }
 
-    static fromJS(data: any): Accuracy {
+    static fromJS(data: any): KillAggregate {
         data = typeof data === 'object' ? data : {};
-        let result = new Accuracy();
+        let result = new KillAggregate();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["totalKills"] = this.totalKills;
+        data["targetName"] = this.targetName;
         data["weapon"] = this.weapon;
-        data["hitMiss"] = this.hitMiss;
-        data["spritePercent"] = this.spritePercent;
-        data["pinpointPercent"] = this.pinpointPercent;
         return data; 
     }
 }
 
-export interface IAccuracy {
+export interface IKillAggregate {
+    totalKills?: number;
+    targetName?: string | undefined;
+    weapon?: Mods;
+}
+
+export class AccuracyAggregate implements IAccuracyAggregate {
+    pinpointPercentage?: number;
+    spritePercentage?: number;
+    totalHits?: number;
+    totalMisses?: number;
+    hitMissRatio?: number;
     weapon?: Weapons;
-    hitMiss?: boolean;
-    spritePercent?: number;
-    pinpointPercent?: number;
+
+    constructor(data?: IAccuracyAggregate) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.pinpointPercentage = _data["pinpointPercentage"];
+            this.spritePercentage = _data["spritePercentage"];
+            this.totalHits = _data["totalHits"];
+            this.totalMisses = _data["totalMisses"];
+            this.hitMissRatio = _data["hitMissRatio"];
+            this.weapon = _data["weapon"];
+        }
+    }
+
+    static fromJS(data: any): AccuracyAggregate {
+        data = typeof data === 'object' ? data : {};
+        let result = new AccuracyAggregate();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["pinpointPercentage"] = this.pinpointPercentage;
+        data["spritePercentage"] = this.spritePercentage;
+        data["totalHits"] = this.totalHits;
+        data["totalMisses"] = this.totalMisses;
+        data["hitMissRatio"] = this.hitMissRatio;
+        data["weapon"] = this.weapon;
+        return data; 
+    }
+}
+
+export interface IAccuracyAggregate {
+    pinpointPercentage?: number;
+    spritePercentage?: number;
+    totalHits?: number;
+    totalMisses?: number;
+    hitMissRatio?: number;
+    weapon?: Weapons;
 }
 
 export enum Weapons {
@@ -2168,6 +2236,742 @@ export enum Weapons {
     Bfg = 6,
     Chainsaw = 7,
     SuperShotgun = 8,
+}
+
+export class KillDeathEvent implements IKillDeathEvent {
+    killerName?: string | undefined;
+    killerX?: number;
+    killerY?: number;
+    killerZ?: number;
+    targetName?: string | undefined;
+    targetX?: number;
+    targetY?: number;
+    targetZ?: number;
+    weapon?: Mods;
+
+    constructor(data?: IKillDeathEvent) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.killerName = _data["killerName"];
+            this.killerX = _data["killerX"];
+            this.killerY = _data["killerY"];
+            this.killerZ = _data["killerZ"];
+            this.targetName = _data["targetName"];
+            this.targetX = _data["targetX"];
+            this.targetY = _data["targetY"];
+            this.targetZ = _data["targetZ"];
+            this.weapon = _data["weapon"];
+        }
+    }
+
+    static fromJS(data: any): KillDeathEvent {
+        data = typeof data === 'object' ? data : {};
+        let result = new KillDeathEvent();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["killerName"] = this.killerName;
+        data["killerX"] = this.killerX;
+        data["killerY"] = this.killerY;
+        data["killerZ"] = this.killerZ;
+        data["targetName"] = this.targetName;
+        data["targetX"] = this.targetX;
+        data["targetY"] = this.targetY;
+        data["targetZ"] = this.targetZ;
+        data["weapon"] = this.weapon;
+        return data; 
+    }
+}
+
+export interface IKillDeathEvent {
+    killerName?: string | undefined;
+    killerX?: number;
+    killerY?: number;
+    killerZ?: number;
+    targetName?: string | undefined;
+    targetX?: number;
+    targetY?: number;
+    targetZ?: number;
+    weapon?: Mods;
+}
+
+export class GameEvents implements IGameEvents {
+    gameTic?: number;
+    accuracyEvents?: AccuracyEvent[] | undefined;
+    kills?: KillEvent[] | undefined;
+    carrierKills?: KillEvent[] | undefined;
+    suicides?: KillEvent[] | undefined;
+    suicidesWithFlag?: KillEvent[] | undefined;
+    environmentalDeaths?: KillEvent[] | undefined;
+    environmentalDeathsWithFlag?: KillEvent[] | undefined;
+    damage?: DamageEvent[] | undefined;
+    selfDamage?: DamageEvent[] | undefined;
+    selfDamageWithFlag?: DamageEvent[] | undefined;
+    environmentalDamage?: DamageEvent[] | undefined;
+    environmentalDamageWithFlag?: DamageEvent[] | undefined;
+    pickups?: PickupEvent[] | undefined;
+    pickupFlagTouches?: FlagTouchEvent[] | undefined;
+    flagTouches?: FlagTouchEvent[] | undefined;
+    flagCaptures?: FlagCaptureEvent[] | undefined;
+    flagReturns?: FlagReturnEvent[] | undefined;
+
+    constructor(data?: IGameEvents) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.gameTic = _data["gameTic"];
+            if (Array.isArray(_data["accuracyEvents"])) {
+                this.accuracyEvents = [] as any;
+                for (let item of _data["accuracyEvents"])
+                    this.accuracyEvents!.push(AccuracyEvent.fromJS(item));
+            }
+            if (Array.isArray(_data["kills"])) {
+                this.kills = [] as any;
+                for (let item of _data["kills"])
+                    this.kills!.push(KillEvent.fromJS(item));
+            }
+            if (Array.isArray(_data["carrierKills"])) {
+                this.carrierKills = [] as any;
+                for (let item of _data["carrierKills"])
+                    this.carrierKills!.push(KillEvent.fromJS(item));
+            }
+            if (Array.isArray(_data["suicides"])) {
+                this.suicides = [] as any;
+                for (let item of _data["suicides"])
+                    this.suicides!.push(KillEvent.fromJS(item));
+            }
+            if (Array.isArray(_data["suicidesWithFlag"])) {
+                this.suicidesWithFlag = [] as any;
+                for (let item of _data["suicidesWithFlag"])
+                    this.suicidesWithFlag!.push(KillEvent.fromJS(item));
+            }
+            if (Array.isArray(_data["environmentalDeaths"])) {
+                this.environmentalDeaths = [] as any;
+                for (let item of _data["environmentalDeaths"])
+                    this.environmentalDeaths!.push(KillEvent.fromJS(item));
+            }
+            if (Array.isArray(_data["environmentalDeathsWithFlag"])) {
+                this.environmentalDeathsWithFlag = [] as any;
+                for (let item of _data["environmentalDeathsWithFlag"])
+                    this.environmentalDeathsWithFlag!.push(KillEvent.fromJS(item));
+            }
+            if (Array.isArray(_data["damage"])) {
+                this.damage = [] as any;
+                for (let item of _data["damage"])
+                    this.damage!.push(DamageEvent.fromJS(item));
+            }
+            if (Array.isArray(_data["selfDamage"])) {
+                this.selfDamage = [] as any;
+                for (let item of _data["selfDamage"])
+                    this.selfDamage!.push(DamageEvent.fromJS(item));
+            }
+            if (Array.isArray(_data["selfDamageWithFlag"])) {
+                this.selfDamageWithFlag = [] as any;
+                for (let item of _data["selfDamageWithFlag"])
+                    this.selfDamageWithFlag!.push(DamageEvent.fromJS(item));
+            }
+            if (Array.isArray(_data["environmentalDamage"])) {
+                this.environmentalDamage = [] as any;
+                for (let item of _data["environmentalDamage"])
+                    this.environmentalDamage!.push(DamageEvent.fromJS(item));
+            }
+            if (Array.isArray(_data["environmentalDamageWithFlag"])) {
+                this.environmentalDamageWithFlag = [] as any;
+                for (let item of _data["environmentalDamageWithFlag"])
+                    this.environmentalDamageWithFlag!.push(DamageEvent.fromJS(item));
+            }
+            if (Array.isArray(_data["pickups"])) {
+                this.pickups = [] as any;
+                for (let item of _data["pickups"])
+                    this.pickups!.push(PickupEvent.fromJS(item));
+            }
+            if (Array.isArray(_data["pickupFlagTouches"])) {
+                this.pickupFlagTouches = [] as any;
+                for (let item of _data["pickupFlagTouches"])
+                    this.pickupFlagTouches!.push(FlagTouchEvent.fromJS(item));
+            }
+            if (Array.isArray(_data["flagTouches"])) {
+                this.flagTouches = [] as any;
+                for (let item of _data["flagTouches"])
+                    this.flagTouches!.push(FlagTouchEvent.fromJS(item));
+            }
+            if (Array.isArray(_data["flagCaptures"])) {
+                this.flagCaptures = [] as any;
+                for (let item of _data["flagCaptures"])
+                    this.flagCaptures!.push(FlagCaptureEvent.fromJS(item));
+            }
+            if (Array.isArray(_data["flagReturns"])) {
+                this.flagReturns = [] as any;
+                for (let item of _data["flagReturns"])
+                    this.flagReturns!.push(FlagReturnEvent.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): GameEvents {
+        data = typeof data === 'object' ? data : {};
+        let result = new GameEvents();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["gameTic"] = this.gameTic;
+        if (Array.isArray(this.accuracyEvents)) {
+            data["accuracyEvents"] = [];
+            for (let item of this.accuracyEvents)
+                data["accuracyEvents"].push(item.toJSON());
+        }
+        if (Array.isArray(this.kills)) {
+            data["kills"] = [];
+            for (let item of this.kills)
+                data["kills"].push(item.toJSON());
+        }
+        if (Array.isArray(this.carrierKills)) {
+            data["carrierKills"] = [];
+            for (let item of this.carrierKills)
+                data["carrierKills"].push(item.toJSON());
+        }
+        if (Array.isArray(this.suicides)) {
+            data["suicides"] = [];
+            for (let item of this.suicides)
+                data["suicides"].push(item.toJSON());
+        }
+        if (Array.isArray(this.suicidesWithFlag)) {
+            data["suicidesWithFlag"] = [];
+            for (let item of this.suicidesWithFlag)
+                data["suicidesWithFlag"].push(item.toJSON());
+        }
+        if (Array.isArray(this.environmentalDeaths)) {
+            data["environmentalDeaths"] = [];
+            for (let item of this.environmentalDeaths)
+                data["environmentalDeaths"].push(item.toJSON());
+        }
+        if (Array.isArray(this.environmentalDeathsWithFlag)) {
+            data["environmentalDeathsWithFlag"] = [];
+            for (let item of this.environmentalDeathsWithFlag)
+                data["environmentalDeathsWithFlag"].push(item.toJSON());
+        }
+        if (Array.isArray(this.damage)) {
+            data["damage"] = [];
+            for (let item of this.damage)
+                data["damage"].push(item.toJSON());
+        }
+        if (Array.isArray(this.selfDamage)) {
+            data["selfDamage"] = [];
+            for (let item of this.selfDamage)
+                data["selfDamage"].push(item.toJSON());
+        }
+        if (Array.isArray(this.selfDamageWithFlag)) {
+            data["selfDamageWithFlag"] = [];
+            for (let item of this.selfDamageWithFlag)
+                data["selfDamageWithFlag"].push(item.toJSON());
+        }
+        if (Array.isArray(this.environmentalDamage)) {
+            data["environmentalDamage"] = [];
+            for (let item of this.environmentalDamage)
+                data["environmentalDamage"].push(item.toJSON());
+        }
+        if (Array.isArray(this.environmentalDamageWithFlag)) {
+            data["environmentalDamageWithFlag"] = [];
+            for (let item of this.environmentalDamageWithFlag)
+                data["environmentalDamageWithFlag"].push(item.toJSON());
+        }
+        if (Array.isArray(this.pickups)) {
+            data["pickups"] = [];
+            for (let item of this.pickups)
+                data["pickups"].push(item.toJSON());
+        }
+        if (Array.isArray(this.pickupFlagTouches)) {
+            data["pickupFlagTouches"] = [];
+            for (let item of this.pickupFlagTouches)
+                data["pickupFlagTouches"].push(item.toJSON());
+        }
+        if (Array.isArray(this.flagTouches)) {
+            data["flagTouches"] = [];
+            for (let item of this.flagTouches)
+                data["flagTouches"].push(item.toJSON());
+        }
+        if (Array.isArray(this.flagCaptures)) {
+            data["flagCaptures"] = [];
+            for (let item of this.flagCaptures)
+                data["flagCaptures"].push(item.toJSON());
+        }
+        if (Array.isArray(this.flagReturns)) {
+            data["flagReturns"] = [];
+            for (let item of this.flagReturns)
+                data["flagReturns"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IGameEvents {
+    gameTic?: number;
+    accuracyEvents?: AccuracyEvent[] | undefined;
+    kills?: KillEvent[] | undefined;
+    carrierKills?: KillEvent[] | undefined;
+    suicides?: KillEvent[] | undefined;
+    suicidesWithFlag?: KillEvent[] | undefined;
+    environmentalDeaths?: KillEvent[] | undefined;
+    environmentalDeathsWithFlag?: KillEvent[] | undefined;
+    damage?: DamageEvent[] | undefined;
+    selfDamage?: DamageEvent[] | undefined;
+    selfDamageWithFlag?: DamageEvent[] | undefined;
+    environmentalDamage?: DamageEvent[] | undefined;
+    environmentalDamageWithFlag?: DamageEvent[] | undefined;
+    pickups?: PickupEvent[] | undefined;
+    pickupFlagTouches?: FlagTouchEvent[] | undefined;
+    flagTouches?: FlagTouchEvent[] | undefined;
+    flagCaptures?: FlagCaptureEvent[] | undefined;
+    flagReturns?: FlagReturnEvent[] | undefined;
+}
+
+export class AccuracyEvent implements IAccuracyEvent {
+    shooterName?: string | undefined;
+    targetName?: string | undefined;
+    weapon?: Weapons;
+    hitMiss?: boolean;
+    spritePercent?: number;
+    pinpointPercent?: number;
+    angleBits?: number;
+    activatorX?: number;
+    activatorY?: number;
+    activatorZ?: number;
+    targetX?: number;
+    targetY?: number;
+    targetZ?: number;
+
+    constructor(data?: IAccuracyEvent) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.shooterName = _data["shooterName"];
+            this.targetName = _data["targetName"];
+            this.weapon = _data["weapon"];
+            this.hitMiss = _data["hitMiss"];
+            this.spritePercent = _data["spritePercent"];
+            this.pinpointPercent = _data["pinpointPercent"];
+            this.angleBits = _data["angleBits"];
+            this.activatorX = _data["activatorX"];
+            this.activatorY = _data["activatorY"];
+            this.activatorZ = _data["activatorZ"];
+            this.targetX = _data["targetX"];
+            this.targetY = _data["targetY"];
+            this.targetZ = _data["targetZ"];
+        }
+    }
+
+    static fromJS(data: any): AccuracyEvent {
+        data = typeof data === 'object' ? data : {};
+        let result = new AccuracyEvent();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["shooterName"] = this.shooterName;
+        data["targetName"] = this.targetName;
+        data["weapon"] = this.weapon;
+        data["hitMiss"] = this.hitMiss;
+        data["spritePercent"] = this.spritePercent;
+        data["pinpointPercent"] = this.pinpointPercent;
+        data["angleBits"] = this.angleBits;
+        data["activatorX"] = this.activatorX;
+        data["activatorY"] = this.activatorY;
+        data["activatorZ"] = this.activatorZ;
+        data["targetX"] = this.targetX;
+        data["targetY"] = this.targetY;
+        data["targetZ"] = this.targetZ;
+        return data; 
+    }
+}
+
+export interface IAccuracyEvent {
+    shooterName?: string | undefined;
+    targetName?: string | undefined;
+    weapon?: Weapons;
+    hitMiss?: boolean;
+    spritePercent?: number;
+    pinpointPercent?: number;
+    angleBits?: number;
+    activatorX?: number;
+    activatorY?: number;
+    activatorZ?: number;
+    targetX?: number;
+    targetY?: number;
+    targetZ?: number;
+}
+
+export class KillEvent implements IKillEvent {
+    shooterName?: string | undefined;
+    targetName?: string | undefined;
+    weapon?: Mods;
+    activatorX?: number;
+    activatorY?: number;
+    activatorZ?: number;
+    targetX?: number;
+    targetY?: number;
+    targetZ?: number;
+
+    constructor(data?: IKillEvent) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.shooterName = _data["shooterName"];
+            this.targetName = _data["targetName"];
+            this.weapon = _data["weapon"];
+            this.activatorX = _data["activatorX"];
+            this.activatorY = _data["activatorY"];
+            this.activatorZ = _data["activatorZ"];
+            this.targetX = _data["targetX"];
+            this.targetY = _data["targetY"];
+            this.targetZ = _data["targetZ"];
+        }
+    }
+
+    static fromJS(data: any): KillEvent {
+        data = typeof data === 'object' ? data : {};
+        let result = new KillEvent();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["shooterName"] = this.shooterName;
+        data["targetName"] = this.targetName;
+        data["weapon"] = this.weapon;
+        data["activatorX"] = this.activatorX;
+        data["activatorY"] = this.activatorY;
+        data["activatorZ"] = this.activatorZ;
+        data["targetX"] = this.targetX;
+        data["targetY"] = this.targetY;
+        data["targetZ"] = this.targetZ;
+        return data; 
+    }
+}
+
+export interface IKillEvent {
+    shooterName?: string | undefined;
+    targetName?: string | undefined;
+    weapon?: Mods;
+    activatorX?: number;
+    activatorY?: number;
+    activatorZ?: number;
+    targetX?: number;
+    targetY?: number;
+    targetZ?: number;
+}
+
+export class DamageEvent implements IDamageEvent {
+    shooterName?: string | undefined;
+    targetName?: string | undefined;
+    damageType?: Mods;
+    activatorX?: number;
+    activatorY?: number;
+    activatorZ?: number;
+    targetX?: number;
+    targetY?: number;
+    targetZ?: number;
+    hp?: number;
+    blueArmor?: number;
+    greenArmor?: number;
+
+    constructor(data?: IDamageEvent) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.shooterName = _data["shooterName"];
+            this.targetName = _data["targetName"];
+            this.damageType = _data["damageType"];
+            this.activatorX = _data["activatorX"];
+            this.activatorY = _data["activatorY"];
+            this.activatorZ = _data["activatorZ"];
+            this.targetX = _data["targetX"];
+            this.targetY = _data["targetY"];
+            this.targetZ = _data["targetZ"];
+            this.hp = _data["hp"];
+            this.blueArmor = _data["blueArmor"];
+            this.greenArmor = _data["greenArmor"];
+        }
+    }
+
+    static fromJS(data: any): DamageEvent {
+        data = typeof data === 'object' ? data : {};
+        let result = new DamageEvent();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["shooterName"] = this.shooterName;
+        data["targetName"] = this.targetName;
+        data["damageType"] = this.damageType;
+        data["activatorX"] = this.activatorX;
+        data["activatorY"] = this.activatorY;
+        data["activatorZ"] = this.activatorZ;
+        data["targetX"] = this.targetX;
+        data["targetY"] = this.targetY;
+        data["targetZ"] = this.targetZ;
+        data["hp"] = this.hp;
+        data["blueArmor"] = this.blueArmor;
+        data["greenArmor"] = this.greenArmor;
+        return data; 
+    }
+}
+
+export interface IDamageEvent {
+    shooterName?: string | undefined;
+    targetName?: string | undefined;
+    damageType?: Mods;
+    activatorX?: number;
+    activatorY?: number;
+    activatorZ?: number;
+    targetX?: number;
+    targetY?: number;
+    targetZ?: number;
+    hp?: number;
+    blueArmor?: number;
+    greenArmor?: number;
+}
+
+export class PickupEvent implements IPickupEvent {
+    playerName?: string | undefined;
+    type?: Pickups;
+    activatorX?: number;
+    activatorY?: number;
+    activatorZ?: number;
+
+    constructor(data?: IPickupEvent) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.playerName = _data["playerName"];
+            this.type = _data["type"];
+            this.activatorX = _data["activatorX"];
+            this.activatorY = _data["activatorY"];
+            this.activatorZ = _data["activatorZ"];
+        }
+    }
+
+    static fromJS(data: any): PickupEvent {
+        data = typeof data === 'object' ? data : {};
+        let result = new PickupEvent();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["playerName"] = this.playerName;
+        data["type"] = this.type;
+        data["activatorX"] = this.activatorX;
+        data["activatorY"] = this.activatorY;
+        data["activatorZ"] = this.activatorZ;
+        return data; 
+    }
+}
+
+export interface IPickupEvent {
+    playerName?: string | undefined;
+    type?: Pickups;
+    activatorX?: number;
+    activatorY?: number;
+    activatorZ?: number;
+}
+
+export class FlagTouchEvent implements IFlagTouchEvent {
+    playerName?: string | undefined;
+    activatorX?: number;
+    activatorY?: number;
+    activatorZ?: number;
+
+    constructor(data?: IFlagTouchEvent) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.playerName = _data["playerName"];
+            this.activatorX = _data["activatorX"];
+            this.activatorY = _data["activatorY"];
+            this.activatorZ = _data["activatorZ"];
+        }
+    }
+
+    static fromJS(data: any): FlagTouchEvent {
+        data = typeof data === 'object' ? data : {};
+        let result = new FlagTouchEvent();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["playerName"] = this.playerName;
+        data["activatorX"] = this.activatorX;
+        data["activatorY"] = this.activatorY;
+        data["activatorZ"] = this.activatorZ;
+        return data; 
+    }
+}
+
+export interface IFlagTouchEvent {
+    playerName?: string | undefined;
+    activatorX?: number;
+    activatorY?: number;
+    activatorZ?: number;
+}
+
+export class FlagCaptureEvent implements IFlagCaptureEvent {
+    playerName?: string | undefined;
+    activatorX?: number;
+    activatorY?: number;
+    activatorZ?: number;
+
+    constructor(data?: IFlagCaptureEvent) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.playerName = _data["playerName"];
+            this.activatorX = _data["activatorX"];
+            this.activatorY = _data["activatorY"];
+            this.activatorZ = _data["activatorZ"];
+        }
+    }
+
+    static fromJS(data: any): FlagCaptureEvent {
+        data = typeof data === 'object' ? data : {};
+        let result = new FlagCaptureEvent();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["playerName"] = this.playerName;
+        data["activatorX"] = this.activatorX;
+        data["activatorY"] = this.activatorY;
+        data["activatorZ"] = this.activatorZ;
+        return data; 
+    }
+}
+
+export interface IFlagCaptureEvent {
+    playerName?: string | undefined;
+    activatorX?: number;
+    activatorY?: number;
+    activatorZ?: number;
+}
+
+export class FlagReturnEvent implements IFlagReturnEvent {
+    playerName?: string | undefined;
+    activatorX?: number;
+    activatorY?: number;
+    activatorZ?: number;
+
+    constructor(data?: IFlagReturnEvent) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.playerName = _data["playerName"];
+            this.activatorX = _data["activatorX"];
+            this.activatorY = _data["activatorY"];
+            this.activatorZ = _data["activatorZ"];
+        }
+    }
+
+    static fromJS(data: any): FlagReturnEvent {
+        data = typeof data === 'object' ? data : {};
+        let result = new FlagReturnEvent();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["playerName"] = this.playerName;
+        data["activatorX"] = this.activatorX;
+        data["activatorY"] = this.activatorY;
+        data["activatorZ"] = this.activatorZ;
+        return data; 
+    }
+}
+
+export interface IFlagReturnEvent {
+    playerName?: string | undefined;
+    activatorX?: number;
+    activatorY?: number;
+    activatorZ?: number;
 }
 
 export class PlayerLeaderboardSeasonStatsVm implements IPlayerLeaderboardSeasonStatsVm {
@@ -3251,6 +4055,174 @@ export interface IDemoDto {
     playerName?: string | undefined;
     demoLost?: boolean;
     demoFilePath?: string | undefined;
+}
+
+export class CreateMatchCommand implements ICreateMatchCommand {
+    season?: number;
+    week?: number;
+    redTeam?: number;
+    blueTeam?: number;
+    gameDateTime?: Date | undefined;
+
+    constructor(data?: ICreateMatchCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.season = _data["season"];
+            this.week = _data["week"];
+            this.redTeam = _data["redTeam"];
+            this.blueTeam = _data["blueTeam"];
+            this.gameDateTime = _data["gameDateTime"] ? new Date(_data["gameDateTime"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): CreateMatchCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMatchCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["season"] = this.season;
+        data["week"] = this.week;
+        data["redTeam"] = this.redTeam;
+        data["blueTeam"] = this.blueTeam;
+        data["gameDateTime"] = this.gameDateTime ? this.gameDateTime.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface ICreateMatchCommand {
+    season?: number;
+    week?: number;
+    redTeam?: number;
+    blueTeam?: number;
+    gameDateTime?: Date | undefined;
+}
+
+export class ProcessMatchCommand implements IProcessMatchCommand {
+    matchId?: number;
+    flipTeams?: boolean;
+    gameRounds?: RoundObject[] | undefined;
+
+    constructor(data?: IProcessMatchCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.matchId = _data["matchId"];
+            this.flipTeams = _data["flipTeams"];
+            if (Array.isArray(_data["gameRounds"])) {
+                this.gameRounds = [] as any;
+                for (let item of _data["gameRounds"])
+                    this.gameRounds!.push(RoundObject.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ProcessMatchCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProcessMatchCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["matchId"] = this.matchId;
+        data["flipTeams"] = this.flipTeams;
+        if (Array.isArray(this.gameRounds)) {
+            data["gameRounds"] = [];
+            for (let item of this.gameRounds)
+                data["gameRounds"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IProcessMatchCommand {
+    matchId?: number;
+    flipTeams?: boolean;
+    gameRounds?: RoundObject[] | undefined;
+}
+
+export class RoundObject implements IRoundObject {
+    redTeamPlayerIds?: number[] | undefined;
+    blueTeamPlayerIds?: number[] | undefined;
+    map?: number;
+    roundFileName?: string | undefined;
+
+    constructor(data?: IRoundObject) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["redTeamPlayerIds"])) {
+                this.redTeamPlayerIds = [] as any;
+                for (let item of _data["redTeamPlayerIds"])
+                    this.redTeamPlayerIds!.push(item);
+            }
+            if (Array.isArray(_data["blueTeamPlayerIds"])) {
+                this.blueTeamPlayerIds = [] as any;
+                for (let item of _data["blueTeamPlayerIds"])
+                    this.blueTeamPlayerIds!.push(item);
+            }
+            this.map = _data["map"];
+            this.roundFileName = _data["roundFileName"];
+        }
+    }
+
+    static fromJS(data: any): RoundObject {
+        data = typeof data === 'object' ? data : {};
+        let result = new RoundObject();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.redTeamPlayerIds)) {
+            data["redTeamPlayerIds"] = [];
+            for (let item of this.redTeamPlayerIds)
+                data["redTeamPlayerIds"].push(item);
+        }
+        if (Array.isArray(this.blueTeamPlayerIds)) {
+            data["blueTeamPlayerIds"] = [];
+            for (let item of this.blueTeamPlayerIds)
+                data["blueTeamPlayerIds"].push(item);
+        }
+        data["map"] = this.map;
+        data["roundFileName"] = this.roundFileName;
+        return data; 
+    }
+}
+
+export interface IRoundObject {
+    redTeamPlayerIds?: number[] | undefined;
+    blueTeamPlayerIds?: number[] | undefined;
+    map?: number;
+    roundFileName?: string | undefined;
 }
 
 export class PlayersVm implements IPlayersVm {

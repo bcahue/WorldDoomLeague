@@ -11,10 +11,10 @@ namespace WorldDoomLeague.Domain.Entities
             RoundPlayers = new HashSet<RoundPlayers>();
             StatsAccuracyDataFkIdPlayerAttackerNavigation = new HashSet<StatsAccuracyData>();
             StatsAccuracyDataFkIdPlayerTargetNavigation = new HashSet<StatsAccuracyData>();
-            StatsAccuracyFlagOutDataFkIdPlayerAttackerNavigation = new HashSet<StatsAccuracyFlagOutData>();
-            StatsAccuracyFlagOutDataFkIdPlayerTargetNavigation = new HashSet<StatsAccuracyFlagOutData>();
-            StatsDamageCarrierDataFkIdPlayerAttackerNavigation = new HashSet<StatsDamageCarrierData>();
-            StatsDamageCarrierDataFkIdPlayerTargetNavigation = new HashSet<StatsDamageCarrierData>();
+            StatsAccuracyFlagOutDataFkIdPlayerAttackerNavigation = new HashSet<StatsAccuracyWithFlagData>();
+            StatsAccuracyFlagOutDataFkIdPlayerTargetNavigation = new HashSet<StatsAccuracyWithFlagData>();
+            StatsDamageCarrierDataFkIdPlayerAttackerNavigation = new HashSet<StatsDamageWithFlagData>();
+            StatsDamageCarrierDataFkIdPlayerTargetNavigation = new HashSet<StatsDamageWithFlagData>();
             StatsDamageDataFkIdPlayerAttackerNavigation = new HashSet<StatsDamageData>();
             StatsDamageDataFkIdPlayerTargetNavigation = new HashSet<StatsDamageData>();
             StatsKillCarrierDataFkIdPlayerAttackerNavigation = new HashSet<StatsKillCarrierData>();
@@ -43,10 +43,10 @@ namespace WorldDoomLeague.Domain.Entities
         public virtual ICollection<RoundPlayers> RoundPlayers { get; set; }
         public virtual ICollection<StatsAccuracyData> StatsAccuracyDataFkIdPlayerAttackerNavigation { get; set; }
         public virtual ICollection<StatsAccuracyData> StatsAccuracyDataFkIdPlayerTargetNavigation { get; set; }
-        public virtual ICollection<StatsAccuracyFlagOutData> StatsAccuracyFlagOutDataFkIdPlayerAttackerNavigation { get; set; }
-        public virtual ICollection<StatsAccuracyFlagOutData> StatsAccuracyFlagOutDataFkIdPlayerTargetNavigation { get; set; }
-        public virtual ICollection<StatsDamageCarrierData> StatsDamageCarrierDataFkIdPlayerAttackerNavigation { get; set; }
-        public virtual ICollection<StatsDamageCarrierData> StatsDamageCarrierDataFkIdPlayerTargetNavigation { get; set; }
+        public virtual ICollection<StatsAccuracyWithFlagData> StatsAccuracyFlagOutDataFkIdPlayerAttackerNavigation { get; set; }
+        public virtual ICollection<StatsAccuracyWithFlagData> StatsAccuracyFlagOutDataFkIdPlayerTargetNavigation { get; set; }
+        public virtual ICollection<StatsDamageWithFlagData> StatsDamageCarrierDataFkIdPlayerAttackerNavigation { get; set; }
+        public virtual ICollection<StatsDamageWithFlagData> StatsDamageCarrierDataFkIdPlayerTargetNavigation { get; set; }
         public virtual ICollection<StatsDamageData> StatsDamageDataFkIdPlayerAttackerNavigation { get; set; }
         public virtual ICollection<StatsDamageData> StatsDamageDataFkIdPlayerTargetNavigation { get; set; }
         public virtual ICollection<StatsKillCarrierData> StatsKillCarrierDataFkIdPlayerAttackerNavigation { get; set; }

@@ -19,8 +19,7 @@
     <Folder Include="Common\Mappings\" />
     <Folder Include="Draft\Queries\" />
     <Folder Include="Maps\Queries\" />
-    <Folder Include="Matches\Commands\CreateMatch\" />
-    <Folder Include="Matches\Commands\ProcessMatch\" />
+    <Folder Include="GameEvents\" />
     <Folder Include="PlayerTransactions\Queries\" />
     <Folder Include="Stats\Queries\" />
   </ItemGroup>

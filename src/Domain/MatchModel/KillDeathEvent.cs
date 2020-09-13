@@ -1,6 +1,6 @@
 ﻿using WorldDoomLeague.Domain.Enums;
 
-namespace WorldDoomLeague.Application.MatchModel
+namespace WorldDoomLeague.Domain.MatchModel
 {
     public class KillDeathEvent
     {

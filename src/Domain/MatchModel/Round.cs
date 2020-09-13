@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WorldDoomLeague.Application.MatchModel
+namespace WorldDoomLeague.Domain.MatchModel
 {
     /// <summary>
     /// Represents the entire game, its metadata, and its players.

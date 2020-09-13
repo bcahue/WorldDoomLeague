@@ -1,4 +1,6 @@
-﻿namespace WorldDoomLeague.Application.MatchModel
+﻿using System.Collections.Generic;
+
+namespace WorldDoomLeague.Domain.MatchModel
 {
     public class TeamStats
     {
@@ -17,5 +19,6 @@
         public int Damage { get; set; }
         public int FlagDefenses { get; set; }
         public int PowerPickups { get; set; }
+        public IList<string> TeamPlayers { get; private set; }
     }
 }

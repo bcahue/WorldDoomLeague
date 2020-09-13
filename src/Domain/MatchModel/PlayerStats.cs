@@ -4,7 +4,7 @@ using System.Linq;
 using WorldDoomLeague.Domain.Enums;
 using WorldDoomLeague.Application.MatchModel;
 
-namespace WorldDoomLeague.Application.MatchModel
+namespace WorldDoomLeague.Domain.MatchModel
 {
     public class PlayerStats
     {
@@ -14,6 +14,7 @@ namespace WorldDoomLeague.Application.MatchModel
         public int CompleteMisses { get; set; }
         public int Assists { get; set; }
         public int Captures { get; set; }
+        public int CapturesWithSuperPickup { get; set; }
         public int PickupCaptures { get; set; }
         public int FlagTouches { get; set; }
         public int PickupFlagTouches { get; set; }

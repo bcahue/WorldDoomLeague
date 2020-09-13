@@ -35,5 +35,7 @@ namespace WorldDoomLeague.Application.Common.Interfaces
         DbSet<GameMaps> GameMaps { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+
+        Microsoft.EntityFrameworkCore.Infrastructure.DatabaseFacade Database { get; }
     }
 }

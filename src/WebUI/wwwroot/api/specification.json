@@ -993,6 +993,13 @@
           "powerPickups": {
             "type": "integer",
             "format": "int32"
+          },
+          "teamPlayers": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
           }
         }
       },

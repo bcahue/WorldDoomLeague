@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using WorldDoomLeague.Application.MatchModel;
+using WorldDoomLeague.Domain.MatchModel;
 
 namespace WorldDoomLeague.Application.Common.Interfaces
 {

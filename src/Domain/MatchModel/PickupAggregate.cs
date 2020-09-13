@@ -1,6 +1,6 @@
 ﻿using WorldDoomLeague.Domain.Enums;
 
-namespace WorldDoomLeague.Application.MatchModel
+namespace WorldDoomLeague.Domain.MatchModel
 {
     /// <summary>
     /// Represents an item pickup event in the WDL log files.

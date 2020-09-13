@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WorldDoomLeague.Application.MatchModel
+namespace WorldDoomLeague.Domain.MatchModel
 {
     public class FlagAssistTable
     {

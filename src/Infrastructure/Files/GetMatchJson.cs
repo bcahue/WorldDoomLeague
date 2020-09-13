@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using WorldDoomLeague.Application.Common.Exceptions;
 using WorldDoomLeague.Application.Common.Interfaces;
-using WorldDoomLeague.Application.MatchModel;
+using WorldDoomLeague.Domain.MatchModel;
 
 namespace WorldDoomLeague.Infrastructure.Files
 {

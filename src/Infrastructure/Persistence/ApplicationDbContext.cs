@@ -16,16 +16,16 @@ namespace WorldDoomLeague.Infrastructure.Persistence
     public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, IApplicationDbContext
     {
         private readonly ICurrentUserService _currentUserService;
-        private readonly IDateTime _dateTime;
+        private readonly IDateTimeOffset _dateTimeOffset;
 
         public ApplicationDbContext(
             DbContextOptions options,
             IOptions<OperationalStoreOptions> operationalStoreOptions,
             ICurrentUserService currentUserService,
-            IDateTime dateTime) : base(options, operationalStoreOptions)
+            IDateTimeOffset dateTimeOffset) : base(options, operationalStoreOptions)
         {
             _currentUserService = currentUserService;
-            _dateTime = dateTime;
+            _dateTimeOffset = dateTimeOffset;
         }
 
         public virtual DbSet<Demos> Demos { get; set; }
@@ -63,11 +63,11 @@ namespace WorldDoomLeague.Infrastructure.Persistence
                 {
                     case EntityState.Added:
                         entry.Entity.CreatedBy = _currentUserService.UserId;
-                        entry.Entity.Created = _dateTime.Now;
+                        entry.Entity.Created = _dateTimeOffset.UtcNow.UtcDateTime;
                         break;
                     case EntityState.Modified:
                         entry.Entity.LastModifiedBy = _currentUserService.UserId;
-                        entry.Entity.LastModified = _dateTime.Now;
+                        entry.Entity.LastModified = _dateTimeOffset.UtcNow.UtcDateTime;
                         break;
                 }
             }

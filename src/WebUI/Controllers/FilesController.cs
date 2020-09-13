@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
 using System.Configuration;
-using WorldDoomLeague.Application.MatchModel;
+using WorldDoomLeague.Domain.MatchModel;
 
 namespace WorldDoomLeague.WebUI.Controllers
 {

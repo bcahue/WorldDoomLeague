@@ -1361,6 +1361,7 @@ export class TeamStats implements ITeamStats {
     damage?: number;
     flagDefenses?: number;
     powerPickups?: number;
+    teamPlayers?: string[] | undefined;
 
     constructor(data?: ITeamStats) {
         if (data) {
@@ -1388,6 +1389,11 @@ export class TeamStats implements ITeamStats {
             this.damage = _data["damage"];
             this.flagDefenses = _data["flagDefenses"];
             this.powerPickups = _data["powerPickups"];
+            if (Array.isArray(_data["teamPlayers"])) {
+                this.teamPlayers = [] as any;
+                for (let item of _data["teamPlayers"])
+                    this.teamPlayers!.push(item);
+            }
         }
     }
 
@@ -1415,6 +1421,11 @@ export class TeamStats implements ITeamStats {
         data["damage"] = this.damage;
         data["flagDefenses"] = this.flagDefenses;
         data["powerPickups"] = this.powerPickups;
+        if (Array.isArray(this.teamPlayers)) {
+            data["teamPlayers"] = [];
+            for (let item of this.teamPlayers)
+                data["teamPlayers"].push(item);
+        }
         return data; 
     }
 }
@@ -1435,6 +1446,7 @@ export interface ITeamStats {
     damage?: number;
     flagDefenses?: number;
     powerPickups?: number;
+    teamPlayers?: string[] | undefined;
 }
 
 export class FlagAssistTable implements IFlagAssistTable {

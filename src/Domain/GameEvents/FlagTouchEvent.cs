@@ -1,4 +1,4 @@
-﻿namespace WorldDoomLeague.Application.GameEvents
+﻿namespace WorldDoomLeague.Domain.GameEvents
 {
     public class FlagTouchEvent
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WorldDoomLeague.Application.MatchModel
+namespace WorldDoomLeague.Domain.MatchModel
 {
     public class FlagAssistData
     {

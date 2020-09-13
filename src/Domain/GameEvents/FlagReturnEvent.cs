@@ -1,6 +1,4 @@
-﻿using WorldDoomLeague.Domain.Enums;
-
-namespace WorldDoomLeague.Application.GameEvents
+﻿namespace WorldDoomLeague.Domain.GameEvents
 {
     public class FlagReturnEvent
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using WorldDoomLeague.Application.GameEvents;
+using WorldDoomLeague.Domain.GameEvents;
 
-namespace WorldDoomLeague.Application.MatchModel
+namespace WorldDoomLeague.Domain.MatchModel
 {
     public class GameEvents
     {

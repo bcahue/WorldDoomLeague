@@ -3,7 +3,7 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using WorldDoomLeague.Application.MatchModel;
+using WorldDoomLeague.Domain.MatchModel;
 using Microsoft.Extensions.Options;
 using WorldDoomLeague.Application.ConfigModels;
 

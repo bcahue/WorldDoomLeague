@@ -1,6 +1,6 @@
 ﻿using WorldDoomLeague.Domain.Enums;
 
-namespace WorldDoomLeague.Application.MatchModel
+namespace WorldDoomLeague.Domain.MatchModel
 {
     /// <summary>
     /// Represents an accuracy event in the WDL log files.

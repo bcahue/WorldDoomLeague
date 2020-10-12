@@ -1024,10 +1024,6 @@
             "type": "integer",
             "format": "int32"
           },
-          "timeCaptured": {
-            "type": "string",
-            "format": "time-span"
-          },
           "team": {
             "$ref": "#/components/schemas/Teams"
           },
@@ -1062,10 +1058,6 @@
             "type": "integer",
             "format": "int32"
           },
-          "flagTouchTime": {
-            "type": "string",
-            "format": "time-span"
-          },
           "playerName": {
             "type": "string",
             "nullable": true
@@ -1096,6 +1088,10 @@
             "format": "int32"
           },
           "captures": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "capturesWithSuperPickup": {
             "type": "integer",
             "format": "int32"
           },

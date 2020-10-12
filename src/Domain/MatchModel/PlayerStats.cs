@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using WorldDoomLeague.Domain.Enums;
-using WorldDoomLeague.Application.MatchModel;
 
 namespace WorldDoomLeague.Domain.MatchModel
 {

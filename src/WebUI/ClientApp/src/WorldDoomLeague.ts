@@ -1495,7 +1495,6 @@ export interface IFlagAssistTable {
 
 export class FlagTouchCaptures implements IFlagTouchCaptures {
     timeCapturedTics?: number;
-    timeCaptured?: string;
     team?: Teams;
     flagAssists?: FlagAssistData[] | undefined;
 
@@ -1511,7 +1510,6 @@ export class FlagTouchCaptures implements IFlagTouchCaptures {
     init(_data?: any) {
         if (_data) {
             this.timeCapturedTics = _data["timeCapturedTics"];
-            this.timeCaptured = _data["timeCaptured"];
             this.team = _data["team"];
             if (Array.isArray(_data["flagAssists"])) {
                 this.flagAssists = [] as any;
@@ -1531,7 +1529,6 @@ export class FlagTouchCaptures implements IFlagTouchCaptures {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["timeCapturedTics"] = this.timeCapturedTics;
-        data["timeCaptured"] = this.timeCaptured;
         data["team"] = this.team;
         if (Array.isArray(this.flagAssists)) {
             data["flagAssists"] = [];
@@ -1544,7 +1541,6 @@ export class FlagTouchCaptures implements IFlagTouchCaptures {
 
 export interface IFlagTouchCaptures {
     timeCapturedTics?: number;
-    timeCaptured?: string;
     team?: Teams;
     flagAssists?: FlagAssistData[] | undefined;
 }
@@ -1557,7 +1553,6 @@ export enum Teams {
 
 export class FlagAssistData implements IFlagAssistData {
     flagTouchTimeTics?: number;
-    flagTouchTime?: string;
     playerName?: string | undefined;
 
     constructor(data?: IFlagAssistData) {
@@ -1572,7 +1567,6 @@ export class FlagAssistData implements IFlagAssistData {
     init(_data?: any) {
         if (_data) {
             this.flagTouchTimeTics = _data["flagTouchTimeTics"];
-            this.flagTouchTime = _data["flagTouchTime"];
             this.playerName = _data["playerName"];
         }
     }
@@ -1587,7 +1581,6 @@ export class FlagAssistData implements IFlagAssistData {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["flagTouchTimeTics"] = this.flagTouchTimeTics;
-        data["flagTouchTime"] = this.flagTouchTime;
         data["playerName"] = this.playerName;
         return data; 
     }
@@ -1595,7 +1588,6 @@ export class FlagAssistData implements IFlagAssistData {
 
 export interface IFlagAssistData {
     flagTouchTimeTics?: number;
-    flagTouchTime?: string;
     playerName?: string | undefined;
 }
 
@@ -1606,6 +1598,7 @@ export class PlayerStats implements IPlayerStats {
     completeMisses?: number;
     assists?: number;
     captures?: number;
+    capturesWithSuperPickup?: number;
     pickupCaptures?: number;
     flagTouches?: number;
     pickupFlagTouches?: number;
@@ -1698,6 +1691,7 @@ export class PlayerStats implements IPlayerStats {
             this.completeMisses = _data["completeMisses"];
             this.assists = _data["assists"];
             this.captures = _data["captures"];
+            this.capturesWithSuperPickup = _data["capturesWithSuperPickup"];
             this.pickupCaptures = _data["pickupCaptures"];
             this.flagTouches = _data["flagTouches"];
             this.pickupFlagTouches = _data["pickupFlagTouches"];
@@ -1818,6 +1812,7 @@ export class PlayerStats implements IPlayerStats {
         data["completeMisses"] = this.completeMisses;
         data["assists"] = this.assists;
         data["captures"] = this.captures;
+        data["capturesWithSuperPickup"] = this.capturesWithSuperPickup;
         data["pickupCaptures"] = this.pickupCaptures;
         data["flagTouches"] = this.flagTouches;
         data["pickupFlagTouches"] = this.pickupFlagTouches;
@@ -1931,6 +1926,7 @@ export interface IPlayerStats {
     completeMisses?: number;
     assists?: number;
     captures?: number;
+    capturesWithSuperPickup?: number;
     pickupCaptures?: number;
     flagTouches?: number;
     pickupFlagTouches?: number;

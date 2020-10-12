@@ -19,8 +19,8 @@ namespace WorldDoomLeague.Application.Common.Interfaces
         DbSet<GameTeamStats> GameTeamStats { get; set; }
         DbSet<RoundFlagTouchCaptures> RoundFlagTouchCaptures { get; set; }
         DbSet<StatsAccuracyData> StatsAccuracyData { get; set; }
-        DbSet<StatsAccuracyWithFlagData> StatsAccuracyFlagOutData { get; set; }
-        DbSet<StatsDamageWithFlagData> StatsDamageCarrierData { get; set; }
+        DbSet<StatsAccuracyWithFlagData> StatsAccuracyWithFlagData { get; set; }
+        DbSet<StatsDamageWithFlagData> StatsDamageWithFlagData { get; set; }
         DbSet<StatsDamageData> StatsDamageData { get; set; }
         DbSet<StatsKillCarrierData> StatsKillCarrierData { get; set; }
         DbSet<StatsKillData> StatsKillData { get; set; }

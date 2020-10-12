@@ -8,6 +8,7 @@ namespace WorldDoomLeague.Domain.Entities
         public Rounds()
         {
             RoundPlayers = new HashSet<RoundPlayers>();
+            PlayerRoundRecords = new HashSet<PlayerRoundRecord>();
             StatsAccuracyData = new HashSet<StatsAccuracyData>();
             StatsAccuracyFlagOutData = new HashSet<StatsAccuracyWithFlagData>();
             StatsDamageCarrierData = new HashSet<StatsDamageWithFlagData>();
@@ -34,6 +35,7 @@ namespace WorldDoomLeague.Domain.Entities
         public virtual Season FkIdSeasonNavigation { get; set; }
         public virtual Weeks FkIdWeekNavigation { get; set; }
         public virtual ICollection<RoundPlayers> RoundPlayers { get; set; }
+        public virtual ICollection<PlayerRoundRecord> PlayerRoundRecords { get; set; }
         public virtual ICollection<StatsAccuracyData> StatsAccuracyData { get; set; }
         public virtual ICollection<StatsAccuracyWithFlagData> StatsAccuracyFlagOutData { get; set; }
         public virtual ICollection<StatsDamageWithFlagData> StatsDamageCarrierData { get; set; }

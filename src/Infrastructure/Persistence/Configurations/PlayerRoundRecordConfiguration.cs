@@ -19,6 +19,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasIndex(e => e.FkIdGame)
                 .HasName("fk_PlayerRoundRecord_Game_idx");
 
+            builder.HasIndex(e => e.FkIdRound)
+                .HasName("fk_PlayerRoundRecord_Rounds_idx");
+
             builder.HasIndex(e => e.FkIdSeason)
                 .HasName("fk_PlayerRoundRecord_Season_idx");
 
@@ -39,7 +42,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .IsUnique();
 
             builder.Property(e => e.RoundRecordID)
-                .HasColumnName("id_gameteamstats")
+                .HasColumnName("id_roundrecord")
                 .HasColumnType("int(10) unsigned");
 
             builder.Property(e => e.FkIdPlayer)
@@ -48,6 +51,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.FkIdGame)
                 .HasColumnName("fk_id_game")
+                .HasColumnType("int(10) unsigned");
+
+            builder.Property(e => e.FkIdRound)
+                .HasColumnName("fk_id_round")
                 .HasColumnType("int(10) unsigned");
 
             builder.Property(e => e.FkIdSeason)
@@ -97,6 +104,12 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasForeignKey(d => d.FkIdGame)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_PlayerRound_Game");
+
+            builder.HasOne(d => d.FkIdRoundNavigation)
+                .WithMany(p => p.PlayerRoundRecords)
+                .HasForeignKey(d => d.FkIdRound)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_PlayerRound_Round");
 
             builder.HasOne(d => d.FkIdSeasonNavigation)
                 .WithMany(p => p.PlayerRoundRecords)

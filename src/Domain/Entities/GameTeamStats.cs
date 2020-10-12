@@ -6,7 +6,6 @@ namespace WorldDoomLeague.Domain.Entities
     public partial class GameTeamStats
     {
         public uint IdGameteamstats { get; set; }
-        public uint FkIdMap { get; set; }
         public uint FkIdSeason { get; set; }
         public uint FkIdWeek { get; set; }
         public uint FkIdGame { get; set; }
@@ -38,7 +37,6 @@ namespace WorldDoomLeague.Domain.Entities
         public uint LongestSpree { get; set; }
         public uint HighestMultiKill { get; set; }
         public virtual Games FkIdGameNavigation { get; set; }
-        public virtual Maps FkIdMapNavigation { get; set; }
         public virtual Season FkIdSeasonNavigation { get; set; }
         public virtual Teams FkIdTeamNavigation { get; set; }
         public virtual Teams FkIdOpponentTeamNavigation { get; set; }

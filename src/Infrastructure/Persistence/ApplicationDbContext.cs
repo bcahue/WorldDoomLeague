@@ -40,8 +40,8 @@ namespace WorldDoomLeague.Infrastructure.Persistence
         public virtual DbSet<GameTeamStats> GameTeamStats { get; set; }
         public virtual DbSet<RoundFlagTouchCaptures> RoundFlagTouchCaptures { get; set; }
         public virtual DbSet<StatsAccuracyData> StatsAccuracyData { get; set; }
-        public virtual DbSet<StatsAccuracyWithFlagData> StatsAccuracyFlagOutData { get; set; }
-        public virtual DbSet<StatsDamageWithFlagData> StatsDamageCarrierData { get; set; }
+        public virtual DbSet<StatsAccuracyWithFlagData> StatsAccuracyWithFlagData { get; set; }
+        public virtual DbSet<StatsDamageWithFlagData> StatsDamageWithFlagData { get; set; }
         public virtual DbSet<StatsDamageData> StatsDamageData { get; set; }
         public virtual DbSet<StatsKillCarrierData> StatsKillCarrierData { get; set; }
         public virtual DbSet<StatsKillData> StatsKillData { get; set; }

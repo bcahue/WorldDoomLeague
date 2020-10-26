@@ -81,9 +81,14 @@
       <None Remove="ClientApp\build\static\js\main.2369d941.chunk.js.map" />
       <None Remove="ClientApp\build\static\js\runtime-main.8746a0cd.js" />
       <None Remove="ClientApp\build\static\js\runtime-main.8746a0cd.js.map" />
-      <None Remove="ClientApp\src\components\FetchLeaderboardAllTimeStats.tsx" />
+      <None Remove="ClientApp\src\components\LeaderboardAllTimeStats.tsx" />
       <None Remove="ClientApp\src\reportWebVitals.ts" />
       <None Remove="ClientApp\src\state.tsx" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <TypeScriptCompile Remove="ClientApp\src\components\home\TwitchIntegration.tsx" />
+      <TypeScriptCompile Remove="ClientApp\src\components\home\UpcomingMatches.tsx" />
     </ItemGroup>
 
     <ItemGroup>

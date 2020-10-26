@@ -17,5 +17,5 @@ export default () => (
             <Route exact path='/' component={Home} />
             <Route path='/leaderboard-all-time' component={FetchLeaderboardAllTimeStats} />
         </Layout>
-        </Router>
+    </Router>
 );

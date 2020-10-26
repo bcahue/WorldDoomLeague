@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { TwitchEmbed } from 'react-twitch-embed';
 
-function TwitchIntegration() {
+function UpcomingMatches() {
     return (
         <div>
             <h1>World Doom League</h1>
@@ -10,4 +9,4 @@ function TwitchIntegration() {
     );
 }
 
-export default TwitchIntegration
+export default UpcomingMatches

@@ -1,5 +1,5 @@
 {
-  "x-generator": "NSwag v13.7.0.0 (NJsonSchema v10.1.24.0 (Newtonsoft.Json v12.0.0.0))",
+  "x-generator": "NSwag v13.8.2.0 (NJsonSchema v10.2.1.0 (Newtonsoft.Json v12.0.0.0))",
   "openapi": "3.0.0",
   "info": {
     "title": "WorldDoomLeague Api",
@@ -652,6 +652,26 @@
               "application/json": {
                 "schema": {
                   "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Seasons/current/standings": {
+      "get": {
+        "tags": [
+          "Seasons"
+        ],
+        "operationId": "Seasons_GetCurrentSeasonsStandings",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeasonListVm"
                 }
               }
             }
@@ -3408,10 +3428,27 @@
           }
         }
       },
+      "SeasonListVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "seasons": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/SeasonStandingsVm"
+            }
+          }
+        }
+      },
       "SeasonStandingsVm": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "seasonName": {
+            "type": "string",
+            "nullable": true
+          },
           "seasonStandings": {
             "type": "array",
             "nullable": true,

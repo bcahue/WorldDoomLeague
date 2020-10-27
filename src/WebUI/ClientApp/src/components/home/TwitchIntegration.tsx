@@ -4,8 +4,7 @@ import { TwitchEmbed } from 'react-twitch-embed';
 function TwitchIntegration() {
     return (
         <div>
-            <h1>World Doom League</h1>
-            <p>This site is a prototype. Please navigate using the navbar at the top.</p>
+            <h1>This isn't working right now.</h1>
         </div>
     );
 }

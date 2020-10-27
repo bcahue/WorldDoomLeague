@@ -17,21 +17,21 @@
 
   <ItemGroup>
     <PackageReference Include="AspNet.Security.OpenId.Steam" Version="3.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.7" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.7" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="3.1.7" />
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.0.2">
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.9" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.9" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="3.1.9" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.7">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.9">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="NSwag.AspNetCore" Version="13.7.0" />
-    <PackageReference Include="NSwag.MSBuild" Version="13.7.0">
+    <PackageReference Include="NSwag.AspNetCore" Version="13.8.2" />
+    <PackageReference Include="NSwag.MSBuild" Version="13.8.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -87,6 +87,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <TypeScriptCompile Remove="ClientApp\src\components\home\NewsBlog.tsx" />
+      <TypeScriptCompile Remove="ClientApp\src\components\home\TeamResults.tsx" />
       <TypeScriptCompile Remove="ClientApp\src\components\home\TwitchIntegration.tsx" />
       <TypeScriptCompile Remove="ClientApp\src\components\home\UpcomingMatches.tsx" />
     </ItemGroup>

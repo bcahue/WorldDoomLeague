@@ -1,10 +1,12 @@
 ﻿using WorldDoomLeague.Application.Seasons.Queries.GetSeasons;
+using WorldDoomLeague.Application.Seasons.Queries;
 using WorldDoomLeague.Application.Seasons.Queries.GetSeasonSummaryById;
 using WorldDoomLeague.Application.Seasons.Queries.GetSeasonStandingsById;
 using WorldDoomLeague.Application.Seasons.Queries.GetSeasonPlayersBySeasonId;
 using WorldDoomLeague.Application.Seasons.Commands.CreateSeason;
 using WorldDoomLeague.Application.Seasons.Commands.UpdateSeason;
 using WorldDoomLeague.Application.SeasonWeeks.Commands.CreateSeasonWeeks;
+using WorldDoomLeague.Application.Seasons.Queries.GetCurrentSeasonStandings;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -53,6 +55,12 @@ namespace WorldDoomLeague.WebUI.Controllers
         public async Task<SeasonSummaryVm> GetSeasonSummaryById(uint seasonId)
         {
             return await Mediator.Send(new GetSeasonSummaryBySeasonIdQuery(seasonId));
+        }
+
+        [HttpGet("current/standings")]
+        public async Task<SeasonListVm> GetCurrentSeasonsStandings()
+        {
+            return await Mediator.Send(new GetCurrentSeasonsStandingsQuery());
         }
 
         [HttpGet("{seasonId}/standings")]

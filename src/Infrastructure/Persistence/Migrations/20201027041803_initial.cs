@@ -636,7 +636,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 {
                     id_gameteamstats = table.Column<uint>(type: "int(10) unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    fk_id_map = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     fk_id_season = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     fk_id_week = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     fk_id_game = table.Column<uint>(type: "int(10) unsigned", nullable: false),
@@ -668,7 +667,8 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     total_flag_returns = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     total_power_pickups = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     longest_spree = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    highest_multi_kill = table.Column<uint>(type: "int(10) unsigned", nullable: false)
+                    highest_multi_kill = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    MapsIdMap = table.Column<uint>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -678,12 +678,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         column: x => x.fk_id_game,
                         principalTable: "games",
                         principalColumn: "id_game",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "fk_GameTeamStats_Maps",
-                        column: x => x.fk_id_map,
-                        principalTable: "maps",
-                        principalColumn: "id_map",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "fk_GameTeamStats_OpponentTeams",
@@ -708,6 +702,12 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         column: x => x.fk_id_week,
                         principalTable: "weeks",
                         principalColumn: "id_week",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_gameteamstats_maps_MapsIdMap",
+                        column: x => x.MapsIdMap,
+                        principalTable: "maps",
+                        principalColumn: "id_map",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -879,11 +879,11 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     fk_id_round = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     fk_id_player_attacker = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    fk_id_player_target = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     weapon_type = table.Column<byte>(type: "tinyint(3) unsigned", nullable: false),
                     hit_miss_ratio = table.Column<double>(type: "double unsigned", nullable: false),
                     sprite_percent = table.Column<double>(type: "double unsigned", nullable: false),
-                    pinpoint_percent = table.Column<double>(type: "double unsigned", nullable: false)
+                    pinpoint_percent = table.Column<double>(type: "double unsigned", nullable: false),
+                    PlayerId = table.Column<uint>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -895,32 +895,32 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "fk_stats_StatsAccuracyData_PlayersTarget",
-                        column: x => x.fk_id_player_target,
-                        principalTable: "players",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "fk_stats_StatsAccuracyData_Rounds",
                         column: x => x.fk_id_round,
                         principalTable: "rounds",
                         principalColumn: "id_round",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_statsaccuracydata_players_PlayerId",
+                        column: x => x.PlayerId,
+                        principalTable: "players",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "statsaccuracyflagoutdata",
+                name: "statsaccuracywithflagdata",
                 columns: table => new
                 {
                     id_stats_accuracy_flagout_data = table.Column<uint>(type: "int(10) unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     fk_id_round = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     fk_id_player_attacker = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    fk_id_player_target = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     weapon_type = table.Column<byte>(type: "tinyint(3) unsigned", nullable: false),
                     hit_miss_ratio = table.Column<double>(type: "double unsigned", nullable: false),
                     sprite_percent = table.Column<double>(type: "double unsigned", nullable: false),
-                    pinpoint_percent = table.Column<double>(type: "double unsigned", nullable: false)
+                    pinpoint_percent = table.Column<double>(type: "double unsigned", nullable: false),
+                    PlayerId = table.Column<uint>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -932,53 +932,16 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "fk_stataccuracyflagout_player_target",
-                        column: x => x.fk_id_player_target,
-                        principalTable: "players",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "fk_stataccuracyflagout_round",
                         column: x => x.fk_id_round,
                         principalTable: "rounds",
                         principalColumn: "id_round",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "statsdamagecarrierdata",
-                columns: table => new
-                {
-                    id_stats_carrier_damage = table.Column<uint>(type: "int(10) unsigned", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    fk_id_round = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    fk_id_player_attacker = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    fk_id_player_target = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    weapon_type = table.Column<byte>(type: "tinyint(3) unsigned", nullable: false),
-                    damage_health = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    damage_green_armor = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    damage_blue_armor = table.Column<uint>(type: "int(10) unsigned", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PRIMARY", x => x.id_stats_carrier_damage);
                     table.ForeignKey(
-                        name: "fk_statscarrierdamage_player_attacker",
-                        column: x => x.fk_id_player_attacker,
+                        name: "FK_statsaccuracywithflagdata_players_PlayerId",
+                        column: x => x.PlayerId,
                         principalTable: "players",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "fk_statscarrierdamage_player_target",
-                        column: x => x.fk_id_player_target,
-                        principalTable: "players",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "fk_statscarrierdamage_round",
-                        column: x => x.fk_id_round,
-                        principalTable: "rounds",
-                        principalColumn: "id_round",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -1013,6 +976,43 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "fk_statsdamage_round",
+                        column: x => x.fk_id_round,
+                        principalTable: "rounds",
+                        principalColumn: "id_round",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "statsdamagewithflagdata",
+                columns: table => new
+                {
+                    id_stats_carrier_damage = table.Column<uint>(type: "int(10) unsigned", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    fk_id_round = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_player_attacker = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_player_target = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    weapon_type = table.Column<byte>(type: "tinyint(3) unsigned", nullable: false),
+                    damage_health = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    damage_green_armor = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    damage_blue_armor = table.Column<uint>(type: "int(10) unsigned", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PRIMARY", x => x.id_stats_carrier_damage);
+                    table.ForeignKey(
+                        name: "fk_statscarrierdamage_player_attacker",
+                        column: x => x.fk_id_player_attacker,
+                        principalTable: "players",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "fk_statscarrierdamage_player_target",
+                        column: x => x.fk_id_player_target,
+                        principalTable: "players",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "fk_statscarrierdamage_round",
                         column: x => x.fk_id_round,
                         principalTable: "rounds",
                         principalColumn: "id_round",
@@ -1248,13 +1248,14 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 name: "playerroundrecord",
                 columns: table => new
                 {
-                    id_gameteamstats = table.Column<uint>(type: "int(10) unsigned", nullable: false)
+                    id_roundrecord = table.Column<uint>(type: "int(10) unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     fk_id_player = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     fk_id_team = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     fk_id_season = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     fk_id_week = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     fk_id_game = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_round = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     fk_id_map = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     fk_id_statsround = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     win = table.Column<uint>(type: "int(10) unsigned", nullable: false),
@@ -1264,7 +1265,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => x.id_gameteamstats);
+                    table.PrimaryKey("PRIMARY", x => x.id_roundrecord);
                     table.ForeignKey(
                         name: "fk_PlayerRound_Game",
                         column: x => x.fk_id_game,
@@ -1282,6 +1283,12 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         column: x => x.fk_id_player,
                         principalTable: "players",
                         principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "fk_PlayerRound_Round",
+                        column: x => x.fk_id_round,
+                        principalTable: "rounds",
+                        principalColumn: "id_round",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "fk_PlayerRound_Season",
@@ -1458,11 +1465,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 column: "fk_id_game");
 
             migrationBuilder.CreateIndex(
-                name: "fk_GameTeamStats_Maps_idx",
-                table: "gameteamstats",
-                column: "fk_id_map");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_gameteamstats_fk_id_opponentteam",
                 table: "gameteamstats",
                 column: "fk_id_opponentteam");
@@ -1487,6 +1489,11 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 table: "gameteamstats",
                 column: "id_gameteamstats",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_gameteamstats_MapsIdMap",
+                table: "gameteamstats",
+                column: "MapsIdMap");
 
             migrationBuilder.CreateIndex(
                 name: "fk_Maps_Files_idx",
@@ -1587,6 +1594,11 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 column: "fk_id_player");
 
             migrationBuilder.CreateIndex(
+                name: "fk_PlayerRoundRecord_Rounds_idx",
+                table: "playerroundrecord",
+                column: "fk_id_round");
+
+            migrationBuilder.CreateIndex(
                 name: "fk_PlayerRoundRecord_Season_idx",
                 table: "playerroundrecord",
                 column: "fk_id_season");
@@ -1610,7 +1622,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "id_gameteamstats_UNIQUE",
                 table: "playerroundrecord",
-                column: "id_gameteamstats",
+                column: "id_roundrecord",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -1766,11 +1778,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 column: "fk_id_player_attacker");
 
             migrationBuilder.CreateIndex(
-                name: "fk_stataccuracy_player_target_idx",
-                table: "statsaccuracydata",
-                column: "fk_id_player_target");
-
-            migrationBuilder.CreateIndex(
                 name: "fk_stataccuracy_round_idx",
                 table: "statsaccuracydata",
                 column: "fk_id_round");
@@ -1782,46 +1789,30 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_statsaccuracydata_PlayerId",
+                table: "statsaccuracydata",
+                column: "PlayerId");
+
+            migrationBuilder.CreateIndex(
                 name: "fk_stataccuracy_player_attacker_idx",
-                table: "statsaccuracyflagoutdata",
+                table: "statsaccuracywithflagdata",
                 column: "fk_id_player_attacker");
 
             migrationBuilder.CreateIndex(
-                name: "fk_stataccuracy_player_target_idx",
-                table: "statsaccuracyflagoutdata",
-                column: "fk_id_player_target");
-
-            migrationBuilder.CreateIndex(
                 name: "fk_stataccuracy_round_idx",
-                table: "statsaccuracyflagoutdata",
+                table: "statsaccuracywithflagdata",
                 column: "fk_id_round");
 
             migrationBuilder.CreateIndex(
                 name: "id_stats_accuracy_data_UNIQUE",
-                table: "statsaccuracyflagoutdata",
+                table: "statsaccuracywithflagdata",
                 column: "id_stats_accuracy_flagout_data",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "fk_statsdamage_player_attacker_idx",
-                table: "statsdamagecarrierdata",
-                column: "fk_id_player_attacker");
-
-            migrationBuilder.CreateIndex(
-                name: "fk_statsdamage_player_target_idx",
-                table: "statsdamagecarrierdata",
-                column: "fk_id_player_target");
-
-            migrationBuilder.CreateIndex(
-                name: "fk_statsdamage_round_idx",
-                table: "statsdamagecarrierdata",
-                column: "fk_id_round");
-
-            migrationBuilder.CreateIndex(
-                name: "id_stats_damage_UNIQUE",
-                table: "statsdamagecarrierdata",
-                column: "id_stats_carrier_damage",
-                unique: true);
+                name: "IX_statsaccuracywithflagdata_PlayerId",
+                table: "statsaccuracywithflagdata",
+                column: "PlayerId");
 
             migrationBuilder.CreateIndex(
                 name: "fk_statsdamage_player_attacker_idx",
@@ -1842,6 +1833,27 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 name: "id_stats_damage_UNIQUE",
                 table: "statsdamagedata",
                 column: "id_stats_damage",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "fk_statsdamage_player_attacker_idx",
+                table: "statsdamagewithflagdata",
+                column: "fk_id_player_attacker");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_statsdamage_player_target_idx",
+                table: "statsdamagewithflagdata",
+                column: "fk_id_player_target");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_statsdamage_round_idx",
+                table: "statsdamagewithflagdata",
+                column: "fk_id_round");
+
+            migrationBuilder.CreateIndex(
+                name: "id_stats_damage_UNIQUE",
+                table: "statsdamagewithflagdata",
+                column: "id_stats_carrier_damage",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -2043,13 +2055,13 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 name: "statsaccuracydata");
 
             migrationBuilder.DropTable(
-                name: "statsaccuracyflagoutdata");
-
-            migrationBuilder.DropTable(
-                name: "statsdamagecarrierdata");
+                name: "statsaccuracywithflagdata");
 
             migrationBuilder.DropTable(
                 name: "statsdamagedata");
+
+            migrationBuilder.DropTable(
+                name: "statsdamagewithflagdata");
 
             migrationBuilder.DropTable(
                 name: "statskillcarrierdata");

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using WorldDoomLeague.Application.Common.Mappings;
 using WorldDoomLeague.Domain.Entities;
 
-namespace WorldDoomLeague.Application.Seasons.Queries.GetSeasonStandingsById
+namespace WorldDoomLeague.Application.Seasons.Queries
 {
     public class SeasonStandingsDto : IMapFrom<GameTeamStats>
     {

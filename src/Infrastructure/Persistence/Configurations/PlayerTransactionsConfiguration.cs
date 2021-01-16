@@ -14,23 +14,23 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.ToTable("playertransactions");
 
             builder.HasIndex(e => e.TransactionId)
-                .HasName("transaction_id_UNIQUE")
+                .HasDatabaseName("transaction_id_UNIQUE")
                 .IsUnique();
 
             builder.HasIndex(e => e.FkIdTeamTradedFrom)
-                .HasName("fk_playertransaction_teamtradedfrom_idx");
+                .HasDatabaseName("fk_playertransaction_teamtradedfrom_idx");
 
             builder.HasIndex(e => e.FkIdTeamTradedTo)
-                .HasName("fk_playertransaction_teamtradedto_idx");
+                .HasDatabaseName("fk_playertransaction_teamtradedto_idx");
 
             builder.HasIndex(e => e.FkIdSeason)
-                .HasName("fk_playertransaction_season_idx");
+                .HasDatabaseName("fk_playertransaction_season_idx");
 
             builder.HasIndex(e => e.FkIdWeek)
-                .HasName("fk_playertransaction_week_idx");
+                .HasDatabaseName("fk_playertransaction_week_idx");
 
             builder.HasIndex(e => e.FkIdPlayer)
-                .HasName("fk_playertransaction_player_idx");
+                .HasDatabaseName("fk_playertransaction_player_idx");
 
             builder.Property(e => e.TransactionId)
                 .HasColumnName("transaction_id")

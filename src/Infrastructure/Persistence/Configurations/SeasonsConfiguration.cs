@@ -14,10 +14,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.ToTable("seasons");
 
             builder.HasIndex(e => e.FkIdWadFile)
-                .HasName("fk_Seasons_WadFile_idx");
+                .HasDatabaseName("fk_Seasons_WadFile_idx");
 
             builder.HasIndex(e => e.IdSeason)
-                .HasName("id_season_UNIQUE")
+                .HasDatabaseName("id_season_UNIQUE")
                 .IsUnique();
 
             builder.Property(e => e.IdSeason)

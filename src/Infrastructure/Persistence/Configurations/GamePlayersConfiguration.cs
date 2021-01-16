@@ -9,27 +9,27 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<GamePlayers> builder)
         {
             builder.HasKey(e => e.IdGameplayer)
-                    .HasName("PRIMARY");
+                .HasName("PRIMARY");
 
             builder.ToTable("gameplayers");
 
             builder.HasIndex(e => e.FkIdGame)
-                .HasName("fk_GamePlayers_Games_idx");
+                .HasDatabaseName("fk_GamePlayers_Games_idx");
 
             builder.HasIndex(e => e.FkIdPlayer)
-                .HasName("fk_GamePlayers_Players_idx");
+                .HasDatabaseName("fk_GamePlayers_Players_idx");
 
             builder.HasIndex(e => e.FkIdSeason)
-                .HasName("fk_GamePlayers_Seasons_idx");
+                .HasDatabaseName("fk_GamePlayers_Seasons_idx");
 
             builder.HasIndex(e => e.FkIdTeam)
-                .HasName("fk_GamePlayers_Teams_idx");
+                .HasDatabaseName("fk_GamePlayers_Teams_idx");
 
             builder.HasIndex(e => e.FkIdWeek)
-                .HasName("fk_GamePlayers_Weeks_idx");
+                .HasDatabaseName("fk_GamePlayers_Weeks_idx");
 
             builder.HasIndex(e => e.IdGameplayer)
-                .HasName("id_gameplayer_UNIQUE")
+                .HasDatabaseName("id_gameplayer_UNIQUE")
                 .IsUnique();
 
             builder.Property(e => e.IdGameplayer)

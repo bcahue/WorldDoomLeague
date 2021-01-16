@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace WorldDoomLeague.Infrastructure
 {
@@ -24,6 +25,7 @@ namespace WorldDoomLeague.Infrastructure
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseMySql(
                         configuration.GetConnectionString("DefaultConnection"),
+                        new MariaDbServerVersion(new Version(10, 4, 13)),
                         b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
             }
 

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using WorldDoomLeague.Application.Common.Mappings;
-using WorldDoomLeague.Application.TodoLists.Queries.GetTodos;
+using WorldDoomLeague.Application.Seasons.Queries.GetSeasons;
 using WorldDoomLeague.Domain.Entities;
 using NUnit.Framework;
 using System;
@@ -29,8 +29,7 @@ namespace WorldDoomLeague.Application.UnitTests.Common.Mappings
         }
         
         [Test]
-        [TestCase(typeof(TodoList), typeof(TodoListDto))]
-        [TestCase(typeof(TodoItem), typeof(TodoItemDto))]
+        [TestCase(typeof(Season), typeof(SeasonDto))]
         public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
         {
             var instance = Activator.CreateInstance(source);

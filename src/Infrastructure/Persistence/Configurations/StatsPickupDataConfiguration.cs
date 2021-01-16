@@ -14,13 +14,13 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.ToTable("statspickupdata");
 
             builder.HasIndex(e => e.FkIdActivatorPlayer)
-                .HasName("fk_statpickup_player_idx");
+                .HasDatabaseName("fk_statpickup_player_idx");
 
             builder.HasIndex(e => e.FkIdRound)
-                .HasName("fk_statpickup_round_idx");
+                .HasDatabaseName("fk_statpickup_round_idx");
 
             builder.HasIndex(e => e.IdStatPickup)
-                .HasName("id_stat_pickup_UNIQUE")
+                .HasDatabaseName("id_stat_pickup_UNIQUE")
                 .IsUnique();
 
             builder.Property(e => e.IdStatPickup)

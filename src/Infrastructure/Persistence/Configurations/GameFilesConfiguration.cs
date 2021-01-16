@@ -14,7 +14,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.ToTable("files");
 
             builder.HasIndex(e => e.IdFile)
-                .HasName("id_file_UNIQUE")
+                .HasDatabaseName("id_file_UNIQUE")
                 .IsUnique();
 
             builder.Property(e => e.IdFile)

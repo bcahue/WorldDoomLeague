@@ -14,28 +14,28 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.ToTable("roundplayers");
 
             builder.HasIndex(e => e.FkIdGame)
-                .HasName("fk_RoundPlayers_Game_idx");
+                .HasDatabaseName("fk_RoundPlayers_Game_idx");
 
             builder.HasIndex(e => e.FkIdMap)
-                .HasName("fk_RoundPlayers_Map_idx");
+                .HasDatabaseName("fk_RoundPlayers_Map_idx");
 
             builder.HasIndex(e => e.FkIdPlayer)
-                .HasName("fk_RoundPlayers_Player_idx");
+                .HasDatabaseName("fk_RoundPlayers_Player_idx");
 
             builder.HasIndex(e => e.FkIdSeason)
-                .HasName("fk_RoundPlayers_Season_idx");
+                .HasDatabaseName("fk_RoundPlayers_Season_idx");
 
             builder.HasIndex(e => e.FkIdTeam)
-                .HasName("fk_RoundPlayers_Team_idx");
+                .HasDatabaseName("fk_RoundPlayers_Team_idx");
 
             builder.HasIndex(e => e.FkIdWeek)
-                .HasName("fk_RoundPlayers_Week_idx");
+                .HasDatabaseName("fk_RoundPlayers_Week_idx");
 
             builder.HasIndex(e => e.FkIdRound)
-                .HasName("fk_RoundPlayers_Round_idx");
+                .HasDatabaseName("fk_RoundPlayers_Round_idx");
 
             builder.HasIndex(e => e.IdRoundplayer)
-                .HasName("id_roundplayer_UNIQUE")
+                .HasDatabaseName("id_roundplayer_UNIQUE")
                 .IsUnique();
 
             builder.Property(e => e.IdRoundplayer)

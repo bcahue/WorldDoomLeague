@@ -14,19 +14,19 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.ToTable("rounds");
 
             builder.HasIndex(e => e.FkIdGame)
-                .HasName("fk_stats_Rounds_Games_idx");
+                .HasDatabaseName("fk_stats_Rounds_Games_idx");
 
             builder.HasIndex(e => e.FkIdMap)
-                .HasName("fk_stats_Rounds_Maps_idx");
+                .HasDatabaseName("fk_stats_Rounds_Maps_idx");
 
             builder.HasIndex(e => e.FkIdSeason)
-                .HasName("fk_stats_Rounds_Seasons_idx");
+                .HasDatabaseName("fk_stats_Rounds_Seasons_idx");
 
             builder.HasIndex(e => e.FkIdWeek)
-                .HasName("fk_stats_Rounds_Weeks_idx");
+                .HasDatabaseName("fk_stats_Rounds_Weeks_idx");
 
             builder.HasIndex(e => e.IdRound)
-                .HasName("id_round_UNIQUE")
+                .HasDatabaseName("id_round_UNIQUE")
                 .IsUnique();
 
             builder.Property(e => e.IdRound)

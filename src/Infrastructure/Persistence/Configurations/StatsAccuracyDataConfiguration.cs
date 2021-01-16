@@ -14,13 +14,13 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.ToTable("statsaccuracydata");
 
             builder.HasIndex(e => e.FkIdPlayerAttacker)
-                .HasName("fk_stataccuracy_player_attacker_idx");
+                .HasDatabaseName("fk_stataccuracy_player_attacker_idx");
 
             builder.HasIndex(e => e.FkIdRound)
-                .HasName("fk_stataccuracy_round_idx");
+                .HasDatabaseName("fk_stataccuracy_round_idx");
 
             builder.HasIndex(e => e.IdStatsAccuracyData)
-                .HasName("id_stats_accuracy_data_UNIQUE")
+                .HasDatabaseName("id_stats_accuracy_data_UNIQUE")
                 .IsUnique();
 
             builder.Property(e => e.IdStatsAccuracyData)

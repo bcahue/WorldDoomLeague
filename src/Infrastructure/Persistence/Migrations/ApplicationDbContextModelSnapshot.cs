@@ -120,7 +120,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex");
+                        .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles");
                 });
@@ -259,13 +259,13 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("DemoId")
                         .IsUnique()
-                        .HasName("demo_id_UNIQUE");
+                        .HasDatabaseName("demo_id_UNIQUE");
 
                     b.HasIndex("FkGameId")
-                        .HasName("fk_demo_game_idx");
+                        .HasDatabaseName("fk_demo_game_idx");
 
                     b.HasIndex("FkPlayerId")
-                        .HasName("fk_demo_player_idx");
+                        .HasDatabaseName("fk_demo_player_idx");
 
                     b.ToTable("demos");
                 });
@@ -297,7 +297,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("IdFile")
                         .IsUnique()
-                        .HasName("id_file_UNIQUE");
+                        .HasDatabaseName("id_file_UNIQUE");
 
                     b.ToTable("files");
                 });
@@ -321,14 +321,14 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdGame")
-                        .HasName("fk_GameMaps_Games_idx");
+                        .HasDatabaseName("fk_GameMaps_Games_idx");
 
                     b.HasIndex("FkIdMap")
-                        .HasName("fk_GameMaps_Maps_idx");
+                        .HasDatabaseName("fk_GameMaps_Maps_idx");
 
                     b.HasIndex("IdGameMap")
                         .IsUnique()
-                        .HasName("id_file_UNIQUE");
+                        .HasDatabaseName("id_file_UNIQUE");
 
                     b.ToTable("gamemaps");
                 });
@@ -379,23 +379,23 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdGame")
-                        .HasName("fk_GamePlayers_Games_idx");
+                        .HasDatabaseName("fk_GamePlayers_Games_idx");
 
                     b.HasIndex("FkIdPlayer")
-                        .HasName("fk_GamePlayers_Players_idx");
+                        .HasDatabaseName("fk_GamePlayers_Players_idx");
 
                     b.HasIndex("FkIdSeason")
-                        .HasName("fk_GamePlayers_Seasons_idx");
+                        .HasDatabaseName("fk_GamePlayers_Seasons_idx");
 
                     b.HasIndex("FkIdTeam")
-                        .HasName("fk_GamePlayers_Teams_idx");
+                        .HasDatabaseName("fk_GamePlayers_Teams_idx");
 
                     b.HasIndex("FkIdWeek")
-                        .HasName("fk_GamePlayers_Weeks_idx");
+                        .HasDatabaseName("fk_GamePlayers_Weeks_idx");
 
                     b.HasIndex("IdGameplayer")
                         .IsUnique()
-                        .HasName("id_gameplayer_UNIQUE");
+                        .HasDatabaseName("id_gameplayer_UNIQUE");
 
                     b.ToTable("gameplayers");
                 });
@@ -537,22 +537,22 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdGame")
-                        .HasName("fk_GameTeamStats_Games_idx");
+                        .HasDatabaseName("fk_GameTeamStats_Games_idx");
 
                     b.HasIndex("FkIdOpponentTeam");
 
                     b.HasIndex("FkIdSeason")
-                        .HasName("fk_GameTeamStats_Seasons_idx");
+                        .HasDatabaseName("fk_GameTeamStats_Seasons_idx");
 
                     b.HasIndex("FkIdTeam")
-                        .HasName("fk_GameTeamStats_OpponentTeams_idx");
+                        .HasDatabaseName("fk_GameTeamStats_OpponentTeams_idx");
 
                     b.HasIndex("FkIdWeek")
-                        .HasName("fk_GameTeamStats_Weeks_idx");
+                        .HasDatabaseName("fk_GameTeamStats_Weeks_idx");
 
                     b.HasIndex("IdGameteamstats")
                         .IsUnique()
-                        .HasName("id_gameteamstats_UNIQUE");
+                        .HasDatabaseName("id_gameteamstats_UNIQUE");
 
                     b.HasIndex("MapsIdMap");
 
@@ -617,20 +617,20 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdSeason")
-                        .HasName("fk_stats_Games_Seasons_idx");
+                        .HasDatabaseName("fk_stats_Games_Seasons_idx");
 
                     b.HasIndex("FkIdTeamBlue")
-                        .HasName("fk_stats_Games_Teams_blue_idx");
+                        .HasDatabaseName("fk_stats_Games_Teams_blue_idx");
 
                     b.HasIndex("FkIdTeamRed")
-                        .HasName("fk_stats_Games_Teams_red_idx");
+                        .HasDatabaseName("fk_stats_Games_Teams_red_idx");
 
                     b.HasIndex("FkIdWeek")
-                        .HasName("fk_stats_Games_Weeks_idx");
+                        .HasDatabaseName("fk_stats_Games_Weeks_idx");
 
                     b.HasIndex("IdGame")
                         .IsUnique()
-                        .HasName("id_games_UNIQUE");
+                        .HasDatabaseName("id_games_UNIQUE");
 
                     b.ToTable("games");
                 });
@@ -668,11 +668,11 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdFile")
-                        .HasName("fk_Maps_Files_idx");
+                        .HasDatabaseName("fk_Maps_Files_idx");
 
                     b.HasIndex("IdMap")
                         .IsUnique()
-                        .HasName("id_map_UNIQUE");
+                        .HasDatabaseName("id_map_UNIQUE");
 
                     b.ToTable("maps");
                 });
@@ -702,11 +702,11 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("Id")
                         .IsUnique()
-                        .HasName("id_player_UNIQUE");
+                        .HasDatabaseName("id_player_UNIQUE");
 
                     b.HasIndex("PlayerName")
                         .IsUnique()
-                        .HasName("player_name_UNIQUE");
+                        .HasDatabaseName("player_name_UNIQUE");
 
                     b.ToTable("players");
                 });
@@ -755,22 +755,22 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("DraftRecordId")
                         .IsUnique()
-                        .HasName("draftrecord_id_UNIQUE");
+                        .HasDatabaseName("draftrecord_id_UNIQUE");
 
                     b.HasIndex("FkIdPlayerNominated")
-                        .HasName("fk_playerdraft_playernominated_idx");
+                        .HasDatabaseName("fk_playerdraft_playernominated_idx");
 
                     b.HasIndex("FkIdPlayerNominating")
-                        .HasName("fk_playerdraft_playernominating_idx");
+                        .HasDatabaseName("fk_playerdraft_playernominating_idx");
 
                     b.HasIndex("FkIdPlayerSoldTo")
-                        .HasName("fk_playerdraft_playersoldto_idx");
+                        .HasDatabaseName("fk_playerdraft_playersoldto_idx");
 
                     b.HasIndex("FkIdSeason")
-                        .HasName("fk_playerdraft_season_idx");
+                        .HasDatabaseName("fk_playerdraft_season_idx");
 
                     b.HasIndex("FkIdTeamSoldTo")
-                        .HasName("fk_playerdraft_teamsoldto_idx");
+                        .HasDatabaseName("fk_playerdraft_teamsoldto_idx");
 
                     b.ToTable("playerdraft");
                 });
@@ -822,23 +822,23 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdGame")
-                        .HasName("fk_PlayerGameRecord_Game_idx");
+                        .HasDatabaseName("fk_PlayerGameRecord_Game_idx");
 
                     b.HasIndex("FkIdPlayer")
-                        .HasName("fk_PlayerGameRecord_Player_idx");
+                        .HasDatabaseName("fk_PlayerGameRecord_Player_idx");
 
                     b.HasIndex("FkIdSeason")
-                        .HasName("fk_PlayerGameRecord_Season_idx");
+                        .HasDatabaseName("fk_PlayerGameRecord_Season_idx");
 
                     b.HasIndex("FkIdTeam")
-                        .HasName("fk_PlayerGameRecord_Team_idx");
+                        .HasDatabaseName("fk_PlayerGameRecord_Team_idx");
 
                     b.HasIndex("FkIdWeek")
-                        .HasName("fk_PlayerGameRecord_Week_idx");
+                        .HasDatabaseName("fk_PlayerGameRecord_Week_idx");
 
                     b.HasIndex("GameRecordID")
                         .IsUnique()
-                        .HasName("id_gamerecord_UNIQUE");
+                        .HasDatabaseName("id_gamerecord_UNIQUE");
 
                     b.ToTable("playergamerecord");
                 });
@@ -902,33 +902,33 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdGame")
-                        .HasName("fk_PlayerRoundRecord_Game_idx");
+                        .HasDatabaseName("fk_PlayerRoundRecord_Game_idx");
 
                     b.HasIndex("FkIdMap")
-                        .HasName("fk_PlayerRoundRecord_Map_idx");
+                        .HasDatabaseName("fk_PlayerRoundRecord_Map_idx");
 
                     b.HasIndex("FkIdPlayer")
-                        .HasName("fk_PlayerRoundRecord_Player_idx");
+                        .HasDatabaseName("fk_PlayerRoundRecord_Player_idx");
 
                     b.HasIndex("FkIdRound")
-                        .HasName("fk_PlayerRoundRecord_Rounds_idx");
+                        .HasDatabaseName("fk_PlayerRoundRecord_Rounds_idx");
 
                     b.HasIndex("FkIdSeason")
-                        .HasName("fk_PlayerRoundRecord_Season_idx");
+                        .HasDatabaseName("fk_PlayerRoundRecord_Season_idx");
 
                     b.HasIndex("FkIdStatsRound")
                         .IsUnique()
-                        .HasName("fk_PlayerRoundRecord_StatsRounds_idx");
+                        .HasDatabaseName("fk_PlayerRoundRecord_StatsRounds_idx");
 
                     b.HasIndex("FkIdTeam")
-                        .HasName("fk_PlayerRoundRecord_Team_idx");
+                        .HasDatabaseName("fk_PlayerRoundRecord_Team_idx");
 
                     b.HasIndex("FkIdWeek")
-                        .HasName("fk_PlayerRoundRecord_Week_idx");
+                        .HasDatabaseName("fk_PlayerRoundRecord_Week_idx");
 
                     b.HasIndex("RoundRecordID")
                         .IsUnique()
-                        .HasName("id_gameteamstats_UNIQUE");
+                        .HasDatabaseName("id_gameteamstats_UNIQUE");
 
                     b.ToTable("playerroundrecord");
                 });
@@ -968,23 +968,23 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdPlayer")
-                        .HasName("fk_playertransaction_player_idx");
+                        .HasDatabaseName("fk_playertransaction_player_idx");
 
                     b.HasIndex("FkIdSeason")
-                        .HasName("fk_playertransaction_season_idx");
+                        .HasDatabaseName("fk_playertransaction_season_idx");
 
                     b.HasIndex("FkIdTeamTradedFrom")
-                        .HasName("fk_playertransaction_teamtradedfrom_idx");
+                        .HasDatabaseName("fk_playertransaction_teamtradedfrom_idx");
 
                     b.HasIndex("FkIdTeamTradedTo")
-                        .HasName("fk_playertransaction_teamtradedto_idx");
+                        .HasDatabaseName("fk_playertransaction_teamtradedto_idx");
 
                     b.HasIndex("FkIdWeek")
-                        .HasName("fk_playertransaction_week_idx");
+                        .HasDatabaseName("fk_playertransaction_week_idx");
 
                     b.HasIndex("TransactionId")
                         .IsUnique()
-                        .HasName("transaction_id_UNIQUE");
+                        .HasDatabaseName("transaction_id_UNIQUE");
 
                     b.ToTable("playertransactions");
                 });
@@ -1031,20 +1031,20 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdGame")
-                        .HasName("fk_stats_RoundFlagTouchCaptures_game_idx");
+                        .HasDatabaseName("fk_stats_RoundFlagTouchCaptures_game_idx");
 
                     b.HasIndex("FkIdPlayer")
-                        .HasName("fk_stats_RoundFlagTouchCaptures_player_idx");
+                        .HasDatabaseName("fk_stats_RoundFlagTouchCaptures_player_idx");
 
                     b.HasIndex("FkIdRound")
-                        .HasName("fk_stats_RoundFlagTouchCaptures_round_idx");
+                        .HasDatabaseName("fk_stats_RoundFlagTouchCaptures_round_idx");
 
                     b.HasIndex("FkIdTeam")
-                        .HasName("fk_stats_RoundFlagTouchCaptures_team_idx");
+                        .HasDatabaseName("fk_stats_RoundFlagTouchCaptures_team_idx");
 
                     b.HasIndex("IdRoundflagtouchcapture")
                         .IsUnique()
-                        .HasName("id_roundflagtouchcapture_UNIQUE");
+                        .HasDatabaseName("id_roundflagtouchcapture_UNIQUE");
 
                     b.ToTable("roundflagtouchcaptures");
                 });
@@ -1092,29 +1092,29 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdGame")
-                        .HasName("fk_RoundPlayers_Game_idx");
+                        .HasDatabaseName("fk_RoundPlayers_Game_idx");
 
                     b.HasIndex("FkIdMap")
-                        .HasName("fk_RoundPlayers_Map_idx");
+                        .HasDatabaseName("fk_RoundPlayers_Map_idx");
 
                     b.HasIndex("FkIdPlayer")
-                        .HasName("fk_RoundPlayers_Player_idx");
+                        .HasDatabaseName("fk_RoundPlayers_Player_idx");
 
                     b.HasIndex("FkIdRound")
-                        .HasName("fk_RoundPlayers_Round_idx");
+                        .HasDatabaseName("fk_RoundPlayers_Round_idx");
 
                     b.HasIndex("FkIdSeason")
-                        .HasName("fk_RoundPlayers_Season_idx");
+                        .HasDatabaseName("fk_RoundPlayers_Season_idx");
 
                     b.HasIndex("FkIdTeam")
-                        .HasName("fk_RoundPlayers_Team_idx");
+                        .HasDatabaseName("fk_RoundPlayers_Team_idx");
 
                     b.HasIndex("FkIdWeek")
-                        .HasName("fk_RoundPlayers_Week_idx");
+                        .HasDatabaseName("fk_RoundPlayers_Week_idx");
 
                     b.HasIndex("IdRoundplayer")
                         .IsUnique()
-                        .HasName("id_roundplayer_UNIQUE");
+                        .HasDatabaseName("id_roundplayer_UNIQUE");
 
                     b.ToTable("roundplayers");
                 });
@@ -1168,20 +1168,20 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdGame")
-                        .HasName("fk_stats_Rounds_Games_idx");
+                        .HasDatabaseName("fk_stats_Rounds_Games_idx");
 
                     b.HasIndex("FkIdMap")
-                        .HasName("fk_stats_Rounds_Maps_idx");
+                        .HasDatabaseName("fk_stats_Rounds_Maps_idx");
 
                     b.HasIndex("FkIdSeason")
-                        .HasName("fk_stats_Rounds_Seasons_idx");
+                        .HasDatabaseName("fk_stats_Rounds_Seasons_idx");
 
                     b.HasIndex("FkIdWeek")
-                        .HasName("fk_stats_Rounds_Weeks_idx");
+                        .HasDatabaseName("fk_stats_Rounds_Weeks_idx");
 
                     b.HasIndex("IdRound")
                         .IsUnique()
-                        .HasName("id_round_UNIQUE");
+                        .HasDatabaseName("id_round_UNIQUE");
 
                     b.ToTable("rounds");
                 });
@@ -1223,11 +1223,11 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdWadFile")
-                        .HasName("fk_Seasons_WadFile_idx");
+                        .HasDatabaseName("fk_Seasons_WadFile_idx");
 
                     b.HasIndex("IdSeason")
                         .IsUnique()
-                        .HasName("id_season_UNIQUE");
+                        .HasDatabaseName("id_season_UNIQUE");
 
                     b.ToTable("seasons");
                 });
@@ -1270,14 +1270,14 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdPlayerAttacker")
-                        .HasName("fk_stataccuracy_player_attacker_idx");
+                        .HasDatabaseName("fk_stataccuracy_player_attacker_idx");
 
                     b.HasIndex("FkIdRound")
-                        .HasName("fk_stataccuracy_round_idx");
+                        .HasDatabaseName("fk_stataccuracy_round_idx");
 
                     b.HasIndex("IdStatsAccuracyData")
                         .IsUnique()
-                        .HasName("id_stats_accuracy_data_UNIQUE");
+                        .HasDatabaseName("id_stats_accuracy_data_UNIQUE");
 
                     b.HasIndex("PlayerId");
 
@@ -1322,14 +1322,14 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdPlayerAttacker")
-                        .HasName("fk_stataccuracy_player_attacker_idx");
+                        .HasDatabaseName("fk_stataccuracy_player_attacker_idx");
 
                     b.HasIndex("FkIdRound")
-                        .HasName("fk_stataccuracy_round_idx");
+                        .HasDatabaseName("fk_stataccuracy_round_idx");
 
                     b.HasIndex("IdStatsAccuracyFlagoutData")
                         .IsUnique()
-                        .HasName("id_stats_accuracy_data_UNIQUE");
+                        .HasDatabaseName("id_stats_accuracy_data_UNIQUE");
 
                     b.HasIndex("PlayerId");
 
@@ -1375,17 +1375,17 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdPlayerAttacker")
-                        .HasName("fk_statsdamage_player_attacker_idx");
+                        .HasDatabaseName("fk_statsdamage_player_attacker_idx");
 
                     b.HasIndex("FkIdPlayerTarget")
-                        .HasName("fk_statsdamage_player_target_idx");
+                        .HasDatabaseName("fk_statsdamage_player_target_idx");
 
                     b.HasIndex("FkIdRound")
-                        .HasName("fk_statsdamage_round_idx");
+                        .HasDatabaseName("fk_statsdamage_round_idx");
 
                     b.HasIndex("IdStatsDamage")
                         .IsUnique()
-                        .HasName("id_stats_damage_UNIQUE");
+                        .HasDatabaseName("id_stats_damage_UNIQUE");
 
                     b.ToTable("statsdamagedata");
                 });
@@ -1429,17 +1429,17 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdPlayerAttacker")
-                        .HasName("fk_statsdamage_player_attacker_idx");
+                        .HasDatabaseName("fk_statsdamage_player_attacker_idx");
 
                     b.HasIndex("FkIdPlayerTarget")
-                        .HasName("fk_statsdamage_player_target_idx");
+                        .HasDatabaseName("fk_statsdamage_player_target_idx");
 
                     b.HasIndex("FkIdRound")
-                        .HasName("fk_statsdamage_round_idx");
+                        .HasDatabaseName("fk_statsdamage_round_idx");
 
                     b.HasIndex("IdStatsCarrierDamage")
                         .IsUnique()
-                        .HasName("id_stats_damage_UNIQUE");
+                        .HasDatabaseName("id_stats_damage_UNIQUE");
 
                     b.ToTable("statsdamagewithflagdata");
                 });
@@ -1475,17 +1475,17 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdPlayerAttacker")
-                        .HasName("fk_statsdamage_player_attacker_idx");
+                        .HasDatabaseName("fk_statsdamage_player_attacker_idx");
 
                     b.HasIndex("FkIdPlayerTarget")
-                        .HasName("fk_statsdamage_player_target_idx");
+                        .HasDatabaseName("fk_statsdamage_player_target_idx");
 
                     b.HasIndex("FkIdRound")
-                        .HasName("fk_statsdamage_round_idx");
+                        .HasDatabaseName("fk_statsdamage_round_idx");
 
                     b.HasIndex("IdStatsKillcarrier")
                         .IsUnique()
-                        .HasName("id_stats_damage_UNIQUE");
+                        .HasDatabaseName("id_stats_damage_UNIQUE");
 
                     b.ToTable("statskillcarrierdata");
                 });
@@ -1521,17 +1521,17 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdPlayerAttacker")
-                        .HasName("fk_statsdamage_player_attacker_idx");
+                        .HasDatabaseName("fk_statsdamage_player_attacker_idx");
 
                     b.HasIndex("FkIdPlayerTarget")
-                        .HasName("fk_statsdamage_player_target_idx");
+                        .HasDatabaseName("fk_statsdamage_player_target_idx");
 
                     b.HasIndex("FkIdRound")
-                        .HasName("fk_statsdamage_round_idx");
+                        .HasDatabaseName("fk_statsdamage_round_idx");
 
                     b.HasIndex("IdStatsKill")
                         .IsUnique()
-                        .HasName("id_stats_damage_UNIQUE");
+                        .HasDatabaseName("id_stats_damage_UNIQUE");
 
                     b.ToTable("statskilldata");
                 });
@@ -1563,14 +1563,14 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdActivatorPlayer")
-                        .HasName("fk_statpickup_player_idx");
+                        .HasDatabaseName("fk_statpickup_player_idx");
 
                     b.HasIndex("FkIdRound")
-                        .HasName("fk_statpickup_round_idx");
+                        .HasDatabaseName("fk_statpickup_round_idx");
 
                     b.HasIndex("IdStatPickup")
                         .IsUnique()
-                        .HasName("id_stat_pickup_UNIQUE");
+                        .HasDatabaseName("id_stat_pickup_UNIQUE");
 
                     b.ToTable("statspickupdata");
                 });
@@ -1879,29 +1879,29 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdGame")
-                        .HasName("fk_StatsRounds_Games_idx");
+                        .HasDatabaseName("fk_StatsRounds_Games_idx");
 
                     b.HasIndex("FkIdMap")
-                        .HasName("fk_StatsRounds_Maps_idx");
+                        .HasDatabaseName("fk_StatsRounds_Maps_idx");
 
                     b.HasIndex("FkIdPlayer")
-                        .HasName("fk_StatsRounds_Player_idx");
+                        .HasDatabaseName("fk_StatsRounds_Player_idx");
 
                     b.HasIndex("FkIdRound")
-                        .HasName("fk_StatsRounds_Round_idx");
+                        .HasDatabaseName("fk_StatsRounds_Round_idx");
 
                     b.HasIndex("FkIdSeason")
-                        .HasName("fk_StatsRounds_Seasons_idx");
+                        .HasDatabaseName("fk_StatsRounds_Seasons_idx");
 
                     b.HasIndex("FkIdTeam")
-                        .HasName("fk_StatsRounds_Teams_idx");
+                        .HasDatabaseName("fk_StatsRounds_Teams_idx");
 
                     b.HasIndex("FkIdWeek")
-                        .HasName("fk_StatsRounds_Weeks_idx");
+                        .HasDatabaseName("fk_StatsRounds_Weeks_idx");
 
                     b.HasIndex("IdStatsRound")
                         .IsUnique()
-                        .HasName("id_stats_round_UNIQUE");
+                        .HasDatabaseName("id_stats_round_UNIQUE");
 
                     b.ToTable("statsrounds");
                 });
@@ -1951,23 +1951,23 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdPlayerCaptain")
-                        .HasName("fk_stats_Teams_1_idx");
+                        .HasDatabaseName("fk_stats_Teams_1_idx");
 
                     b.HasIndex("FkIdPlayerFirstpick")
-                        .HasName("fk_stats_Teams_Players_2_idx");
+                        .HasDatabaseName("fk_stats_Teams_Players_2_idx");
 
                     b.HasIndex("FkIdPlayerSecondpick")
-                        .HasName("fk_stats_Teams_Players_3_idx");
+                        .HasDatabaseName("fk_stats_Teams_Players_3_idx");
 
                     b.HasIndex("FkIdPlayerThirdpick")
-                        .HasName("fk_stats_Teams_Players_4_idx");
+                        .HasDatabaseName("fk_stats_Teams_Players_4_idx");
 
                     b.HasIndex("FkIdSeason")
-                        .HasName("fk_stats_Teams_Season_idx");
+                        .HasDatabaseName("fk_stats_Teams_Season_idx");
 
                     b.HasIndex("IdTeam")
                         .IsUnique()
-                        .HasName("id_team_UNIQUE");
+                        .HasDatabaseName("id_team_UNIQUE");
 
                     b.ToTable("teams");
                 });
@@ -2002,11 +2002,11 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdSeason")
-                        .HasName("fk_stats_Weeks_Season_idx");
+                        .HasDatabaseName("fk_stats_Weeks_Season_idx");
 
                     b.HasIndex("IdWeek")
                         .IsUnique()
-                        .HasName("id_week_UNIQUE");
+                        .HasDatabaseName("id_week_UNIQUE");
 
                     b.ToTable("weeks");
                 });
@@ -2066,11 +2066,11 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
-                        .HasName("EmailIndex");
+                        .HasDatabaseName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex");
+                        .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
                 });

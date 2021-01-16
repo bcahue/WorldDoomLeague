@@ -14,23 +14,23 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.ToTable("playerdraft");
 
             builder.HasIndex(e => e.DraftRecordId)
-                .HasName("draftrecord_id_UNIQUE")
+                .HasDatabaseName("draftrecord_id_UNIQUE")
                 .IsUnique();
 
             builder.HasIndex(e => e.FkIdPlayerNominated)
-                .HasName("fk_playerdraft_playernominated_idx");
+                .HasDatabaseName("fk_playerdraft_playernominated_idx");
 
             builder.HasIndex(e => e.FkIdPlayerNominating)
-                .HasName("fk_playerdraft_playernominating_idx");
+                .HasDatabaseName("fk_playerdraft_playernominating_idx");
 
             builder.HasIndex(e => e.FkIdPlayerSoldTo)
-                .HasName("fk_playerdraft_playersoldto_idx");
+                .HasDatabaseName("fk_playerdraft_playersoldto_idx");
 
             builder.HasIndex(e => e.FkIdSeason)
-                .HasName("fk_playerdraft_season_idx");
+                .HasDatabaseName("fk_playerdraft_season_idx");
 
             builder.HasIndex(e => e.FkIdTeamSoldTo)
-                .HasName("fk_playerdraft_teamsoldto_idx");
+                .HasDatabaseName("fk_playerdraft_teamsoldto_idx");
 
             builder.Property(e => e.DraftRecordId)
                 .HasColumnName("draftrecord_id")

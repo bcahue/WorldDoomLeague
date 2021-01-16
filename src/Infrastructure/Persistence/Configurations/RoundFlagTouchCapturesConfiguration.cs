@@ -14,19 +14,19 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.ToTable("roundflagtouchcaptures");
 
             builder.HasIndex(e => e.FkIdGame)
-                .HasName("fk_stats_RoundFlagTouchCaptures_game_idx");
+                .HasDatabaseName("fk_stats_RoundFlagTouchCaptures_game_idx");
 
             builder.HasIndex(e => e.FkIdPlayer)
-                .HasName("fk_stats_RoundFlagTouchCaptures_player_idx");
+                .HasDatabaseName("fk_stats_RoundFlagTouchCaptures_player_idx");
 
             builder.HasIndex(e => e.FkIdRound)
-                .HasName("fk_stats_RoundFlagTouchCaptures_round_idx");
+                .HasDatabaseName("fk_stats_RoundFlagTouchCaptures_round_idx");
 
             builder.HasIndex(e => e.FkIdTeam)
-                .HasName("fk_stats_RoundFlagTouchCaptures_team_idx");
+                .HasDatabaseName("fk_stats_RoundFlagTouchCaptures_team_idx");
 
             builder.HasIndex(e => e.IdRoundflagtouchcapture)
-                .HasName("id_roundflagtouchcapture_UNIQUE")
+                .HasDatabaseName("id_roundflagtouchcapture_UNIQUE")
                 .IsUnique();
 
             builder.Property(e => e.IdRoundflagtouchcapture)

@@ -14,16 +14,16 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.ToTable("statskilldata");
 
             builder.HasIndex(e => e.FkIdPlayerAttacker)
-                .HasName("fk_statsdamage_player_attacker_idx");
+                .HasDatabaseName("fk_statsdamage_player_attacker_idx");
 
             builder.HasIndex(e => e.FkIdPlayerTarget)
-                .HasName("fk_statsdamage_player_target_idx");
+                .HasDatabaseName("fk_statsdamage_player_target_idx");
 
             builder.HasIndex(e => e.FkIdRound)
-                .HasName("fk_statsdamage_round_idx");
+                .HasDatabaseName("fk_statsdamage_round_idx");
 
             builder.HasIndex(e => e.IdStatsKill)
-                .HasName("id_stats_damage_UNIQUE")
+                .HasDatabaseName("id_stats_damage_UNIQUE")
                 .IsUnique();
 
             builder.Property(e => e.IdStatsKill)

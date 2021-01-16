@@ -14,11 +14,11 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.ToTable("players");
 
             builder.HasIndex(e => e.Id)
-                .HasName("id_player_UNIQUE")
+                .HasDatabaseName("id_player_UNIQUE")
                 .IsUnique();
 
             builder.HasIndex(e => e.PlayerName)
-                .HasName("player_name_UNIQUE")
+                .HasDatabaseName("player_name_UNIQUE")
                 .IsUnique();
 
             builder.Property(e => e.Id)

@@ -14,7 +14,7 @@ using Respawn;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 
 [SetUpFixture]
 public class Testing

@@ -14,13 +14,13 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.ToTable("gamemaps");
 
             builder.HasIndex(e => e.FkIdGame)
-                .HasName("fk_GameMaps_Games_idx");
+                .HasDatabaseName("fk_GameMaps_Games_idx");
 
             builder.HasIndex(e => e.FkIdMap)
-                .HasName("fk_GameMaps_Maps_idx");
+                .HasDatabaseName("fk_GameMaps_Maps_idx");
 
             builder.HasIndex(e => e.IdGameMap)
-                .HasName("id_file_UNIQUE")
+                .HasDatabaseName("id_file_UNIQUE")
                 .IsUnique();
 
             builder.Property(e => e.IdGameMap)

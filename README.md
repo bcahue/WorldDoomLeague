@@ -19,7 +19,6 @@ This is an Api + SPA front-end website for the World Doom League. This software 
 * MariaDb
 * NSwag
 * React
-* Redux
 
 ## Getting Started
 

@@ -1,13 +1,14 @@
 ﻿import { createGlobalState } from 'react-hooks-global-state';
 import { LeaderboardStatsMode, IPlayerLeaderboardStatsDto } from './WorldDoomLeague';
+import { IErrorResponse } from './ErrorResponse'
 
 const { setGlobalState, useGlobalState } = createGlobalState({
-    errorMessage: '',
+    errorMessage: {} as IErrorResponse,
     allTimeLeaderboardData: [],
     allTimeLeaderboardMode: LeaderboardStatsMode.Total,
 });
 
-export const setErrorMessage = (s: string) => {
+export const setErrorMessage = (s: IErrorResponse) => {
     setGlobalState('errorMessage', s);
 };
 

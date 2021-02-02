@@ -12,28 +12,18 @@
           "Draft"
         ],
         "operationId": "Draft_Create",
-        "parameters": [
-          {
-            "name": "season",
-            "in": "query",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "draftRequestList",
-            "in": "query",
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "array",
-              "nullable": true,
-              "items": {
-                "$ref": "#/components/schemas/DraftRequest"
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDraftCommand"
               }
             }
-          }
-        ],
+          },
+          "required": true,
+          "x-position": 1
+        },
         "responses": {
           "200": {
             "description": "",
@@ -49,29 +39,47 @@
         }
       }
     },
-    "/api/Files": {
-      "post": {
+    "/api/Engine": {
+      "get": {
         "tags": [
-          "Files"
+          "Engine"
         ],
-        "operationId": "Files_Create",
-        "parameters": [
-          {
-            "name": "fileName",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            }
-          },
-          {
-            "name": "fileSize",
-            "in": "query",
-            "schema": {
-              "type": "integer"
+        "operationId": "Engine_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnginesVm"
+                }
+              }
             }
           }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Engine"
         ],
+        "operationId": "Engine_Create",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEngineCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
         "responses": {
           "200": {
             "description": "",
@@ -83,7 +91,127 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/Engine/{engineId}": {
+      "put": {
+        "tags": [
+          "Engine"
+        ],
+        "operationId": "Engine_Update",
+        "parameters": [
+          {
+            "name": "engineId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEngineCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/Files/wad": {
+      "post": {
+        "tags": [
+          "Files"
+        ],
+        "operationId": "Files_CreateWadFile",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/Files/wads": {
+      "get": {
+        "tags": [
+          "Files"
+        ],
+        "operationId": "Files_GetWadFiles",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WadFilesVm"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/Files/json": {
@@ -99,7 +227,6 @@
               "application/json": {
                 "schema": {
                   "type": "array",
-                  "nullable": true,
                   "items": {
                     "type": "string"
                   }
@@ -107,7 +234,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/Files/json/rounddata": {
@@ -120,7 +252,6 @@
           {
             "name": "FileName",
             "in": "query",
-            "required": true,
             "schema": {
               "type": "string",
               "nullable": true
@@ -134,17 +265,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "nullable": true,
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/Round"
-                    }
-                  ]
+                  "$ref": "#/components/schemas/Round"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/LeaderboardStats/season/{seasonId}/players": {
@@ -183,12 +314,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "nullable": true,
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/PlayerLeaderboardSeasonStatsVm"
-                    }
-                  ]
+                  "$ref": "#/components/schemas/PlayerLeaderboardSeasonStatsVm"
                 }
               }
             }
@@ -223,12 +349,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "nullable": true,
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/PlayerLeaderboardAllTimeStatsVm"
-                    }
-                  ]
+                  "$ref": "#/components/schemas/PlayerLeaderboardAllTimeStatsVm"
                 }
               }
             }
@@ -242,38 +363,18 @@
           "Maps"
         ],
         "operationId": "Maps_Create",
-        "parameters": [
-          {
-            "name": "mapName",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMapCommand"
+              }
             }
           },
-          {
-            "name": "mapPack",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            }
-          },
-          {
-            "name": "fileId",
-            "in": "query",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "mapNumber",
-            "in": "query",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
+          "required": true,
+          "x-position": 1
+        },
         "responses": {
           "200": {
             "description": "",
@@ -311,12 +412,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "nullable": true,
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/MatchSummaryVm"
-                    }
-                  ]
+                  "$ref": "#/components/schemas/MatchSummaryVm"
                 }
               }
             }
@@ -330,45 +426,18 @@
           "Matches"
         ],
         "operationId": "Matches_Create",
-        "parameters": [
-          {
-            "name": "season",
-            "in": "query",
-            "schema": {
-              "type": "integer"
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMatchCommand"
+              }
             }
           },
-          {
-            "name": "week",
-            "in": "query",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "redTeam",
-            "in": "query",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "blueTeam",
-            "in": "query",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "gameDateTime",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time",
-              "nullable": true
-            }
-          }
-        ],
+          "required": true,
+          "x-position": 1
+        },
         "responses": {
           "200": {
             "description": "",
@@ -389,35 +458,18 @@
           "Matches"
         ],
         "operationId": "Matches_Process",
-        "parameters": [
-          {
-            "name": "matchId",
-            "in": "query",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "flipTeams",
-            "in": "query",
-            "schema": {
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "gameRounds",
-            "in": "query",
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "array",
-              "nullable": true,
-              "items": {
-                "$ref": "#/components/schemas/RoundObject"
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProcessMatchCommand"
               }
             }
-          }
-        ],
+          },
+          "required": true,
+          "x-position": 1
+        },
         "responses": {
           "200": {
             "description": "",
@@ -444,12 +496,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "nullable": true,
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/PlayersVm"
-                    }
-                  ]
+                  "$ref": "#/components/schemas/PlayersVm"
                 }
               }
             }
@@ -461,24 +508,18 @@
           "Players"
         ],
         "operationId": "Players_Create",
-        "parameters": [
-          {
-            "name": "playerName",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePlayerCommand"
+              }
             }
           },
-          {
-            "name": "playerAlias",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            }
-          }
-        ],
+          "required": true,
+          "x-position": 1
+        },
         "responses": {
           "200": {
             "description": "",
@@ -516,12 +557,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "nullable": true,
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/PlayerSummaryVm"
-                    }
-                  ]
+                  "$ref": "#/components/schemas/PlayerSummaryVm"
                 }
               }
             }
@@ -544,32 +580,20 @@
               "type": "integer"
             },
             "x-position": 1
-          },
-          {
-            "name": "playerId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "playerName",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            }
-          },
-          {
-            "name": "playerAlias",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            }
           }
         ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePlayerCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
         "responses": {
           "200": {
             "description": "",
@@ -603,7 +627,8 @@
                   "$ref": "#/components/schemas/RoundsOutputFileType"
                 }
               ]
-            }
+            },
+            "x-position": 1
           }
         ],
         "responses": {
@@ -633,12 +658,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "nullable": true,
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/SeasonsVm"
-                    }
-                  ]
+                  "$ref": "#/components/schemas/SeasonsVm"
                 }
               }
             }
@@ -650,39 +670,18 @@
           "Seasons"
         ],
         "operationId": "Seasons_Create",
-        "parameters": [
-          {
-            "name": "wadId",
-            "in": "query",
-            "schema": {
-              "type": "integer"
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSeasonCommand"
+              }
             }
           },
-          {
-            "name": "seasonName",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            }
-          },
-          {
-            "name": "enginePlayed",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            }
-          },
-          {
-            "name": "seasonDateStart",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          }
-        ],
+          "required": true,
+          "x-position": 1
+        },
         "responses": {
           "200": {
             "description": "",
@@ -712,39 +711,20 @@
               "type": "integer"
             },
             "x-position": 1
-          },
-          {
-            "name": "seasonId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "wadId",
-            "in": "query",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "seasonName",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            }
-          },
-          {
-            "name": "dateStart",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
           }
         ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSeasonCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
         "responses": {
           "200": {
             "description": "",
@@ -781,12 +761,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "nullable": true,
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/SeasonSummaryVm"
-                    }
-                  ]
+                  "$ref": "#/components/schemas/SeasonSummaryVm"
                 }
               }
             }
@@ -809,38 +784,20 @@
               "type": "integer"
             },
             "x-position": 1
-          },
-          {
-            "name": "seasonId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "weekOneDateStart",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "name": "numWeeksRegularSeason",
-            "in": "query",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "numWeeksPlayoffs",
-            "in": "query",
-            "schema": {
-              "type": "integer"
-            }
           }
         ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSeasonWeeksCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
         "responses": {
           "200": {
             "description": "",
@@ -867,12 +824,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "nullable": true,
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/SeasonListVm"
-                    }
-                  ]
+                  "$ref": "#/components/schemas/SeasonListVm"
                 }
               }
             }
@@ -903,12 +855,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "nullable": true,
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/SeasonStandingsVm"
-                    }
-                  ]
+                  "$ref": "#/components/schemas/SeasonStandingsVm"
                 }
               }
             }
@@ -939,12 +886,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "nullable": true,
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/SeasonPlayersVm"
-                    }
-                  ]
+                  "$ref": "#/components/schemas/SeasonPlayersVm"
                 }
               }
             }
@@ -975,12 +917,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "nullable": true,
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/TeamSummaryVm"
-                    }
-                  ]
+                  "$ref": "#/components/schemas/TeamSummaryVm"
                 }
               }
             }
@@ -994,38 +931,18 @@
           "Teams"
         ],
         "operationId": "Teams_Create",
-        "parameters": [
-          {
-            "name": "teamName",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTeamCommand"
+              }
             }
           },
-          {
-            "name": "teamAbbreviation",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            }
-          },
-          {
-            "name": "teamSeason",
-            "in": "query",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "teamCaptain",
-            "in": "query",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
+          "required": true,
+          "x-position": 1
+        },
         "responses": {
           "200": {
             "description": "",
@@ -1043,6 +960,22 @@
   },
   "components": {
     "schemas": {
+      "CreateDraftCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "season": {
+            "type": "integer"
+          },
+          "draftRequestList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/DraftRequest"
+            }
+          }
+        }
+      },
       "DraftRequest": {
         "type": "object",
         "additionalProperties": false,
@@ -1058,6 +991,103 @@
           },
           "sellPrice": {
             "type": "integer"
+          }
+        }
+      },
+      "EnginesVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "engineList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/EnginesDto"
+            }
+          }
+        }
+      },
+      "EnginesDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "engineName": {
+            "type": "string",
+            "nullable": true
+          },
+          "engineUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CreateEngineCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "engineName": {
+            "type": "string",
+            "nullable": true
+          },
+          "engineUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateEngineCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "engineId": {
+            "type": "integer"
+          },
+          "engineName": {
+            "type": "string",
+            "nullable": true
+          },
+          "engineUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "WadFilesVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "wadList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/WadFilesDto"
+            }
+          }
+        }
+      },
+      "WadFilesDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fileName": {
+            "type": "string",
+            "nullable": true
+          },
+          "fileSize": {
+            "type": "string",
+            "nullable": true
+          },
+          "uploadDate": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
@@ -2332,6 +2362,26 @@
           }
         }
       },
+      "CreateMapCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "mapName": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapPack": {
+            "type": "string",
+            "nullable": true
+          },
+          "fileId": {
+            "type": "integer"
+          },
+          "mapNumber": {
+            "type": "integer"
+          }
+        }
+      },
       "MatchSummaryVm": {
         "type": "object",
         "additionalProperties": false,
@@ -2914,6 +2964,48 @@
           }
         }
       },
+      "CreateMatchCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "season": {
+            "type": "integer"
+          },
+          "week": {
+            "type": "integer"
+          },
+          "redTeam": {
+            "type": "integer"
+          },
+          "blueTeam": {
+            "type": "integer"
+          },
+          "gameDateTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "ProcessMatchCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "matchId": {
+            "type": "integer"
+          },
+          "flipTeams": {
+            "type": "boolean"
+          },
+          "gameRounds": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/RoundObject"
+            }
+          }
+        }
+      },
       "RoundObject": {
         "type": "object",
         "additionalProperties": false,
@@ -3240,6 +3332,37 @@
           }
         }
       },
+      "CreatePlayerCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "playerAlias": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UpdatePlayerCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "playerId": {
+            "type": "integer"
+          },
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "playerAlias": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "RoundsOutputFileType": {
         "type": "integer",
         "description": "",
@@ -3274,6 +3397,66 @@
           "seasonName": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "CreateSeasonCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "wadId": {
+            "type": "integer"
+          },
+          "seasonName": {
+            "type": "string",
+            "nullable": true
+          },
+          "enginePlayed": {
+            "type": "string",
+            "nullable": true
+          },
+          "seasonDateStart": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "UpdateSeasonCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "seasonId": {
+            "type": "integer"
+          },
+          "wadId": {
+            "type": "integer"
+          },
+          "seasonName": {
+            "type": "string",
+            "nullable": true
+          },
+          "dateStart": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateSeasonWeeksCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "seasonId": {
+            "type": "integer"
+          },
+          "weekOneDateStart": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "numWeeksRegularSeason": {
+            "type": "integer"
+          },
+          "numWeeksPlayoffs": {
+            "type": "integer"
           }
         }
       },
@@ -4028,7 +4211,40 @@
             "format": "int32"
           }
         }
+      },
+      "CreateTeamCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "teamName": {
+            "type": "string",
+            "nullable": true
+          },
+          "teamAbbreviation": {
+            "type": "string",
+            "nullable": true
+          },
+          "teamSeason": {
+            "type": "integer"
+          },
+          "teamCaptain": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "JWT": {
+        "type": "apiKey",
+        "description": "Type into the textbox: Bearer {your JWT token}.",
+        "name": "Authorization",
+        "in": "header"
       }
     }
-  }
+  },
+  "security": [
+    {
+      "JWT": []
+    }
+  ]
 }

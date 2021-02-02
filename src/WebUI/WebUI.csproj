@@ -16,7 +16,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNet.Security.OpenId.Steam" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.2" />
@@ -81,12 +80,24 @@
       <None Remove="ClientApp\build\static\js\main.2369d941.chunk.js.map" />
       <None Remove="ClientApp\build\static\js\runtime-main.8746a0cd.js" />
       <None Remove="ClientApp\build\static\js\runtime-main.8746a0cd.js.map" />
+      <None Remove="ClientApp\src\AdminMenu.tsx" />
+      <None Remove="ClientApp\src\ApiClientBase.ts" />
+      <None Remove="ClientApp\src\client.extensions.ts" />
+      <None Remove="ClientApp\src\components\admin\AdminRoutes.tsx" />
+      <None Remove="ClientApp\src\components\admin\newseasonwizard\EngineList.tsx" />
+      <None Remove="ClientApp\src\components\admin\newseasonwizard\NewSeasonWizard.tsx" />
+      <None Remove="ClientApp\src\components\admin\newseasonwizard\SeasonList.tsx" />
+      <None Remove="ClientApp\src\components\admin\newseasonwizard\StepButtons.tsx" />
+      <None Remove="ClientApp\src\components\admin\newseasonwizard\WadList.tsx" />
+      <None Remove="ClientApp\src\components\admin\newseasonwizard\WelcomeStep.tsx" />
       <None Remove="ClientApp\src\components\LeaderboardAllTimeStats.tsx" />
+      <None Remove="ClientApp\src\ErrorResponse.tsx" />
       <None Remove="ClientApp\src\reportWebVitals.ts" />
       <None Remove="ClientApp\src\state.tsx" />
     </ItemGroup>
 
     <ItemGroup>
+      <TypeScriptCompile Remove="ClientApp\src\components\api-authorization\Roles.tsx" />
       <TypeScriptCompile Remove="ClientApp\src\components\home\NewsBlog.tsx" />
       <TypeScriptCompile Remove="ClientApp\src\components\home\TeamResults.tsx" />
       <TypeScriptCompile Remove="ClientApp\src\components\home\TwitchIntegration.tsx" />
@@ -97,6 +108,28 @@
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
+
+    <ItemGroup>
+      <None Update="ClientApp\src\components\admin\newseasonwizard\SeasonList - Copy.js">
+        <DependentUpon>SeasonList.js</DependentUpon>
+      </None>
+      <None Update="ClientApp\src\components\admin\newseasonwizard\SeasonList - Copy.js.map">
+        <DependentUpon>SeasonList.js.map</DependentUpon>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\EngineList.tsx">
+        <SubType>Code</SubType>
+      </TypeScriptCompile>
+      <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\WadList.tsx">
+        <SubType>Code</SubType>
+      </TypeScriptCompile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot\images\" />
+    </ItemGroup>
 
   <Target Name="NSwag" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
     <Copy SourceFiles="@(Reference)" DestinationFolder="$(OutDir)References" />

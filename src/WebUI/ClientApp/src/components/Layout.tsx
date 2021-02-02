@@ -1,14 +1,16 @@
 import * as React from 'react';
 import { Container } from 'reactstrap';
-import NavMenu from './NavMenu';
+import NavMenu from './navmenu/NavMenu';
+import ErrorMessage from './ErrorMessage';
 
 function Layout(props: { children?: React.ReactNode }) {
     return (
     <React.Fragment>
         <NavMenu />
-        <Container>
-            {props.children}
-        </Container>
+            <Container>
+                <ErrorMessage />
+                {props.children}
+            </Container>
     </React.Fragment>
     );
 }

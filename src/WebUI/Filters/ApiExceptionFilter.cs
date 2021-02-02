@@ -20,6 +20,8 @@ namespace WorldDoomLeague.WebUI.Filters
                 { typeof(ValidationException), HandleValidationException },
                 { typeof(NotFoundException), HandleNotFoundException },
                 { typeof(InvalidDraftException), HandleInvalidDraftException },
+                { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
+                { typeof(NotZippedException), HandleNotZippedException },
             };
         }
 
@@ -51,6 +53,7 @@ namespace WorldDoomLeague.WebUI.Filters
                 Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1"
             };
 
+            // Figure out a way to log the exception here.
             context.Result = new ObjectResult(details)
             {
                 StatusCode = StatusCodes.Status500InternalServerError
@@ -97,6 +100,38 @@ namespace WorldDoomLeague.WebUI.Filters
             {
                 Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                 Title = "The specified draft request was determined to be invalid.",
+                Detail = exception.Message
+            };
+
+            context.Result = new BadRequestObjectResult(details);
+
+            context.ExceptionHandled = true;
+        }
+
+        private void HandleUnauthorizedAccessException(ExceptionContext context)
+        {
+            var exception = context.Exception as UnauthorizedAccessException;
+
+            var details = new ProblemDetails()
+            {
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+                Title = "The specified resource was accessed by an unauthorized user.",
+                Detail = exception.Message
+            };
+
+            context.Result = new BadRequestObjectResult(details);
+
+            context.ExceptionHandled = true;
+        }
+
+        private void HandleNotZippedException(ExceptionContext context)
+        {
+            var exception = context.Exception as UnauthorizedAccessException;
+
+            var details = new ProblemDetails()
+            {
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+                Title = "The resource that was uploaded was not zipped when the application expected this file to be zipped prior to uploading.",
                 Detail = exception.Message
             };
 

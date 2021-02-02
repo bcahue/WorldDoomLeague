@@ -1,4 +1,5 @@
 ﻿using WorldDoomLeague.Application.Common.Interfaces;
+using WorldDoomLeague.Application.Common.Security;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using WorldDoomLeague.Application.ConfigModels;
 
 namespace WorldDoomLeague.Application.Files.Queries.GetRoundJsonFiles
 {
+    [Authorize(Roles = "Administrator,StatsRunner")]
     public class GetRoundJsonFilesQuery : IRequest<IEnumerable<string>>
     {
     }

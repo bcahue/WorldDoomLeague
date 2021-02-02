@@ -18,7 +18,7 @@ function TeamResults() {
                 const data = await response.seasons;
                 setData(data);
             } catch (e) {
-                setErrorMessage(`Error: ${e}`);
+                setErrorMessage(JSON.parse(e.response));
             }
             setLoading(false);
         };

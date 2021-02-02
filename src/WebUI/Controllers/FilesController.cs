@@ -1,67 +1,44 @@
-﻿using WorldDoomLeague.Application.Files.Commands.CreateFile;
+﻿using WorldDoomLeague.Application.Files.Commands.CreateWadFile;
 using WorldDoomLeague.Application.Files.Queries.GetRoundJsonFiles;
 using WorldDoomLeague.Application.Files.Queries.GetRoundObject;
+using WorldDoomLeague.Application.Files.Queries.GetWadFiles;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Configuration;
-using System.Configuration;
 using WorldDoomLeague.Domain.MatchModel;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace WorldDoomLeague.WebUI.Controllers
 {
     public class FilesController : ApiController
     {
-        /*
-        [HttpGet]
-        public async Task<PlayersVm> Get()
+        [Authorize]
+        [HttpPost("wad")]
+        public async Task<ActionResult<uint>> CreateWadFile(IFormFile file)
         {
-            return await Mediator.Send(new GetPlayersQuery());
-        }
-        
-        [HttpGet("comparison")]
-        public async Task<ComparePlayerSummaryVm> GetPlayerComparison([FromQuery]uint playerId, [FromQuery]uint vsPlayerId)
-        {
-            return await Mediator.Send(new GetPlayerComparisonQuery(playerId, vsPlayerId));
-        }
-        
-        [HttpGet("{playerId}/summary")]
-        public async Task<PlayerSummaryVm> GetPlayerSummaryById(uint playerId)
-        {
-            return await Mediator.Send(new GetPlayerSummaryByIdQuery(playerId));
-        }
-        */
-        [HttpPost]
-        public async Task<ActionResult<uint>> Create(CreateFileCommand command)
-        {
-            return await Mediator.Send(command);
+            return await Mediator.Send(new CreateWadFileCommand(file));
         }
 
+        [Authorize]
+        [HttpGet("wads")]
+        public async Task<WadFilesVm> GetWadFiles()
+        {
+            return await Mediator.Send(new GetWadFilesQuery());
+        }
+
+        [Authorize]
         [HttpGet("json")]
         public async Task<IEnumerable<string>> GetRoundJsonFiles()
         {
             return await Mediator.Send(new GetRoundJsonFilesQuery());
         }
 
+        [Authorize]
         [HttpGet("json/rounddata")]
         public async Task<Round> GetRoundObject([FromQuery(Name = "FileName")] string fileName)
         {
             return await Mediator.Send(new GetRoundObjectQuery(fileName));
         }
-        /*
-        [HttpPut("{playerId}")]
-        public async Task<ActionResult> Update(uint playerId, UpdatePlayerCommand command)
-        {
-            if (playerId != command.PlayerId)
-            {
-                return BadRequest();
-            }
-
-            await Mediator.Send(command);
-
-            return NoContent();
-        }
-        */
     }
 }

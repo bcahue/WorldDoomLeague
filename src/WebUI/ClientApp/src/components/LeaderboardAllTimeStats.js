@@ -75,7 +75,7 @@ function FetchLeaderboardAllTimeStats() {
                     case 5: return [3 /*break*/, 7];
                     case 6:
                         e_1 = _a.sent();
-                        state_1.setErrorMessage("Error: " + e_1);
+                        state_1.setErrorMessage(JSON.parse(e_1.response));
                         return [3 /*break*/, 7];
                     case 7:
                         setLoading(false);

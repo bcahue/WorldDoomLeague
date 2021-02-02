@@ -32,7 +32,7 @@ function FetchLeaderboardAllTimeStats() {
                     setAllTimeLeaderboardData(data);
                 }
             } catch (e) {
-                setErrorMessage(`Error: ${e}`);
+                setErrorMessage(JSON.parse(e.response));
             }
             setLoading(false);
         };

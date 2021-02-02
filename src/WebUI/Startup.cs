@@ -16,6 +16,8 @@ using NSwag;
 using NSwag.Generation.Processors.Security;
 using System.Linq;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.FileProviders;
 
 namespace WorldDoomLeague.WebUI
 {
@@ -31,11 +33,12 @@ namespace WorldDoomLeague.WebUI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddApplication();
             services.AddInfrastructure(Configuration);
 
-            services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddDatabaseDeveloperPageExceptionFilter();
+
+            services.AddSingleton<ICurrentUserService, CurrentUserService>();
 
             services.AddHttpContextAccessor();
 
@@ -49,23 +52,20 @@ namespace WorldDoomLeague.WebUI
 
             services.AddRazorPages();
 
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/build";
-            });
-
-            services.AddAuthentication(options => { /* Authentication options */ })
-                .AddSteam();
-
             // Customise default API behaviour
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
             });
 
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/build";
+            });
+
             services.AddOpenApiDocument(configure =>
             {
-                configure.Title = "WorldDoomLeague Api";
+                configure.Title = "WorldDoomLeague";
                 configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
                 {
                     Type = OpenApiSecuritySchemeType.ApiKey,
@@ -74,7 +74,8 @@ namespace WorldDoomLeague.WebUI
                     Description = "Type into the textbox: Bearer {your JWT token}."
                 });
 
-                configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
+                configure.OperationProcessors
+                .Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
             });
         }
 
@@ -96,6 +97,18 @@ namespace WorldDoomLeague.WebUI
             app.UseHealthChecks("/health");
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                Configuration.GetSection("DataDirectories").GetValue<string>("WadRepository")),
+                RequestPath = "/WadFiles"
+            });
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                Configuration.GetSection("DataDirectories").GetValue<string>("DemoRepository")),
+                RequestPath = "/DemoFiles"
+            });
             if (!env.IsDevelopment())
             {
                 app.UseSpaStaticFiles();

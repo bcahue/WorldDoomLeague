@@ -54,6 +54,8 @@ namespace WorldDoomLeague.Infrastructure.Persistence
         public virtual DbSet<PlayerTransactions> PlayerTransactions { get; set; }
         public virtual DbSet<PlayerDraft> PlayerDraft { get; set; }
         public virtual DbSet<GameMaps> GameMaps { get; set; }
+        public virtual DbSet<Engine> Engines { get; set; }
+        public virtual DbSet<WadFiles> WadFiles { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

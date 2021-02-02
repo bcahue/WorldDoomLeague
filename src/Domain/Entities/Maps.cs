@@ -8,7 +8,6 @@ namespace WorldDoomLeague.Domain.Entities
         public Maps()
         {
             RoundPlayers = new HashSet<RoundPlayers>();
-            GameTeamStats = new HashSet<GameTeamStats>();
             Rounds = new HashSet<Rounds>();
             StatsRounds = new HashSet<StatsRounds>();
             PlayerRoundRecords = new HashSet<PlayerRoundRecord>();
@@ -16,14 +15,13 @@ namespace WorldDoomLeague.Domain.Entities
         }
 
         public uint IdMap { get; set; }
-        public uint FkIdFile { get; set; }
+        public uint FkIdFile { get; set; } // Todo: Create MapImages table
         public string MapPack { get; set; }
         public string MapName { get; set; }
         public uint MapNumber { get; set; }
 
         public virtual GameFiles FkIdFileNavigation { get; set; }
         public virtual ICollection<RoundPlayers> RoundPlayers { get; set; }
-        public virtual ICollection<GameTeamStats> GameTeamStats { get; set; }
         public virtual ICollection<Rounds> Rounds { get; set; }
         public virtual ICollection<StatsRounds> StatsRounds { get; set; }
         public virtual ICollection<PlayerRoundRecord> PlayerRoundRecords { get; set; }

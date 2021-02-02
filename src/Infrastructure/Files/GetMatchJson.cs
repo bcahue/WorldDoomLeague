@@ -9,7 +9,6 @@ namespace WorldDoomLeague.Infrastructure.Files
 {
     public class GetMatchJson : IGetMatchJson
     {
-        public string JsonDirectory { get; }
         public async Task<Round> GetRoundObject(string jsonDirectory, string fileName)
         {
             if (fileName == null) { throw new NotFoundException(); }
@@ -17,10 +16,8 @@ namespace WorldDoomLeague.Infrastructure.Files
             var joined = Path.Join(jsonDirectory, fileName);
             try
             {
-                using (FileStream fs = File.OpenRead(joined))
-                {
-                    return await JsonSerializer.DeserializeAsync<Round>(fs);
-                }
+                using FileStream fs = File.OpenRead(joined);
+                return await JsonSerializer.DeserializeAsync<Round>(fs);
             }
             catch (FileNotFoundException)
             {

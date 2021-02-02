@@ -7,43 +7,41 @@
 //----------------------
 // ReSharper disable InconsistentNaming
 
+import { ApiClientBase } from "./ApiClientBase";
+
 export interface IDraftClient {
-    create(season: number | undefined, draftRequestList: DraftRequest[] | null | undefined): Promise<number>;
+    create(command: CreateDraftCommand): Promise<number>;
 }
 
-export class DraftClient implements IDraftClient {
+export class DraftClient extends ApiClientBase implements IDraftClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
         this.http = http ? http : <any>window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    create(season: number | undefined, draftRequestList: DraftRequest[] | null | undefined): Promise<number> {
-        let url_ = this.baseUrl + "/api/Draft?";
-        if (season === null)
-            throw new Error("The parameter 'season' cannot be null.");
-        else if (season !== undefined)
-            url_ += "season=" + encodeURIComponent("" + season) + "&";
-        if (draftRequestList !== undefined && draftRequestList !== null)
-            draftRequestList && draftRequestList.forEach((item, index) => {
-                for (let attr in item)
-        			if (item.hasOwnProperty(attr)) {
-        				url_ += "draftRequestList[" + index + "]." + attr + "=" + encodeURIComponent("" + (<any>item)[attr]) + "&";
-        			}
-            });
+    create(command: CreateDraftCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Draft";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_ = <RequestInit>{
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processCreate(_response);
         });
     }
@@ -64,48 +62,186 @@ export class DraftClient implements IDraftClient {
             });
         }
         return Promise.resolve<number>(<any>null);
+    }
+}
+
+export interface IEngineClient {
+    get(): Promise<EnginesVm>;
+    create(command: CreateEngineCommand): Promise<number>;
+    update(engineId: number, command: UpdateEngineCommand): Promise<FileResponse>;
+}
+
+export class EngineClient extends ApiClientBase implements IEngineClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    get(): Promise<EnginesVm> {
+        let url_ = this.baseUrl + "/api/Engine";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGet(_response);
+        });
+    }
+
+    protected processGet(response: Response): Promise<EnginesVm> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = EnginesVm.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<EnginesVm>(<any>null);
+    }
+
+    create(command: CreateEngineCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Engine";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processCreate(_response);
+        });
+    }
+
+    protected processCreate(response: Response): Promise<number> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(<any>null);
+    }
+
+    update(engineId: number, command: UpdateEngineCommand): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Engine/{engineId}";
+        if (engineId === undefined || engineId === null)
+            throw new Error("The parameter 'engineId' must be defined.");
+        url_ = url_.replace("{engineId}", encodeURIComponent("" + engineId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processUpdate(_response);
+        });
+    }
+
+    protected processUpdate(response: Response): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse>(<any>null);
     }
 }
 
 export interface IFilesClient {
-    create(fileName: string | null | undefined, fileSize: number | undefined): Promise<number>;
-    getRoundJsonFiles(): Promise<string[] | null>;
-    getRoundObject(fileName: string | null): Promise<Round | null>;
+    createWadFile(file: FileParameter | null | undefined): Promise<number>;
+    getWadFiles(): Promise<WadFilesVm>;
+    getRoundJsonFiles(): Promise<string[]>;
+    getRoundObject(fileName: string | null | undefined): Promise<Round>;
 }
 
-export class FilesClient implements IFilesClient {
+export class FilesClient extends ApiClientBase implements IFilesClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
         this.http = http ? http : <any>window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    create(fileName: string | null | undefined, fileSize: number | undefined): Promise<number> {
-        let url_ = this.baseUrl + "/api/Files?";
-        if (fileName !== undefined && fileName !== null)
-            url_ += "fileName=" + encodeURIComponent("" + fileName) + "&";
-        if (fileSize === null)
-            throw new Error("The parameter 'fileSize' cannot be null.");
-        else if (fileSize !== undefined)
-            url_ += "fileSize=" + encodeURIComponent("" + fileSize) + "&";
+    createWadFile(file: FileParameter | null | undefined): Promise<number> {
+        let url_ = this.baseUrl + "/api/Files/wad";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = new FormData();
+        if (file !== null && file !== undefined)
+            content_.append("file", file.data, file.fileName ? file.fileName : "file");
+
         let options_ = <RequestInit>{
+            body: content_,
             method: "POST",
             headers: {
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreate(_response);
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processCreateWadFile(_response);
         });
     }
 
-    protected processCreate(response: Response): Promise<number> {
+    protected processCreateWadFile(response: Response): Promise<number> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -123,7 +259,43 @@ export class FilesClient implements IFilesClient {
         return Promise.resolve<number>(<any>null);
     }
 
-    getRoundJsonFiles(): Promise<string[] | null> {
+    getWadFiles(): Promise<WadFilesVm> {
+        let url_ = this.baseUrl + "/api/Files/wads";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetWadFiles(_response);
+        });
+    }
+
+    protected processGetWadFiles(response: Response): Promise<WadFilesVm> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = WadFilesVm.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<WadFilesVm>(<any>null);
+    }
+
+    getRoundJsonFiles(): Promise<string[]> {
         let url_ = this.baseUrl + "/api/Files/json";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -134,12 +306,14 @@ export class FilesClient implements IFilesClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetRoundJsonFiles(_response);
         });
     }
 
-    protected processGetRoundJsonFiles(response: Response): Promise<string[] | null> {
+    protected processGetRoundJsonFiles(response: Response): Promise<string[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -158,14 +332,12 @@ export class FilesClient implements IFilesClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<string[] | null>(<any>null);
+        return Promise.resolve<string[]>(<any>null);
     }
 
-    getRoundObject(fileName: string | null): Promise<Round | null> {
+    getRoundObject(fileName: string | null | undefined): Promise<Round> {
         let url_ = this.baseUrl + "/api/Files/json/rounddata?";
-        if (fileName === undefined)
-            throw new Error("The parameter 'fileName' must be defined.");
-        else if(fileName !== null)
+        if (fileName !== undefined && fileName !== null)
             url_ += "FileName=" + encodeURIComponent("" + fileName) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -176,19 +348,21 @@ export class FilesClient implements IFilesClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetRoundObject(_response);
         });
     }
 
-    protected processGetRoundObject(response: Response): Promise<Round | null> {
+    protected processGetRoundObject(response: Response): Promise<Round> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? Round.fromJS(resultData200) : <any>null;
+            result200 = Round.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -196,26 +370,27 @@ export class FilesClient implements IFilesClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<Round | null>(<any>null);
+        return Promise.resolve<Round>(<any>null);
     }
 }
 
 export interface ILeaderboardStatsClient {
-    getSeason(seasonId: number, mode: LeaderboardStatsMode | undefined): Promise<PlayerLeaderboardSeasonStatsVm | null>;
-    getAllTime(mode: LeaderboardStatsMode | undefined): Promise<PlayerLeaderboardAllTimeStatsVm | null>;
+    getSeason(seasonId: number, mode: LeaderboardStatsMode | undefined): Promise<PlayerLeaderboardSeasonStatsVm>;
+    getAllTime(mode: LeaderboardStatsMode | undefined): Promise<PlayerLeaderboardAllTimeStatsVm>;
 }
 
-export class LeaderboardStatsClient implements ILeaderboardStatsClient {
+export class LeaderboardStatsClient extends ApiClientBase implements ILeaderboardStatsClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
         this.http = http ? http : <any>window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getSeason(seasonId: number, mode: LeaderboardStatsMode | undefined): Promise<PlayerLeaderboardSeasonStatsVm | null> {
+    getSeason(seasonId: number, mode: LeaderboardStatsMode | undefined): Promise<PlayerLeaderboardSeasonStatsVm> {
         let url_ = this.baseUrl + "/api/LeaderboardStats/season/{seasonId}/players?";
         if (seasonId === undefined || seasonId === null)
             throw new Error("The parameter 'seasonId' must be defined.");
@@ -233,19 +408,21 @@ export class LeaderboardStatsClient implements ILeaderboardStatsClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetSeason(_response);
         });
     }
 
-    protected processGetSeason(response: Response): Promise<PlayerLeaderboardSeasonStatsVm | null> {
+    protected processGetSeason(response: Response): Promise<PlayerLeaderboardSeasonStatsVm> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? PlayerLeaderboardSeasonStatsVm.fromJS(resultData200) : <any>null;
+            result200 = PlayerLeaderboardSeasonStatsVm.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -253,10 +430,10 @@ export class LeaderboardStatsClient implements ILeaderboardStatsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<PlayerLeaderboardSeasonStatsVm | null>(<any>null);
+        return Promise.resolve<PlayerLeaderboardSeasonStatsVm>(<any>null);
     }
 
-    getAllTime(mode: LeaderboardStatsMode | undefined): Promise<PlayerLeaderboardAllTimeStatsVm | null> {
+    getAllTime(mode: LeaderboardStatsMode | undefined): Promise<PlayerLeaderboardAllTimeStatsVm> {
         let url_ = this.baseUrl + "/api/LeaderboardStats/players?";
         if (mode === null)
             throw new Error("The parameter 'mode' cannot be null.");
@@ -271,19 +448,21 @@ export class LeaderboardStatsClient implements ILeaderboardStatsClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetAllTime(_response);
         });
     }
 
-    protected processGetAllTime(response: Response): Promise<PlayerLeaderboardAllTimeStatsVm | null> {
+    protected processGetAllTime(response: Response): Promise<PlayerLeaderboardAllTimeStatsVm> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? PlayerLeaderboardAllTimeStatsVm.fromJS(resultData200) : <any>null;
+            result200 = PlayerLeaderboardAllTimeStatsVm.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -291,48 +470,43 @@ export class LeaderboardStatsClient implements ILeaderboardStatsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<PlayerLeaderboardAllTimeStatsVm | null>(<any>null);
+        return Promise.resolve<PlayerLeaderboardAllTimeStatsVm>(<any>null);
     }
 }
 
 export interface IMapsClient {
-    create(mapName: string | null | undefined, mapPack: string | null | undefined, fileId: number | undefined, mapNumber: number | undefined): Promise<number>;
+    create(command: CreateMapCommand): Promise<number>;
 }
 
-export class MapsClient implements IMapsClient {
+export class MapsClient extends ApiClientBase implements IMapsClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
         this.http = http ? http : <any>window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    create(mapName: string | null | undefined, mapPack: string | null | undefined, fileId: number | undefined, mapNumber: number | undefined): Promise<number> {
-        let url_ = this.baseUrl + "/api/Maps?";
-        if (mapName !== undefined && mapName !== null)
-            url_ += "mapName=" + encodeURIComponent("" + mapName) + "&";
-        if (mapPack !== undefined && mapPack !== null)
-            url_ += "mapPack=" + encodeURIComponent("" + mapPack) + "&";
-        if (fileId === null)
-            throw new Error("The parameter 'fileId' cannot be null.");
-        else if (fileId !== undefined)
-            url_ += "fileId=" + encodeURIComponent("" + fileId) + "&";
-        if (mapNumber === null)
-            throw new Error("The parameter 'mapNumber' cannot be null.");
-        else if (mapNumber !== undefined)
-            url_ += "mapNumber=" + encodeURIComponent("" + mapNumber) + "&";
+    create(command: CreateMapCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Maps";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_ = <RequestInit>{
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processCreate(_response);
         });
     }
@@ -357,22 +531,23 @@ export class MapsClient implements IMapsClient {
 }
 
 export interface IMatchesClient {
-    get(matchId: number): Promise<MatchSummaryVm | null>;
-    create(season: number | undefined, week: number | undefined, redTeam: number | undefined, blueTeam: number | undefined, gameDateTime: Date | null | undefined): Promise<number>;
-    process(matchId: number | undefined, flipTeams: boolean | undefined, gameRounds: RoundObject[] | null | undefined): Promise<number>;
+    get(matchId: number): Promise<MatchSummaryVm>;
+    create(command: CreateMatchCommand): Promise<number>;
+    process(command: ProcessMatchCommand): Promise<number>;
 }
 
-export class MatchesClient implements IMatchesClient {
+export class MatchesClient extends ApiClientBase implements IMatchesClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
         this.http = http ? http : <any>window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    get(matchId: number): Promise<MatchSummaryVm | null> {
+    get(matchId: number): Promise<MatchSummaryVm> {
         let url_ = this.baseUrl + "/api/Matches/{matchId}/summary";
         if (matchId === undefined || matchId === null)
             throw new Error("The parameter 'matchId' must be defined.");
@@ -386,19 +561,21 @@ export class MatchesClient implements IMatchesClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGet(_response);
         });
     }
 
-    protected processGet(response: Response): Promise<MatchSummaryVm | null> {
+    protected processGet(response: Response): Promise<MatchSummaryVm> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? MatchSummaryVm.fromJS(resultData200) : <any>null;
+            result200 = MatchSummaryVm.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -406,39 +583,27 @@ export class MatchesClient implements IMatchesClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<MatchSummaryVm | null>(<any>null);
+        return Promise.resolve<MatchSummaryVm>(<any>null);
     }
 
-    create(season: number | undefined, week: number | undefined, redTeam: number | undefined, blueTeam: number | undefined, gameDateTime: Date | null | undefined): Promise<number> {
-        let url_ = this.baseUrl + "/api/Matches/create?";
-        if (season === null)
-            throw new Error("The parameter 'season' cannot be null.");
-        else if (season !== undefined)
-            url_ += "season=" + encodeURIComponent("" + season) + "&";
-        if (week === null)
-            throw new Error("The parameter 'week' cannot be null.");
-        else if (week !== undefined)
-            url_ += "week=" + encodeURIComponent("" + week) + "&";
-        if (redTeam === null)
-            throw new Error("The parameter 'redTeam' cannot be null.");
-        else if (redTeam !== undefined)
-            url_ += "redTeam=" + encodeURIComponent("" + redTeam) + "&";
-        if (blueTeam === null)
-            throw new Error("The parameter 'blueTeam' cannot be null.");
-        else if (blueTeam !== undefined)
-            url_ += "blueTeam=" + encodeURIComponent("" + blueTeam) + "&";
-        if (gameDateTime !== undefined && gameDateTime !== null)
-            url_ += "gameDateTime=" + encodeURIComponent(gameDateTime ? "" + gameDateTime.toJSON() : "") + "&";
+    create(command: CreateMatchCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Matches/create";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_ = <RequestInit>{
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processCreate(_response);
         });
     }
@@ -461,33 +626,24 @@ export class MatchesClient implements IMatchesClient {
         return Promise.resolve<number>(<any>null);
     }
 
-    process(matchId: number | undefined, flipTeams: boolean | undefined, gameRounds: RoundObject[] | null | undefined): Promise<number> {
-        let url_ = this.baseUrl + "/api/Matches/process?";
-        if (matchId === null)
-            throw new Error("The parameter 'matchId' cannot be null.");
-        else if (matchId !== undefined)
-            url_ += "matchId=" + encodeURIComponent("" + matchId) + "&";
-        if (flipTeams === null)
-            throw new Error("The parameter 'flipTeams' cannot be null.");
-        else if (flipTeams !== undefined)
-            url_ += "flipTeams=" + encodeURIComponent("" + flipTeams) + "&";
-        if (gameRounds !== undefined && gameRounds !== null)
-            gameRounds && gameRounds.forEach((item, index) => {
-                for (let attr in item)
-        			if (item.hasOwnProperty(attr)) {
-        				url_ += "gameRounds[" + index + "]." + attr + "=" + encodeURIComponent("" + (<any>item)[attr]) + "&";
-        			}
-            });
+    process(command: ProcessMatchCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Matches/process";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_ = <RequestInit>{
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processProcess(_response);
         });
     }
@@ -512,23 +668,24 @@ export class MatchesClient implements IMatchesClient {
 }
 
 export interface IPlayersClient {
-    get(): Promise<PlayersVm | null>;
-    create(playerName: string | null | undefined, playerAlias: string | null | undefined): Promise<number>;
-    getPlayerSummaryById(playerId: number): Promise<PlayerSummaryVm | null>;
-    update(playerIdPath: number, playerName: string | null | undefined, playerAlias: string | null | undefined): Promise<FileResponse>;
+    get(): Promise<PlayersVm>;
+    create(command: CreatePlayerCommand): Promise<number>;
+    getPlayerSummaryById(playerId: number): Promise<PlayerSummaryVm>;
+    update(playerId: number, command: UpdatePlayerCommand): Promise<FileResponse>;
 }
 
-export class PlayersClient implements IPlayersClient {
+export class PlayersClient extends ApiClientBase implements IPlayersClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
         this.http = http ? http : <any>window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    get(): Promise<PlayersVm | null> {
+    get(): Promise<PlayersVm> {
         let url_ = this.baseUrl + "/api/Players";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -539,19 +696,21 @@ export class PlayersClient implements IPlayersClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGet(_response);
         });
     }
 
-    protected processGet(response: Response): Promise<PlayersVm | null> {
+    protected processGet(response: Response): Promise<PlayersVm> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? PlayersVm.fromJS(resultData200) : <any>null;
+            result200 = PlayersVm.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -559,25 +718,27 @@ export class PlayersClient implements IPlayersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<PlayersVm | null>(<any>null);
+        return Promise.resolve<PlayersVm>(<any>null);
     }
 
-    create(playerName: string | null | undefined, playerAlias: string | null | undefined): Promise<number> {
-        let url_ = this.baseUrl + "/api/Players?";
-        if (playerName !== undefined && playerName !== null)
-            url_ += "playerName=" + encodeURIComponent("" + playerName) + "&";
-        if (playerAlias !== undefined && playerAlias !== null)
-            url_ += "playerAlias=" + encodeURIComponent("" + playerAlias) + "&";
+    create(command: CreatePlayerCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Players";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_ = <RequestInit>{
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processCreate(_response);
         });
     }
@@ -600,7 +761,7 @@ export class PlayersClient implements IPlayersClient {
         return Promise.resolve<number>(<any>null);
     }
 
-    getPlayerSummaryById(playerId: number): Promise<PlayerSummaryVm | null> {
+    getPlayerSummaryById(playerId: number): Promise<PlayerSummaryVm> {
         let url_ = this.baseUrl + "/api/Players/{playerId}/summary";
         if (playerId === undefined || playerId === null)
             throw new Error("The parameter 'playerId' must be defined.");
@@ -614,19 +775,21 @@ export class PlayersClient implements IPlayersClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetPlayerSummaryById(_response);
         });
     }
 
-    protected processGetPlayerSummaryById(response: Response): Promise<PlayerSummaryVm | null> {
+    protected processGetPlayerSummaryById(response: Response): Promise<PlayerSummaryVm> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? PlayerSummaryVm.fromJS(resultData200) : <any>null;
+            result200 = PlayerSummaryVm.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -634,28 +797,30 @@ export class PlayersClient implements IPlayersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<PlayerSummaryVm | null>(<any>null);
+        return Promise.resolve<PlayerSummaryVm>(<any>null);
     }
 
-    update(playerIdPath: number, playerName: string | null | undefined, playerAlias: string | null | undefined): Promise<FileResponse> {
-        let url_ = this.baseUrl + "/api/Players/{playerId}?";
-        if (playerIdPath === undefined || playerIdPath === null)
-            throw new Error("The parameter 'playerIdPath' must be defined.");
-        url_ = url_.replace("{playerId}", encodeURIComponent("" + playerIdPath));
-        if (playerName !== undefined && playerName !== null)
-            url_ += "playerName=" + encodeURIComponent("" + playerName) + "&";
-        if (playerAlias !== undefined && playerAlias !== null)
-            url_ += "playerAlias=" + encodeURIComponent("" + playerAlias) + "&";
+    update(playerId: number, command: UpdatePlayerCommand): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Players/{playerId}";
+        if (playerId === undefined || playerId === null)
+            throw new Error("The parameter 'playerId' must be defined.");
+        url_ = url_.replace("{playerId}", encodeURIComponent("" + playerId));
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_ = <RequestInit>{
+            body: content_,
             method: "PUT",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/octet-stream"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processUpdate(_response);
         });
     }
@@ -681,12 +846,13 @@ export interface IRoundsClient {
     get(output: RoundsOutputFileType | null | undefined): Promise<FileResponse>;
 }
 
-export class RoundsClient implements IRoundsClient {
+export class RoundsClient extends ApiClientBase implements IRoundsClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
         this.http = http ? http : <any>window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
@@ -704,7 +870,9 @@ export class RoundsClient implements IRoundsClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGet(_response);
         });
     }
@@ -727,27 +895,28 @@ export class RoundsClient implements IRoundsClient {
 }
 
 export interface ISeasonsClient {
-    get(): Promise<SeasonsVm | null>;
-    create(wadId: number | undefined, seasonName: string | null | undefined, enginePlayed: string | null | undefined, seasonDateStart: Date | undefined): Promise<number>;
-    update(seasonIdPath: number, wadId: number | undefined, seasonName: string | null | undefined, dateStart: Date | undefined): Promise<FileResponse>;
-    getSeasonSummaryById(seasonId: number): Promise<SeasonSummaryVm | null>;
-    createWeeks(seasonIdPath: number, weekOneDateStart: Date | undefined, numWeeksRegularSeason: number | undefined, numWeeksPlayoffs: number | undefined): Promise<number>;
-    getCurrentSeasonsStandings(): Promise<SeasonListVm | null>;
-    getSeasonStandingsById(seasonId: number): Promise<SeasonStandingsVm | null>;
-    getSeasonPlayers(seasonId: number): Promise<SeasonPlayersVm | null>;
+    get(): Promise<SeasonsVm>;
+    create(command: CreateSeasonCommand): Promise<number>;
+    update(seasonId: number, command: UpdateSeasonCommand): Promise<FileResponse>;
+    getSeasonSummaryById(seasonId: number): Promise<SeasonSummaryVm>;
+    createWeeks(seasonId: number, command: CreateSeasonWeeksCommand): Promise<number>;
+    getCurrentSeasonsStandings(): Promise<SeasonListVm>;
+    getSeasonStandingsById(seasonId: number): Promise<SeasonStandingsVm>;
+    getSeasonPlayers(seasonId: number): Promise<SeasonPlayersVm>;
 }
 
-export class SeasonsClient implements ISeasonsClient {
+export class SeasonsClient extends ApiClientBase implements ISeasonsClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
         this.http = http ? http : <any>window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    get(): Promise<SeasonsVm | null> {
+    get(): Promise<SeasonsVm> {
         let url_ = this.baseUrl + "/api/Seasons";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -758,19 +927,21 @@ export class SeasonsClient implements ISeasonsClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGet(_response);
         });
     }
 
-    protected processGet(response: Response): Promise<SeasonsVm | null> {
+    protected processGet(response: Response): Promise<SeasonsVm> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? SeasonsVm.fromJS(resultData200) : <any>null;
+            result200 = SeasonsVm.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -778,33 +949,27 @@ export class SeasonsClient implements ISeasonsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<SeasonsVm | null>(<any>null);
+        return Promise.resolve<SeasonsVm>(<any>null);
     }
 
-    create(wadId: number | undefined, seasonName: string | null | undefined, enginePlayed: string | null | undefined, seasonDateStart: Date | undefined): Promise<number> {
-        let url_ = this.baseUrl + "/api/Seasons?";
-        if (wadId === null)
-            throw new Error("The parameter 'wadId' cannot be null.");
-        else if (wadId !== undefined)
-            url_ += "wadId=" + encodeURIComponent("" + wadId) + "&";
-        if (seasonName !== undefined && seasonName !== null)
-            url_ += "seasonName=" + encodeURIComponent("" + seasonName) + "&";
-        if (enginePlayed !== undefined && enginePlayed !== null)
-            url_ += "enginePlayed=" + encodeURIComponent("" + enginePlayed) + "&";
-        if (seasonDateStart === null)
-            throw new Error("The parameter 'seasonDateStart' cannot be null.");
-        else if (seasonDateStart !== undefined)
-            url_ += "seasonDateStart=" + encodeURIComponent(seasonDateStart ? "" + seasonDateStart.toJSON() : "") + "&";
+    create(command: CreateSeasonCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Seasons";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_ = <RequestInit>{
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processCreate(_response);
         });
     }
@@ -827,31 +992,27 @@ export class SeasonsClient implements ISeasonsClient {
         return Promise.resolve<number>(<any>null);
     }
 
-    update(seasonIdPath: number, wadId: number | undefined, seasonName: string | null | undefined, dateStart: Date | undefined): Promise<FileResponse> {
-        let url_ = this.baseUrl + "/api/Seasons/{seasonId}?";
-        if (seasonIdPath === undefined || seasonIdPath === null)
-            throw new Error("The parameter 'seasonIdPath' must be defined.");
-        url_ = url_.replace("{seasonId}", encodeURIComponent("" + seasonIdPath));
-        if (wadId === null)
-            throw new Error("The parameter 'wadId' cannot be null.");
-        else if (wadId !== undefined)
-            url_ += "wadId=" + encodeURIComponent("" + wadId) + "&";
-        if (seasonName !== undefined && seasonName !== null)
-            url_ += "seasonName=" + encodeURIComponent("" + seasonName) + "&";
-        if (dateStart === null)
-            throw new Error("The parameter 'dateStart' cannot be null.");
-        else if (dateStart !== undefined)
-            url_ += "dateStart=" + encodeURIComponent(dateStart ? "" + dateStart.toJSON() : "") + "&";
+    update(seasonId: number, command: UpdateSeasonCommand): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Seasons/{seasonId}";
+        if (seasonId === undefined || seasonId === null)
+            throw new Error("The parameter 'seasonId' must be defined.");
+        url_ = url_.replace("{seasonId}", encodeURIComponent("" + seasonId));
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_ = <RequestInit>{
+            body: content_,
             method: "PUT",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/octet-stream"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processUpdate(_response);
         });
     }
@@ -872,7 +1033,7 @@ export class SeasonsClient implements ISeasonsClient {
         return Promise.resolve<FileResponse>(<any>null);
     }
 
-    getSeasonSummaryById(seasonId: number): Promise<SeasonSummaryVm | null> {
+    getSeasonSummaryById(seasonId: number): Promise<SeasonSummaryVm> {
         let url_ = this.baseUrl + "/api/Seasons/{seasonId}";
         if (seasonId === undefined || seasonId === null)
             throw new Error("The parameter 'seasonId' must be defined.");
@@ -886,19 +1047,21 @@ export class SeasonsClient implements ISeasonsClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetSeasonSummaryById(_response);
         });
     }
 
-    protected processGetSeasonSummaryById(response: Response): Promise<SeasonSummaryVm | null> {
+    protected processGetSeasonSummaryById(response: Response): Promise<SeasonSummaryVm> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? SeasonSummaryVm.fromJS(resultData200) : <any>null;
+            result200 = SeasonSummaryVm.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -906,36 +1069,30 @@ export class SeasonsClient implements ISeasonsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<SeasonSummaryVm | null>(<any>null);
+        return Promise.resolve<SeasonSummaryVm>(<any>null);
     }
 
-    createWeeks(seasonIdPath: number, weekOneDateStart: Date | undefined, numWeeksRegularSeason: number | undefined, numWeeksPlayoffs: number | undefined): Promise<number> {
-        let url_ = this.baseUrl + "/api/Seasons/{seasonId}/weeks?";
-        if (seasonIdPath === undefined || seasonIdPath === null)
-            throw new Error("The parameter 'seasonIdPath' must be defined.");
-        url_ = url_.replace("{seasonId}", encodeURIComponent("" + seasonIdPath));
-        if (weekOneDateStart === null)
-            throw new Error("The parameter 'weekOneDateStart' cannot be null.");
-        else if (weekOneDateStart !== undefined)
-            url_ += "weekOneDateStart=" + encodeURIComponent(weekOneDateStart ? "" + weekOneDateStart.toJSON() : "") + "&";
-        if (numWeeksRegularSeason === null)
-            throw new Error("The parameter 'numWeeksRegularSeason' cannot be null.");
-        else if (numWeeksRegularSeason !== undefined)
-            url_ += "numWeeksRegularSeason=" + encodeURIComponent("" + numWeeksRegularSeason) + "&";
-        if (numWeeksPlayoffs === null)
-            throw new Error("The parameter 'numWeeksPlayoffs' cannot be null.");
-        else if (numWeeksPlayoffs !== undefined)
-            url_ += "numWeeksPlayoffs=" + encodeURIComponent("" + numWeeksPlayoffs) + "&";
+    createWeeks(seasonId: number, command: CreateSeasonWeeksCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Seasons/{seasonId}/weeks";
+        if (seasonId === undefined || seasonId === null)
+            throw new Error("The parameter 'seasonId' must be defined.");
+        url_ = url_.replace("{seasonId}", encodeURIComponent("" + seasonId));
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_ = <RequestInit>{
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processCreateWeeks(_response);
         });
     }
@@ -958,7 +1115,7 @@ export class SeasonsClient implements ISeasonsClient {
         return Promise.resolve<number>(<any>null);
     }
 
-    getCurrentSeasonsStandings(): Promise<SeasonListVm | null> {
+    getCurrentSeasonsStandings(): Promise<SeasonListVm> {
         let url_ = this.baseUrl + "/api/Seasons/current/standings";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -969,19 +1126,21 @@ export class SeasonsClient implements ISeasonsClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetCurrentSeasonsStandings(_response);
         });
     }
 
-    protected processGetCurrentSeasonsStandings(response: Response): Promise<SeasonListVm | null> {
+    protected processGetCurrentSeasonsStandings(response: Response): Promise<SeasonListVm> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? SeasonListVm.fromJS(resultData200) : <any>null;
+            result200 = SeasonListVm.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -989,10 +1148,10 @@ export class SeasonsClient implements ISeasonsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<SeasonListVm | null>(<any>null);
+        return Promise.resolve<SeasonListVm>(<any>null);
     }
 
-    getSeasonStandingsById(seasonId: number): Promise<SeasonStandingsVm | null> {
+    getSeasonStandingsById(seasonId: number): Promise<SeasonStandingsVm> {
         let url_ = this.baseUrl + "/api/Seasons/{seasonId}/standings";
         if (seasonId === undefined || seasonId === null)
             throw new Error("The parameter 'seasonId' must be defined.");
@@ -1006,19 +1165,21 @@ export class SeasonsClient implements ISeasonsClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetSeasonStandingsById(_response);
         });
     }
 
-    protected processGetSeasonStandingsById(response: Response): Promise<SeasonStandingsVm | null> {
+    protected processGetSeasonStandingsById(response: Response): Promise<SeasonStandingsVm> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? SeasonStandingsVm.fromJS(resultData200) : <any>null;
+            result200 = SeasonStandingsVm.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1026,10 +1187,10 @@ export class SeasonsClient implements ISeasonsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<SeasonStandingsVm | null>(<any>null);
+        return Promise.resolve<SeasonStandingsVm>(<any>null);
     }
 
-    getSeasonPlayers(seasonId: number): Promise<SeasonPlayersVm | null> {
+    getSeasonPlayers(seasonId: number): Promise<SeasonPlayersVm> {
         let url_ = this.baseUrl + "/api/Seasons/{seasonId}/players";
         if (seasonId === undefined || seasonId === null)
             throw new Error("The parameter 'seasonId' must be defined.");
@@ -1043,19 +1204,21 @@ export class SeasonsClient implements ISeasonsClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetSeasonPlayers(_response);
         });
     }
 
-    protected processGetSeasonPlayers(response: Response): Promise<SeasonPlayersVm | null> {
+    protected processGetSeasonPlayers(response: Response): Promise<SeasonPlayersVm> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? SeasonPlayersVm.fromJS(resultData200) : <any>null;
+            result200 = SeasonPlayersVm.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1063,26 +1226,27 @@ export class SeasonsClient implements ISeasonsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<SeasonPlayersVm | null>(<any>null);
+        return Promise.resolve<SeasonPlayersVm>(<any>null);
     }
 }
 
 export interface ITeamsClient {
-    get(teamId: number): Promise<TeamSummaryVm | null>;
-    create(teamName: string | null | undefined, teamAbbreviation: string | null | undefined, teamSeason: number | undefined, teamCaptain: number | undefined): Promise<number>;
+    get(teamId: number): Promise<TeamSummaryVm>;
+    create(command: CreateTeamCommand): Promise<number>;
 }
 
-export class TeamsClient implements ITeamsClient {
+export class TeamsClient extends ApiClientBase implements ITeamsClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
         this.http = http ? http : <any>window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    get(teamId: number): Promise<TeamSummaryVm | null> {
+    get(teamId: number): Promise<TeamSummaryVm> {
         let url_ = this.baseUrl + "/api/Teams/{teamId}/summary";
         if (teamId === undefined || teamId === null)
             throw new Error("The parameter 'teamId' must be defined.");
@@ -1096,19 +1260,21 @@ export class TeamsClient implements ITeamsClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGet(_response);
         });
     }
 
-    protected processGet(response: Response): Promise<TeamSummaryVm | null> {
+    protected processGet(response: Response): Promise<TeamSummaryVm> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? TeamSummaryVm.fromJS(resultData200) : <any>null;
+            result200 = TeamSummaryVm.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1116,33 +1282,27 @@ export class TeamsClient implements ITeamsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<TeamSummaryVm | null>(<any>null);
+        return Promise.resolve<TeamSummaryVm>(<any>null);
     }
 
-    create(teamName: string | null | undefined, teamAbbreviation: string | null | undefined, teamSeason: number | undefined, teamCaptain: number | undefined): Promise<number> {
-        let url_ = this.baseUrl + "/api/Teams?";
-        if (teamName !== undefined && teamName !== null)
-            url_ += "teamName=" + encodeURIComponent("" + teamName) + "&";
-        if (teamAbbreviation !== undefined && teamAbbreviation !== null)
-            url_ += "teamAbbreviation=" + encodeURIComponent("" + teamAbbreviation) + "&";
-        if (teamSeason === null)
-            throw new Error("The parameter 'teamSeason' cannot be null.");
-        else if (teamSeason !== undefined)
-            url_ += "teamSeason=" + encodeURIComponent("" + teamSeason) + "&";
-        if (teamCaptain === null)
-            throw new Error("The parameter 'teamCaptain' cannot be null.");
-        else if (teamCaptain !== undefined)
-            url_ += "teamCaptain=" + encodeURIComponent("" + teamCaptain) + "&";
+    create(command: CreateTeamCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Teams";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(command);
+
         let options_ = <RequestInit>{
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processCreate(_response);
         });
     }
@@ -1164,6 +1324,54 @@ export class TeamsClient implements ITeamsClient {
         }
         return Promise.resolve<number>(<any>null);
     }
+}
+
+export class CreateDraftCommand implements ICreateDraftCommand {
+    season?: number;
+    draftRequestList?: DraftRequest[] | undefined;
+
+    constructor(data?: ICreateDraftCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.season = _data["season"];
+            if (Array.isArray(_data["draftRequestList"])) {
+                this.draftRequestList = [] as any;
+                for (let item of _data["draftRequestList"])
+                    this.draftRequestList!.push(DraftRequest.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): CreateDraftCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateDraftCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["season"] = this.season;
+        if (Array.isArray(this.draftRequestList)) {
+            data["draftRequestList"] = [];
+            for (let item of this.draftRequestList)
+                data["draftRequestList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ICreateDraftCommand {
+    season?: number;
+    draftRequestList?: DraftRequest[] | undefined;
 }
 
 export class DraftRequest implements IDraftRequest {
@@ -1212,6 +1420,270 @@ export interface IDraftRequest {
     nominatedPlayer?: number;
     playerSoldTo?: number;
     sellPrice?: number;
+}
+
+export class EnginesVm implements IEnginesVm {
+    engineList?: EnginesDto[] | undefined;
+
+    constructor(data?: IEnginesVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["engineList"])) {
+                this.engineList = [] as any;
+                for (let item of _data["engineList"])
+                    this.engineList!.push(EnginesDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): EnginesVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new EnginesVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.engineList)) {
+            data["engineList"] = [];
+            for (let item of this.engineList)
+                data["engineList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IEnginesVm {
+    engineList?: EnginesDto[] | undefined;
+}
+
+export class EnginesDto implements IEnginesDto {
+    id?: number;
+    engineName?: string | undefined;
+    engineUrl?: string | undefined;
+
+    constructor(data?: IEnginesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.engineName = _data["engineName"];
+            this.engineUrl = _data["engineUrl"];
+        }
+    }
+
+    static fromJS(data: any): EnginesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new EnginesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["engineName"] = this.engineName;
+        data["engineUrl"] = this.engineUrl;
+        return data; 
+    }
+}
+
+export interface IEnginesDto {
+    id?: number;
+    engineName?: string | undefined;
+    engineUrl?: string | undefined;
+}
+
+export class CreateEngineCommand implements ICreateEngineCommand {
+    engineName?: string | undefined;
+    engineUrl?: string | undefined;
+
+    constructor(data?: ICreateEngineCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.engineName = _data["engineName"];
+            this.engineUrl = _data["engineUrl"];
+        }
+    }
+
+    static fromJS(data: any): CreateEngineCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateEngineCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["engineName"] = this.engineName;
+        data["engineUrl"] = this.engineUrl;
+        return data; 
+    }
+}
+
+export interface ICreateEngineCommand {
+    engineName?: string | undefined;
+    engineUrl?: string | undefined;
+}
+
+export class UpdateEngineCommand implements IUpdateEngineCommand {
+    engineId?: number;
+    engineName?: string | undefined;
+    engineUrl?: string | undefined;
+
+    constructor(data?: IUpdateEngineCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.engineId = _data["engineId"];
+            this.engineName = _data["engineName"];
+            this.engineUrl = _data["engineUrl"];
+        }
+    }
+
+    static fromJS(data: any): UpdateEngineCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateEngineCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["engineId"] = this.engineId;
+        data["engineName"] = this.engineName;
+        data["engineUrl"] = this.engineUrl;
+        return data; 
+    }
+}
+
+export interface IUpdateEngineCommand {
+    engineId?: number;
+    engineName?: string | undefined;
+    engineUrl?: string | undefined;
+}
+
+export class WadFilesVm implements IWadFilesVm {
+    wadList?: WadFilesDto[] | undefined;
+
+    constructor(data?: IWadFilesVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["wadList"])) {
+                this.wadList = [] as any;
+                for (let item of _data["wadList"])
+                    this.wadList!.push(WadFilesDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): WadFilesVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new WadFilesVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.wadList)) {
+            data["wadList"] = [];
+            for (let item of this.wadList)
+                data["wadList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IWadFilesVm {
+    wadList?: WadFilesDto[] | undefined;
+}
+
+export class WadFilesDto implements IWadFilesDto {
+    id?: number;
+    fileName?: string | undefined;
+    fileSize?: string | undefined;
+    uploadDate?: Date;
+
+    constructor(data?: IWadFilesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fileName = _data["fileName"];
+            this.fileSize = _data["fileSize"];
+            this.uploadDate = _data["uploadDate"] ? new Date(_data["uploadDate"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): WadFilesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new WadFilesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["fileName"] = this.fileName;
+        data["fileSize"] = this.fileSize;
+        data["uploadDate"] = this.uploadDate ? this.uploadDate.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IWadFilesDto {
+    id?: number;
+    fileName?: string | undefined;
+    fileSize?: string | undefined;
+    uploadDate?: Date;
 }
 
 export class Round implements IRound {
@@ -3202,6 +3674,54 @@ export interface IPlayerLeaderboardAllTimeStatsVm {
     playerLeaderboardStats?: PlayerLeaderboardStatsDto[] | undefined;
 }
 
+export class CreateMapCommand implements ICreateMapCommand {
+    mapName?: string | undefined;
+    mapPack?: string | undefined;
+    fileId?: number;
+    mapNumber?: number;
+
+    constructor(data?: ICreateMapCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.mapName = _data["mapName"];
+            this.mapPack = _data["mapPack"];
+            this.fileId = _data["fileId"];
+            this.mapNumber = _data["mapNumber"];
+        }
+    }
+
+    static fromJS(data: any): CreateMapCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMapCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["mapName"] = this.mapName;
+        data["mapPack"] = this.mapPack;
+        data["fileId"] = this.fileId;
+        data["mapNumber"] = this.mapNumber;
+        return data; 
+    }
+}
+
+export interface ICreateMapCommand {
+    mapName?: string | undefined;
+    mapPack?: string | undefined;
+    fileId?: number;
+    mapNumber?: number;
+}
+
 export class MatchSummaryVm implements IMatchSummaryVm {
     matchId?: number;
     seasonId?: number;
@@ -4038,6 +4558,110 @@ export interface IDemoDto {
     demoFilePath?: string | undefined;
 }
 
+export class CreateMatchCommand implements ICreateMatchCommand {
+    season?: number;
+    week?: number;
+    redTeam?: number;
+    blueTeam?: number;
+    gameDateTime?: Date | undefined;
+
+    constructor(data?: ICreateMatchCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.season = _data["season"];
+            this.week = _data["week"];
+            this.redTeam = _data["redTeam"];
+            this.blueTeam = _data["blueTeam"];
+            this.gameDateTime = _data["gameDateTime"] ? new Date(_data["gameDateTime"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): CreateMatchCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMatchCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["season"] = this.season;
+        data["week"] = this.week;
+        data["redTeam"] = this.redTeam;
+        data["blueTeam"] = this.blueTeam;
+        data["gameDateTime"] = this.gameDateTime ? this.gameDateTime.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface ICreateMatchCommand {
+    season?: number;
+    week?: number;
+    redTeam?: number;
+    blueTeam?: number;
+    gameDateTime?: Date | undefined;
+}
+
+export class ProcessMatchCommand implements IProcessMatchCommand {
+    matchId?: number;
+    flipTeams?: boolean;
+    gameRounds?: RoundObject[] | undefined;
+
+    constructor(data?: IProcessMatchCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.matchId = _data["matchId"];
+            this.flipTeams = _data["flipTeams"];
+            if (Array.isArray(_data["gameRounds"])) {
+                this.gameRounds = [] as any;
+                for (let item of _data["gameRounds"])
+                    this.gameRounds!.push(RoundObject.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ProcessMatchCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProcessMatchCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["matchId"] = this.matchId;
+        data["flipTeams"] = this.flipTeams;
+        if (Array.isArray(this.gameRounds)) {
+            data["gameRounds"] = [];
+            for (let item of this.gameRounds)
+                data["gameRounds"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IProcessMatchCommand {
+    matchId?: number;
+    flipTeams?: boolean;
+    gameRounds?: RoundObject[] | undefined;
+}
+
 export class RoundObject implements IRoundObject {
     redTeamPlayerIds?: number[] | undefined;
     blueTeamPlayerIds?: number[] | undefined;
@@ -4646,6 +5270,90 @@ export interface ISeasonPlayerStatsDto {
     seasonStats?: StatsDto | undefined;
 }
 
+export class CreatePlayerCommand implements ICreatePlayerCommand {
+    playerName?: string | undefined;
+    playerAlias?: string | undefined;
+
+    constructor(data?: ICreatePlayerCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.playerName = _data["playerName"];
+            this.playerAlias = _data["playerAlias"];
+        }
+    }
+
+    static fromJS(data: any): CreatePlayerCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreatePlayerCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["playerName"] = this.playerName;
+        data["playerAlias"] = this.playerAlias;
+        return data; 
+    }
+}
+
+export interface ICreatePlayerCommand {
+    playerName?: string | undefined;
+    playerAlias?: string | undefined;
+}
+
+export class UpdatePlayerCommand implements IUpdatePlayerCommand {
+    playerId?: number;
+    playerName?: string | undefined;
+    playerAlias?: string | undefined;
+
+    constructor(data?: IUpdatePlayerCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.playerId = _data["playerId"];
+            this.playerName = _data["playerName"];
+            this.playerAlias = _data["playerAlias"];
+        }
+    }
+
+    static fromJS(data: any): UpdatePlayerCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdatePlayerCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["playerId"] = this.playerId;
+        data["playerName"] = this.playerName;
+        data["playerAlias"] = this.playerAlias;
+        return data; 
+    }
+}
+
+export interface IUpdatePlayerCommand {
+    playerId?: number;
+    playerName?: string | undefined;
+    playerAlias?: string | undefined;
+}
+
 export enum RoundsOutputFileType {
     Csv = 0,
 }
@@ -4732,6 +5440,150 @@ export class SeasonDto implements ISeasonDto {
 export interface ISeasonDto {
     id?: number;
     seasonName?: string | undefined;
+}
+
+export class CreateSeasonCommand implements ICreateSeasonCommand {
+    wadId?: number;
+    seasonName?: string | undefined;
+    enginePlayed?: string | undefined;
+    seasonDateStart?: Date;
+
+    constructor(data?: ICreateSeasonCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.wadId = _data["wadId"];
+            this.seasonName = _data["seasonName"];
+            this.enginePlayed = _data["enginePlayed"];
+            this.seasonDateStart = _data["seasonDateStart"] ? new Date(_data["seasonDateStart"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): CreateSeasonCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateSeasonCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["wadId"] = this.wadId;
+        data["seasonName"] = this.seasonName;
+        data["enginePlayed"] = this.enginePlayed;
+        data["seasonDateStart"] = this.seasonDateStart ? this.seasonDateStart.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface ICreateSeasonCommand {
+    wadId?: number;
+    seasonName?: string | undefined;
+    enginePlayed?: string | undefined;
+    seasonDateStart?: Date;
+}
+
+export class UpdateSeasonCommand implements IUpdateSeasonCommand {
+    seasonId?: number;
+    wadId?: number;
+    seasonName?: string | undefined;
+    dateStart?: Date;
+
+    constructor(data?: IUpdateSeasonCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.seasonId = _data["seasonId"];
+            this.wadId = _data["wadId"];
+            this.seasonName = _data["seasonName"];
+            this.dateStart = _data["dateStart"] ? new Date(_data["dateStart"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): UpdateSeasonCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateSeasonCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["seasonId"] = this.seasonId;
+        data["wadId"] = this.wadId;
+        data["seasonName"] = this.seasonName;
+        data["dateStart"] = this.dateStart ? this.dateStart.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IUpdateSeasonCommand {
+    seasonId?: number;
+    wadId?: number;
+    seasonName?: string | undefined;
+    dateStart?: Date;
+}
+
+export class CreateSeasonWeeksCommand implements ICreateSeasonWeeksCommand {
+    seasonId?: number;
+    weekOneDateStart?: Date;
+    numWeeksRegularSeason?: number;
+    numWeeksPlayoffs?: number;
+
+    constructor(data?: ICreateSeasonWeeksCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.seasonId = _data["seasonId"];
+            this.weekOneDateStart = _data["weekOneDateStart"] ? new Date(_data["weekOneDateStart"].toString()) : <any>undefined;
+            this.numWeeksRegularSeason = _data["numWeeksRegularSeason"];
+            this.numWeeksPlayoffs = _data["numWeeksPlayoffs"];
+        }
+    }
+
+    static fromJS(data: any): CreateSeasonWeeksCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateSeasonWeeksCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["seasonId"] = this.seasonId;
+        data["weekOneDateStart"] = this.weekOneDateStart ? this.weekOneDateStart.toISOString() : <any>undefined;
+        data["numWeeksRegularSeason"] = this.numWeeksRegularSeason;
+        data["numWeeksPlayoffs"] = this.numWeeksPlayoffs;
+        return data; 
+    }
+}
+
+export interface ICreateSeasonWeeksCommand {
+    seasonId?: number;
+    weekOneDateStart?: Date;
+    numWeeksRegularSeason?: number;
+    numWeeksPlayoffs?: number;
 }
 
 export class SeasonSummaryVm implements ISeasonSummaryVm {
@@ -5984,6 +6836,59 @@ export interface ITeamStatsDto {
     damageToGreenArmor?: number;
     damageToBlueArmor?: number;
     powerups?: number;
+}
+
+export class CreateTeamCommand implements ICreateTeamCommand {
+    teamName?: string | undefined;
+    teamAbbreviation?: string | undefined;
+    teamSeason?: number;
+    teamCaptain?: number;
+
+    constructor(data?: ICreateTeamCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.teamName = _data["teamName"];
+            this.teamAbbreviation = _data["teamAbbreviation"];
+            this.teamSeason = _data["teamSeason"];
+            this.teamCaptain = _data["teamCaptain"];
+        }
+    }
+
+    static fromJS(data: any): CreateTeamCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateTeamCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["teamName"] = this.teamName;
+        data["teamAbbreviation"] = this.teamAbbreviation;
+        data["teamSeason"] = this.teamSeason;
+        data["teamCaptain"] = this.teamCaptain;
+        return data; 
+    }
+}
+
+export interface ICreateTeamCommand {
+    teamName?: string | undefined;
+    teamAbbreviation?: string | undefined;
+    teamSeason?: number;
+    teamCaptain?: number;
+}
+
+export interface FileParameter {
+    data: any;
+    fileName: string;
 }
 
 export interface FileResponse {

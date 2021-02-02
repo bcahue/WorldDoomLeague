@@ -1,4 +1,5 @@
 ﻿using WorldDoomLeague.Application.Common.Interfaces;
+using WorldDoomLeague.Application.Common.Security;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using WorldDoomLeague.Application.ConfigModels;
 
 namespace WorldDoomLeague.Application.Files.Queries.GetRoundObject
 {
+    [Authorize(Roles = "Administrator,StatsRunner")]
     public class GetRoundObjectQuery : IRequest<Round>
     {
         public string FileName { get; }

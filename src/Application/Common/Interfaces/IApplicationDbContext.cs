@@ -33,6 +33,8 @@ namespace WorldDoomLeague.Application.Common.Interfaces
         DbSet<PlayerTransactions> PlayerTransactions { get; set; }
         DbSet<PlayerDraft> PlayerDraft { get; set; }
         DbSet<GameMaps> GameMaps { get; set; }
+        DbSet<Domain.Entities.Engine> Engines { get; set; }
+        DbSet<WadFiles> WadFiles { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 

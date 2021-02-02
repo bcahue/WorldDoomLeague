@@ -4,18 +4,21 @@ exports.useGlobalState = exports.setAllTimeLeaderboardMode = exports.setAllTimeL
 var react_hooks_global_state_1 = require("react-hooks-global-state");
 var WorldDoomLeague_1 = require("./WorldDoomLeague");
 var _a = react_hooks_global_state_1.createGlobalState({
-    errorMessage: '',
+    errorMessage: {},
     allTimeLeaderboardData: [],
     allTimeLeaderboardMode: WorldDoomLeague_1.LeaderboardStatsMode.Total,
 }), setGlobalState = _a.setGlobalState, useGlobalState = _a.useGlobalState;
 exports.useGlobalState = useGlobalState;
-exports.setErrorMessage = function (s) {
+var setErrorMessage = function (s) {
     setGlobalState('errorMessage', s);
 };
-exports.setAllTimeLeaderboardData = function (s) {
+exports.setErrorMessage = setErrorMessage;
+var setAllTimeLeaderboardData = function (s) {
     setGlobalState('allTimeLeaderboardData', s);
 };
-exports.setAllTimeLeaderboardMode = function (s) {
+exports.setAllTimeLeaderboardData = setAllTimeLeaderboardData;
+var setAllTimeLeaderboardMode = function (s) {
     setGlobalState('allTimeLeaderboardMode', s);
 };
+exports.setAllTimeLeaderboardMode = setAllTimeLeaderboardMode;
 //# sourceMappingURL=state.js.map

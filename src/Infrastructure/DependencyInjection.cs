@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Identity;
 using System;
+using IdentityServer4.Services;
 
 namespace WorldDoomLeague.Infrastructure
 {
@@ -31,8 +33,10 @@ namespace WorldDoomLeague.Infrastructure
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 
-                services.AddDefaultIdentity<ApplicationUser>()
-                    .AddEntityFrameworkStores<ApplicationDbContext>();
+            services
+                .AddDefaultIdentity<ApplicationUser>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
             
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
@@ -43,9 +47,14 @@ namespace WorldDoomLeague.Infrastructure
             services.AddTransient<ICsvFileBuilder, CsvFileBuilder>();
             services.AddTransient<IDirectoryBrowser, DirectoryBrowser>();
             services.AddTransient<IGetMatchJson, GetMatchJson>();
+            services.AddTransient<IProfileService, ProfileService>();
+            services.AddTransient<IWadFileHandler, WadFileHandler>();
 
             services.AddAuthentication()
-                .AddIdentityServerJwt();
+                .AddIdentityServerJwt()
+                .AddSteam();
+
+            services.AddAuthorization();
 
             return services;
         }

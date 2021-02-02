@@ -9,9 +9,9 @@ This is an Api + SPA front-end website for the World Doom League. This software 
 
 
 ## Technologies
-* .NET Core 3.1
-* ASP .NET Core 3.1
-* Entity Framework Core 3.1
+* .NET 5
+* ASP.NET Core in .NET 5
+* Entity Framework Core 5
 * MediatR
 * AutoMapper
 * FluentValidation
@@ -19,13 +19,12 @@ This is an Api + SPA front-end website for the World Doom League. This software 
 * MariaDb
 * NSwag
 * React
-* Redux
 
 ## Getting Started
 
 Here is how to get the Api to compile locally:
 
-1. Install the latest [.NET Core SDK](https://dotnet.microsoft.com/download)
+1. Install the latest [.NET 5 SDK](https://dotnet.microsoft.com/download)
 2. Navigate to `src/Api` and run `dotnet run` to launch the project
 
 ### Database Configuration

@@ -41,19 +41,7 @@ namespace WorldDoomLeague.Application.Files.Commands.CreateWadFile
         {
             long size = request.File.Length;
 
-            if (request.File.Length > 0)
-            {
-                await _wadFileHandler.SaveWadFile(_optionsDelegate.Value.WadRepository, request.File.FileName, request.File);
-            }
-            else
-            {
-                throw new EmptyFileException("Wad file was empty.");
-            }
-
-            if (System.IO.Path.GetExtension(request.File.FileName) != ".zip")
-            {
-                throw new NotZippedException("Wad file was not zipped prior to uploading.");
-            }
+            await _wadFileHandler.SaveWadFile(_optionsDelegate.Value.WadRepository, request.File.FileName, request.File);
 
             var entity = new WadFiles
             {

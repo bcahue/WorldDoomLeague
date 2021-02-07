@@ -14,7 +14,7 @@ function NavMenu(props) {
     }
     ;
     return (React.createElement("header", null,
-        React.createElement(reactstrap_1.Navbar, { className: "navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3", light: true },
+        React.createElement(reactstrap_1.Navbar, { className: "navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3" },
             React.createElement(reactstrap_1.Container, null,
                 React.createElement(reactstrap_1.NavbarBrand, { tag: react_router_dom_1.Link, to: "/" }, "World Doom League"),
                 React.createElement(reactstrap_1.NavbarToggler, { onClick: toggle, className: "mr-2" }),

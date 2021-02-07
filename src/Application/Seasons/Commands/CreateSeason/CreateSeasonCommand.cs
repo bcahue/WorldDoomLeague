@@ -12,7 +12,7 @@ namespace WorldDoomLeague.Application.Seasons.Commands.CreateSeason
     {
         public uint WadId { get; set; }
         public string SeasonName { get; set; }
-        public string EnginePlayed { get; set; }
+        public uint EnginePlayed { get; set; }
         public DateTime SeasonDateStart { get; set; }
     }
 
@@ -32,7 +32,7 @@ namespace WorldDoomLeague.Application.Seasons.Commands.CreateSeason
                 SeasonName = request.SeasonName,
                 FkIdWadFile = request.WadId,
                 DateStart = request.SeasonDateStart,
-                EnginePlayed = request.EnginePlayed
+                FkIdEngine = request.EnginePlayed
             };
 
             _context.Season.Add(entity);

@@ -17,7 +17,7 @@ var reactstrap_1 = require("reactstrap");
 var SeasonList_1 = require("./SeasonList");
 var EngineList_1 = require("./EngineList");
 var WadList_1 = require("./WadList");
-var WelcomeStep = function (props) {
+var SeasonBasics = function (props) {
     var update = function (e) {
         props.update(e.target.name, e.target.value);
     };
@@ -30,15 +30,12 @@ var WelcomeStep = function (props) {
             React.createElement(reactstrap_1.Col, { xs: "6", sm: "4" },
                 React.createElement(EngineList_1.default, __assign({}, props, { onChange: update }))),
             React.createElement(reactstrap_1.Col, { xs: "6", sm: "4" },
-                React.createElement(reactstrap_1.Label, { for: 'seasonname' }, "Season Name"),
-                React.createElement(reactstrap_1.Input, { type: 'text', className: 'form-control', id: 'seasonname', name: 'seasonname', placeholder: 'Season Name', onChange: update }),
-                React.createElement(reactstrap_1.FormText, { color: "muted" }, "Here is a list of current and former seasons for convenience."),
-                React.createElement(SeasonList_1.default, null)),
+                React.createElement(SeasonList_1.default, __assign({}, props, { onChange: update }))),
             React.createElement(reactstrap_1.Col, { sm: "4" },
                 React.createElement(WadList_1.default, __assign({}, props, { onChange: update })))),
         React.createElement(reactstrap_1.Row, null,
             React.createElement(reactstrap_1.Col, { sm: "12", md: { size: 6, offset: 3 } },
-                React.createElement(StepButtons_1.default, __assign({ step: 1 }, props))))));
+                React.createElement(StepButtons_1.default, __assign({ step: 1 }, props, { disabled: !props.form.engine || !props.form.wad || !props.form.season }))))));
 };
-exports.default = WelcomeStep;
-//# sourceMappingURL=WelcomeStep.js.map
+exports.default = SeasonBasics;
+//# sourceMappingURL=SeasonBasics.js.map

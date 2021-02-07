@@ -9,7 +9,7 @@ using WorldDoomLeague.Infrastructure.Persistence;
 namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210201065851_initial")]
+    [Migration("20210206104830_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -150,36 +150,36 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f5813621-f9dc-4710-94ea-25b948637360",
-                            ConcurrencyStamp = "b5b4ccd9-eb24-4a00-aacf-418e65094aa8",
+                            Id = "8071eb7d-7e4b-427b-bfdb-d32a1fad988d",
+                            ConcurrencyStamp = "df521457-9ad4-4b72-8a99-6eed4d2c8b0a",
                             Name = "Player",
                             NormalizedName = "PLAYER"
                         },
                         new
                         {
-                            Id = "f54684be-6c53-4692-820d-65702d13e3e4",
-                            ConcurrencyStamp = "524d12a9-2f65-4f9d-83d1-e5bf81042c38",
+                            Id = "c0cfda4e-4ed6-4f41-94fe-e861024904bc",
+                            ConcurrencyStamp = "d0a57472-fa3f-471a-bb41-f31582dc3666",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "8001d833-41c0-458e-a136-786d5b3d36e4",
-                            ConcurrencyStamp = "425bbf73-e964-4cc5-9a4a-74f117f4ad4a",
+                            Id = "aeb81909-daed-41ab-b236-c2186c093fb8",
+                            ConcurrencyStamp = "3b1ecc1a-43c5-46fb-b0c5-4765cf0f596f",
                             Name = "DemoAdmin",
                             NormalizedName = "DEMOADMIN"
                         },
                         new
                         {
-                            Id = "524cf799-1257-410f-9ed4-5c921a77a359",
-                            ConcurrencyStamp = "6eb88206-3267-4151-b3da-2f81abb22b6e",
+                            Id = "a503abbf-d0e2-4f5e-8f65-8920fb22beb9",
+                            ConcurrencyStamp = "e195905e-ffd2-4e17-b52b-18c03fdcb8b7",
                             Name = "NewsEditor",
                             NormalizedName = "NEWSEDITOR"
                         },
                         new
                         {
-                            Id = "e03e3af3-3249-473c-86dd-13391166a022",
-                            ConcurrencyStamp = "8365abf9-685b-46a9-b963-63c0083a4f4b",
+                            Id = "cbb01cf3-26d3-4bad-8d5b-ef200143dcc6",
+                            ConcurrencyStamp = "6bf20bce-e53c-4372-b30d-48cfd98fb443",
                             Name = "StatsRunner",
                             NormalizedName = "STATSRUNNER"
                         });
@@ -1287,15 +1287,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("date_start");
 
-                    b.Property<uint?>("EngineIdEngine")
-                        .HasColumnType("int unsigned");
-
-                    b.Property<string>("EnginePlayed")
-                        .IsRequired()
-                        .HasColumnType("varchar(64)")
-                        .HasColumnName("engine_played")
-                        .UseCollation("utf8mb4_unicode_ci")
-                        .HasCharSet("utf8mb4");
+                    b.Property<uint>("FkIdEngine")
+                        .HasColumnType("int(10) unsigned")
+                        .HasColumnName("fk_id_engine");
 
                     b.Property<int?>("FkIdTeamWinner")
                         .HasColumnType("int(11)")
@@ -1312,13 +1306,11 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .UseCollation("utf8mb4_unicode_ci")
                         .HasCharSet("utf8mb4");
 
-                    b.Property<uint?>("WadFilesIdFile")
-                        .HasColumnType("int(10) unsigned");
-
                     b.HasKey("IdSeason")
                         .HasName("PRIMARY");
 
-                    b.HasIndex("EngineIdEngine");
+                    b.HasIndex("FkIdEngine")
+                        .HasDatabaseName("fk_Seasons_Engine_idx");
 
                     b.HasIndex("FkIdWadFile")
                         .HasDatabaseName("fk_Seasons_WadFile_idx");
@@ -1326,8 +1318,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.HasIndex("IdSeason")
                         .IsUnique()
                         .HasDatabaseName("id_season_UNIQUE");
-
-                    b.HasIndex("WadFilesIdFile");
 
                     b.ToTable("seasons");
                 });
@@ -2722,19 +2712,19 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.Season", b =>
                 {
-                    b.HasOne("WorldDoomLeague.Domain.Entities.Engine", null)
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Engine", "FkIdEngineNavigation")
                         .WithMany("Seasons")
-                        .HasForeignKey("EngineIdEngine");
-
-                    b.HasOne("WorldDoomLeague.Domain.Entities.GameFiles", "FkIdFileNavigation")
-                        .WithMany("Seasons")
-                        .HasForeignKey("FkIdWadFile")
-                        .HasConstraintName("fk_Seasons_Files")
+                        .HasForeignKey("FkIdEngine")
+                        .HasConstraintName("fk_Seasons_Engine")
                         .IsRequired();
 
-                    b.HasOne("WorldDoomLeague.Domain.Entities.WadFiles", null)
+                    b.HasOne("WorldDoomLeague.Domain.Entities.WadFiles", "FkIdFileNavigation")
                         .WithMany("Seasons")
-                        .HasForeignKey("WadFilesIdFile");
+                        .HasForeignKey("FkIdWadFile")
+                        .HasConstraintName("fk_Seasons_WadFiles")
+                        .IsRequired();
+
+                    b.Navigation("FkIdEngineNavigation");
 
                     b.Navigation("FkIdFileNavigation");
                 });
@@ -3029,8 +3019,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.GameFiles", b =>
                 {
                     b.Navigation("Maps");
-
-                    b.Navigation("Seasons");
                 });
 
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.Games", b =>

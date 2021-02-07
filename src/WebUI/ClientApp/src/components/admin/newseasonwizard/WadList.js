@@ -64,15 +64,13 @@ var WadList = function (props) {
                         response = _a.sent();
                         data_1 = response.wadList;
                         setData(data_1);
+                        if (data_1.length > 0) {
+                            handleWadChange("wad", 1);
+                        }
                         return [3 /*break*/, 4];
                     case 3:
                         e_1 = _a.sent();
-                        if (e_1.response !== null) {
-                            state_1.setErrorMessage(JSON.parse(e_1.response));
-                        }
-                        else {
-                            console.log(e_1);
-                        }
+                        state_1.setErrorMessage(JSON.parse(e_1.response));
                         return [3 /*break*/, 4];
                     case 4:
                         setLoading(false);
@@ -82,9 +80,9 @@ var WadList = function (props) {
         }); };
         fetchData();
     }, [newWadId]);
-    var handleWadChange = function (e) {
-        setIndex(e.target.value);
-        props.update(e.target.name, e.target.value);
+    var handleWadChange = function (name, value) {
+        setIndex(value);
+        props.update(name, value);
     };
     var handleSubmit = function (evt) { return __awaiter(void 0, void 0, void 0, function () {
         var client, response, e_2;
@@ -97,17 +95,11 @@ var WadList = function (props) {
                 case 1:
                     response = _a.sent();
                     setNewWadId(response);
-                    setIndex(response);
                     setFile(null);
                     return [3 /*break*/, 3];
                 case 2:
                     e_2 = _a.sent();
-                    if (e_2.response !== null) {
-                        state_1.setErrorMessage(JSON.parse(e_2.response));
-                    }
-                    else {
-                        console.log(e_2);
-                    }
+                    state_1.setErrorMessage(JSON.parse(e_2.response));
                     return [3 /*break*/, 3];
                 case 3: return [2 /*return*/];
             }
@@ -146,8 +138,8 @@ var WadList = function (props) {
     var renderNewWadForm = function () {
         return (React.createElement(React.Fragment, null,
             React.createElement(reactstrap_1.FormGroup, null,
-                React.createElement(reactstrap_1.Label, { for: "exampleFile" }, "File"),
-                React.createElement(reactstrap_1.Input, { type: "file", name: "file", id: "file", onChange: handleUpload }),
+                React.createElement(reactstrap_1.Label, { for: "File" }, "Zipped Wad File"),
+                React.createElement(reactstrap_1.Input, { type: "file", name: "file", id: "file", key: newWadId, onChange: handleUpload }),
                 React.createElement(reactstrap_1.FormText, { color: "muted" },
                     "Max upload: 200MB",
                     React.createElement("br", null),
@@ -158,7 +150,7 @@ var WadList = function (props) {
         React.createElement(reactstrap_1.Form, null,
             React.createElement(reactstrap_1.FormGroup, null,
                 React.createElement(reactstrap_1.Label, { for: "engine" }, "Wad Played"),
-                React.createElement(reactstrap_1.Input, { type: "select", name: "wadSelect", id: "wadSelect", value: index, onChange: function (e) { return handleWadChange(e); } }, renderWadDropdown()))),
+                React.createElement(reactstrap_1.Input, { type: "select", name: "wad", id: "wadSelect", value: index, onChange: function (e) { return handleWadChange(e.target.name, e.target.value); } }, renderWadDropdown()))),
         React.createElement(reactstrap_1.Form, null, renderNewWadForm())));
 };
 exports.default = WadList;

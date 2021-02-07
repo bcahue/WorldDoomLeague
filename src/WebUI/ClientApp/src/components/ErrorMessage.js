@@ -16,14 +16,16 @@ var ErrorMessage = function () {
             clearTimeout(timer);
         };
     }, [error]);
-    return (React.createElement(React.Fragment, null, error.errors !== undefined && (React.createElement(reactstrap_1.Fade, { out: hidden, in: !hidden },
+    return (React.createElement(React.Fragment, null, !(Object.keys(error).length === 0 && error.constructor === Object) && ( // javascript checking for empty object...
+    React.createElement(reactstrap_1.Fade, { in: !hidden },
         React.createElement(reactstrap_1.Alert, { color: "danger", hidden: hidden },
             error.title,
             React.createElement("br", null),
             "HTTP Status: ",
             error.status,
             React.createElement("br", null),
-            Object.values(error.errors).map(function (value) { return React.createElement("p", null, value); }))))));
+            error.errors !== undefined && (Object.values(error.errors).map(function (value) { return React.createElement("p", null, value); })),
+            error.detail && (React.createElement("p", null, error.detail)))))));
 };
 exports.default = ErrorMessage;
 //# sourceMappingURL=ErrorMessage.js.map

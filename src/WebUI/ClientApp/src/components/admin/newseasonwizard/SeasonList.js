@@ -39,11 +39,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
 var react_1 = require("react");
 var reactstrap_1 = require("reactstrap");
+var react_datetime_picker_1 = require("react-datetime-picker");
 var state_1 = require("../../../state");
 var WorldDoomLeague_1 = require("../../../WorldDoomLeague");
-var SeasonList = function () {
+var SeasonList = function (props) {
     var _a = react_1.useState(false), loading = _a[0], setLoading = _a[1];
     var _b = react_1.useState([]), data = _b[0], setData = _b[1];
+    var _c = react_1.useState(""), seasonName = _c[0], setSeasonName = _c[1];
+    var _d = react_1.useState(0), newSeasonId = _d[0], setNewSeasonId = _d[1];
+    var _e = react_1.useState(null), signupDate = _e[0], setSignupDate = _e[1];
     react_1.useEffect(function () {
         var fetchData = function () { return __awaiter(void 0, void 0, void 0, function () {
             var client, response, data_1, e_1;
@@ -75,30 +79,74 @@ var SeasonList = function () {
             });
         }); };
         fetchData();
-    }, []);
+    }, [newSeasonId]);
+    var handleSeasonChange = function (name, value) {
+        setNewSeasonId(value);
+        props.update(name, value);
+    };
+    var handleSubmit = function (evt) { return __awaiter(void 0, void 0, void 0, function () {
+        var client, command, response, e_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    client = new WorldDoomLeague_1.SeasonsClient();
+                    command = new WorldDoomLeague_1.CreateSeasonCommand;
+                    command.seasonName = seasonName;
+                    command.wadId = props.form.wad;
+                    command.enginePlayed = props.form.engine;
+                    command.seasonDateStart = signupDate;
+                    return [4 /*yield*/, client.create(command)];
+                case 1:
+                    response = _a.sent();
+                    setNewSeasonId(response);
+                    setSeasonName('');
+                    handleSeasonChange("season", response);
+                    return [3 /*break*/, 3];
+                case 2:
+                    e_2 = _a.sent();
+                    state_1.setErrorMessage(JSON.parse(e_2.response));
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); };
+    var renderNewSeasonForm = function () {
+        return (React.createElement(React.Fragment, null,
+            React.createElement(reactstrap_1.Label, { for: 'seasonname' }, "Season Name"),
+            React.createElement(reactstrap_1.Input, { type: 'text', className: 'form-control', id: 'seasonname', name: 'seasonname', placeholder: 'Season Name', onChange: function (e) { return setSeasonName(e.target.value); } }),
+            React.createElement(reactstrap_1.Label, { for: 'signupDates' }, "Signups Begin"),
+            React.createElement(react_datetime_picker_1.default, { id: 'signupDates', name: 'signupDates', onChange: setSignupDate, value: signupDate }),
+            React.createElement(reactstrap_1.FormText, { color: "muted" }, "Here is a list of current and former seasons for convenience."),
+            React.createElement(reactstrap_1.ListGroup, null, renderSeasonList()),
+            React.createElement("br", null),
+            React.createElement(reactstrap_1.Button, { color: "primary", size: "lg", block: true, disabled: !seasonName || !props.form.wad || !props.form.engine || !signupDate, onClick: handleSubmit }, "Create New Season")));
+    };
     // create a list for each season.
     var renderSeasonList = function () {
-        var seasonList = data;
         var listArray = [];
         if (!loading) {
-            var seasonObject = seasonList;
-            if (seasonList.length > 0) {
+            var seasonObject = data;
+            if (seasonObject.length > 0) {
                 seasonObject.forEach(function (value) {
-                    listArray.push(React.createElement(reactstrap_1.ListGroupItem, null, value.seasonName));
+                    listArray.push(React.createElement(reactstrap_1.ListGroupItem, { key: value.id },
+                        value.seasonName,
+                        React.createElement("br", null),
+                        "Signups Begin: ",
+                        new Date(value.dateStart).toString()));
                 });
             }
             else {
-                listArray.push(React.createElement(reactstrap_1.ListGroupItem, null, "There are currently no seasons recorded in the system."));
+                listArray.push(React.createElement(reactstrap_1.ListGroupItem, { key: "none" }, "There are currently no seasons recorded in the system."));
             }
         }
         else {
-            listArray.push(React.createElement(reactstrap_1.ListGroupItem, null,
+            listArray.push(React.createElement(reactstrap_1.ListGroupItem, { key: "spinner" },
                 React.createElement(reactstrap_1.Spinner, { size: "sm", color: "primary" })));
         }
         return (listArray);
     };
-    return (React.createElement(React.Fragment, null,
-        React.createElement(reactstrap_1.ListGroup, null, renderSeasonList())));
+    return (React.createElement(React.Fragment, null, renderNewSeasonForm()));
 };
 exports.default = SeasonList;
 //# sourceMappingURL=SeasonList.js.map

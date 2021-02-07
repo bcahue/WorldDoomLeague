@@ -19,14 +19,15 @@ const ErrorMessage = () => {
 
     return (
         <React.Fragment>
-            { error.errors !== undefined && (
-                <Fade out={hidden} in={!hidden}>
+            {!(Object.keys(error).length === 0 && error.constructor === Object) && ( // javascript checking for empty object...
+                <Fade in={!hidden}>
                     <Alert color="danger" hidden={hidden}>
                         {error.title}
                         <br />
                         HTTP Status: {error.status}
                         <br />
-                        {Object.values(error.errors).map((value) => <p>{value}</p>)}
+                        {error.errors !== undefined && (Object.values(error.errors).map((value) => <p>{value}</p>))}
+                        {error.detail && (<p>{error.detail}</p>)}
                     </Alert>
                 </Fade>)}
         </React.Fragment>

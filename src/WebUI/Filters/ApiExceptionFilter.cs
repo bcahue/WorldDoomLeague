@@ -20,8 +20,7 @@ namespace WorldDoomLeague.WebUI.Filters
                 { typeof(ValidationException), HandleValidationException },
                 { typeof(NotFoundException), HandleNotFoundException },
                 { typeof(InvalidDraftException), HandleInvalidDraftException },
-                { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
-                { typeof(NotZippedException), HandleNotZippedException },
+                { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException }
             };
         }
 
@@ -116,22 +115,6 @@ namespace WorldDoomLeague.WebUI.Filters
             {
                 Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                 Title = "The specified resource was accessed by an unauthorized user.",
-                Detail = exception.Message
-            };
-
-            context.Result = new BadRequestObjectResult(details);
-
-            context.ExceptionHandled = true;
-        }
-
-        private void HandleNotZippedException(ExceptionContext context)
-        {
-            var exception = context.Exception as UnauthorizedAccessException;
-
-            var details = new ProblemDetails()
-            {
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                Title = "The resource that was uploaded was not zipped when the application expected this file to be zipped prior to uploading.",
                 Detail = exception.Message
             };
 

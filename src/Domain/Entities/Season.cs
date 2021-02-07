@@ -24,11 +24,12 @@ namespace WorldDoomLeague.Domain.Entities
         public uint IdSeason { get; set; }
         public uint FkIdWadFile { get; set; }
         public string SeasonName { get; set; }
-        public string EnginePlayed { get; set; }
+        public uint FkIdEngine { get; set; }
         public DateTime DateStart { get; set; }
         public int? FkIdTeamWinner { get; set; }
 
-        public virtual GameFiles FkIdFileNavigation { get; set; }
+        public virtual WadFiles FkIdFileNavigation { get; set; }
+        public virtual Engine FkIdEngineNavigation { get; set; }
         public virtual ICollection<GamePlayers> GamePlayers { get; set; }
         public virtual ICollection<RoundPlayers> RoundPlayers { get; set; }
         public virtual ICollection<GameTeamStats> GameTeamStats { get; set; }

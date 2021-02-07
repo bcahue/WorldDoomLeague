@@ -18,11 +18,11 @@ namespace WorldDoomLeague.Application.Seasons.Commands.CreateSeason
             RuleFor(v => v.SeasonName)
                 .NotEmpty().WithMessage("SeasonName is required.")
                 .MaximumLength(64).WithMessage("SeasonName must not exceed 64 characters.")
-                .MustAsync(BeUniqueSeasonName).WithMessage("The specified player name already exists.");
+                .MustAsync(BeUniqueSeasonName).WithMessage("The specified season name already exists.");
 
             RuleFor(v => v.EnginePlayed)
                 .NotEmpty().WithMessage("EnginePlayed is required.")
-                .MaximumLength(64).WithMessage("EnginePlayed must not exceed 64 characters.");
+                .MustAsync(EngineExists).WithMessage("The specified engine id does not exist.");
 
             RuleFor(v => v.SeasonDateStart)
                 .NotEmpty().WithMessage("DateStart is required.");
@@ -40,8 +40,15 @@ namespace WorldDoomLeague.Application.Seasons.Commands.CreateSeason
 
         public async Task<bool> WadFileExists(CreateSeasonCommand model, uint id, CancellationToken cancellationToken)
         {
-            return await _context.Files
+            return await _context.WadFiles
                 .Where(w => w.IdFile == model.WadId)
+                !.AnyAsync();
+        }
+
+        public async Task<bool> EngineExists(CreateSeasonCommand model, uint id, CancellationToken cancellationToken)
+        {
+            return await _context.Engines
+                .Where(w => w.IdEngine == model.EnginePlayed)
                 !.AnyAsync();
         }
     }

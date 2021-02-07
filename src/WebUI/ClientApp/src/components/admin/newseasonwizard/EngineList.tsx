@@ -26,12 +26,11 @@ const EngineList = (props) => {
                     .then(response => response.toJSON() as Promise<IEnginesVm>);
                 const data = response.engineList;
                 setData(data);
-            } catch (e) {
-                if (e.response) {
-                    setErrorMessage(JSON.parse(e.response));
-                } else {
-                    console.log(e);
+                if (data.length > 0) {
+                    handleEngineChange("engine", 1);
                 }
+            } catch (e) {
+                setErrorMessage(JSON.parse(e.response));
             }
             setLoading(false);
         };
@@ -39,9 +38,9 @@ const EngineList = (props) => {
         fetchData();
     }, [newEngineId]);
 
-    const handleEngineChange = (e) => {
-        setIndex(e.target.value);
-        props.update(e.target.name, e.target.value);
+    const handleEngineChange = (name, value) => {
+        setIndex(value);
+        props.update(name, value);
     };
 
     const handleSubmit = async (evt) => {
@@ -52,7 +51,6 @@ const EngineList = (props) => {
             command.engineUrl = engineFormUrl;
             const response = await client.create(command);
             setNewEngineId(response);
-            setIndex(response);
             setEngineFormName('');
             setEngineFormUrl('');
         } catch (e) {
@@ -107,7 +105,7 @@ const EngineList = (props) => {
             <Form>
                 <FormGroup>
                     <Label for="engine">Engine</Label>
-                    <Input type="select" name="engine" id="engineSelect" value={index} onChange={(e) => handleEngineChange(e)}>
+                    <Input type="select" name="engine" id="engineSelect" value={index} onChange={(e) => handleEngineChange(e.target.name, e.target.value)}>
                         {renderEngineDropdown()}
                     </Input>
                 </FormGroup>

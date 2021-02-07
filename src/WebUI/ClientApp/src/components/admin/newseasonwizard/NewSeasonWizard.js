@@ -14,7 +14,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = require("react");
 var React = require("react");
 var react_step_wizard_1 = require("react-step-wizard");
-var WelcomeStep_1 = require("./WelcomeStep");
+var SeasonBasics_1 = require("./SeasonBasics");
+var AddPlayers_1 = require("./AddPlayers");
 var reactstrap_1 = require("reactstrap");
 var reactstrap_2 = require("reactstrap");
 /* eslint react/prop-types: 0 */
@@ -39,14 +40,14 @@ var NewSeasonWizard = function () {
     return (React.createElement(reactstrap_2.Container, null,
         React.createElement("h3", null, "New Season Wizard"),
         React.createElement(reactstrap_2.Jumbotron, null,
-            React.createElement(react_step_wizard_1.default, { onStepChange: onStepChange, isHashEnabled: true, 
+            React.createElement(react_step_wizard_1.default, { onStepChange: onStepChange, isHashEnabled: false, 
                 //transitions={state.transitions}
                 instance: setInstance },
-                React.createElement(WelcomeStep_1.default, { hashKey: 'Welcome', update: updateForm }),
-                React.createElement(Second, { form: state.form }),
+                React.createElement(SeasonBasics_1.default, { form: state.form, update: updateForm }),
+                React.createElement(AddPlayers_1.default, { update: updateForm }),
                 React.createElement(Progress, null),
                 null /* will be ignored */,
-                React.createElement(Last, { hashKey: 'Complete' })))));
+                React.createElement(Last, null)))));
 };
 exports.default = NewSeasonWizard;
 /**
@@ -65,20 +66,6 @@ var Stats = function (_a) {
                 React.createElement("button", { className: 'btn btn-success btn-block', onClick: nextStep }, "Finish")));
 };
 /** Steps */
-var Second = function (props) {
-    var validate = function () {
-        if (confirm('Are you sure you want to go back?')) { // eslint-disable-line
-            props.previousStep();
-        }
-    };
-    return (React.createElement("div", null,
-        props.form.firstname && React.createElement("h3", null,
-            "Hey ",
-            props.form.firstname,
-            "!"),
-        "I've added validation to the previous button.",
-        React.createElement(Stats, __assign({ step: 2 }, props, { previousStep: validate }))));
-};
 var Progress = function (props) {
     var _a = react_1.useState({
         timeout: null,

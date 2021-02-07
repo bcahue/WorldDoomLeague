@@ -3057,6 +3057,10 @@
           "playerName": {
             "type": "string",
             "nullable": true
+          },
+          "playerAlias": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -3397,6 +3401,18 @@
           "seasonName": {
             "type": "string",
             "nullable": true
+          },
+          "dateStart": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "engine": {
+            "type": "string",
+            "nullable": true
+          },
+          "wadPlayed": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -3412,8 +3428,7 @@
             "nullable": true
           },
           "enginePlayed": {
-            "type": "string",
-            "nullable": true
+            "type": "integer"
           },
           "seasonDateStart": {
             "type": "string",

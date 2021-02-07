@@ -27,7 +27,7 @@ function NavMenu(props) {
 
     return (
         <header>
-            <Navbar className="navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3" light>
+            <Navbar className="navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3">
                 <Container>
                     <NavbarBrand tag={Link} to="/">World Doom League</NavbarBrand>
                     <NavbarToggler onClick={toggle} className="mr-2"/>

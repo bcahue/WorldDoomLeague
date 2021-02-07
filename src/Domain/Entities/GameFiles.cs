@@ -8,7 +8,6 @@ namespace WorldDoomLeague.Domain.Entities
         public GameFiles()
         {
             Maps = new HashSet<Maps>();
-            Seasons = new HashSet<Season>();
         }
 
         public uint IdFile { get; set; }
@@ -17,6 +16,5 @@ namespace WorldDoomLeague.Domain.Entities
         public DateTime UploadDate { get; set; }
 
         public virtual ICollection<Maps> Maps { get; set; }
-        public virtual ICollection<Season> Seasons { get; set; }
     }
 }

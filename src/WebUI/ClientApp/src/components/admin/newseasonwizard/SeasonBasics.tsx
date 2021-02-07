@@ -5,7 +5,7 @@ import SeasonList from './SeasonList';
 import EngineList from './EngineList';
 import WadList from './WadList';
 
-const WelcomeStep = props => {
+const SeasonBasics = props => {
     const update = (e) => {
         props.update(e.target.name, e.target.value);
     };
@@ -23,10 +23,7 @@ const WelcomeStep = props => {
                 <EngineList {...props} onChange={update} />
             </Col>
             <Col xs="6" sm="4">
-                <Label for='seasonname'>Season Name</Label>
-                <Input type='text' className='form-control' id='seasonname' name='seasonname' placeholder='Season Name' onChange={update} />
-                <FormText color="muted">Here is a list of current and former seasons for convenience.</FormText>
-                <SeasonList />
+                <SeasonList {...props} onChange={update} />
             </Col>
             <Col sm="4">
                 <WadList {...props} onChange={update} />
@@ -34,11 +31,11 @@ const WelcomeStep = props => {
         </Row>
         <Row>
             <Col sm="12" md={{ size: 6, offset: 3 }}>
-                <StepButtons step={1} {...props} />
+                    <StepButtons step={1} {...props} disabled={!props.form.engine || !props.form.wad || !props.form.season }/>
             </Col>
         </Row>
         </React.Fragment>
     );
 };
 
-export default WelcomeStep
+export default SeasonBasics

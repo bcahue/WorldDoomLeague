@@ -1,7 +1,8 @@
 import { Fragment, useState, useEffect } from 'react';
 import * as React from 'react';
 import StepWizard from 'react-step-wizard';
-import WelcomeStep from './WelcomeStep'
+import SeasonBasics from './SeasonBasics'
+import AddPlayers from './AddPlayers'
 import { Progress as ProgressBar } from 'reactstrap';
 import { Jumbotron, Container, Row, Col } from 'reactstrap';
 
@@ -41,15 +42,15 @@ const NewSeasonWizard = () => {
             <Jumbotron>
                 <StepWizard
                     onStepChange={onStepChange}
-                    isHashEnabled
+                    isHashEnabled={false}
                     //transitions={state.transitions}
                     instance={setInstance}
                 >
-                    <WelcomeStep hashKey={'Welcome'} update={updateForm} />
-                    <Second form={state.form} />
+                    <SeasonBasics form={state.form} update={updateForm} />
+                    <AddPlayers update={updateForm} />
                     <Progress />
                     {null /* will be ignored */}
-                    <Last hashKey={'Complete'} />
+                    <Last />
                 </StepWizard>
             </Jumbotron>
         </Container>
@@ -86,22 +87,6 @@ const Stats = ({
 );
 
 /** Steps */
-
-const Second = props => {
-    const validate = () => {
-        if (confirm('Are you sure you want to go back?')) { // eslint-disable-line
-            props.previousStep();
-        }
-    };
-
-    return (
-        <div>
-            { props.form.firstname && <h3>Hey {props.form.firstname}!</h3>}
-            I've added validation to the previous button.
-            <Stats step={2} {...props} previousStep={validate} />
-        </div>
-    );
-};
 
 const Progress = (props) => {
     const [state, updateState] = useState({

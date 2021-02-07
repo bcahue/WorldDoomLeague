@@ -84,12 +84,15 @@
       <None Remove="ClientApp\src\ApiClientBase.ts" />
       <None Remove="ClientApp\src\client.extensions.ts" />
       <None Remove="ClientApp\src\components\admin\AdminRoutes.tsx" />
+      <None Remove="ClientApp\src\components\admin\newseasonwizard\AddPlayers.tsx" />
+      <None Remove="ClientApp\src\components\admin\newseasonwizard\AddTeams.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\EngineList.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\NewSeasonWizard.tsx" />
+      <None Remove="ClientApp\src\components\admin\newseasonwizard\PlayerList.tsx" />
+      <None Remove="ClientApp\src\components\admin\newseasonwizard\SeasonBasics.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\SeasonList.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\StepButtons.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\WadList.tsx" />
-      <None Remove="ClientApp\src\components\admin\newseasonwizard\WelcomeStep.tsx" />
       <None Remove="ClientApp\src\components\LeaderboardAllTimeStats.tsx" />
       <None Remove="ClientApp\src\ErrorResponse.tsx" />
       <None Remove="ClientApp\src\reportWebVitals.ts" />
@@ -119,7 +122,16 @@
     </ItemGroup>
 
     <ItemGroup>
+      <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\AddPlayers.tsx">
+        <SubType>Code</SubType>
+      </TypeScriptCompile>
+      <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\AddTeams.tsx">
+        <SubType>Code</SubType>
+      </TypeScriptCompile>
       <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\EngineList.tsx">
+        <SubType>Code</SubType>
+      </TypeScriptCompile>
+      <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\PlayerList.tsx">
         <SubType>Code</SubType>
       </TypeScriptCompile>
       <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\WadList.tsx">

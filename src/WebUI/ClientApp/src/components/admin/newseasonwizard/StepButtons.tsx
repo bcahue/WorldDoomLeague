@@ -13,17 +13,15 @@ const StepButtons = ({
     previousStep,
     totalSteps,
     step,
+    disabled
 }) => (
     <Row>
         <Col sm="12" md={{ size: 6, offset: 3 }}>
             <hr />
-            { step > 1 &&
-                <Button color="primary" size="lg" block onClick={previousStep}>Go Back</Button>
-            }
             { step < totalSteps ?
-                <Button color="secondary" size="lg" block onClick={nextStep}>Continue</Button>
+                <Button color="secondary" size="lg" block onClick={nextStep} disabled={disabled}>Continue</Button>
                 :
-                <Button color="secondary" size="lg" block onClick={nextStep}>Finish</Button>
+                <Button color="secondary" size="lg" block onClick={nextStep} disabled={disabled}>Finish</Button>
             }
         </Col>
     </Row>

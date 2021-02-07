@@ -16,12 +16,19 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasIndex(e => e.FkIdWadFile)
                 .HasDatabaseName("fk_Seasons_WadFile_idx");
 
+            builder.HasIndex(e => e.FkIdEngine)
+                .HasDatabaseName("fk_Seasons_Engine_idx");
+
             builder.HasIndex(e => e.IdSeason)
                 .HasDatabaseName("id_season_UNIQUE")
                 .IsUnique();
 
             builder.Property(e => e.IdSeason)
                 .HasColumnName("id_season")
+                .HasColumnType("int(10) unsigned");
+
+            builder.Property(e => e.FkIdEngine)
+                .HasColumnName("fk_id_engine")
                 .HasColumnType("int(10) unsigned");
 
             builder.Property(e => e.DateStart)
@@ -43,18 +50,17 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasCharSet("utf8mb4")
                 .HasCollation("utf8mb4_unicode_ci");
 
-            builder.Property(e => e.EnginePlayed)
-                .IsRequired()
-                .HasColumnName("engine_played")
-                .HasColumnType("varchar(64)")
-                .HasCharSet("utf8mb4")
-                .HasCollation("utf8mb4_unicode_ci");
-
             builder.HasOne(d => d.FkIdFileNavigation)
                 .WithMany(p => p.Seasons)
                 .HasForeignKey(d => d.FkIdWadFile)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_Seasons_Files");
+                .HasConstraintName("fk_Seasons_WadFiles");
+
+            builder.HasOne(d => d.FkIdEngineNavigation)
+                .WithMany(p => p.Seasons)
+                .HasForeignKey(d => d.FkIdEngine)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_Seasons_Engine");
         }
     }
 }

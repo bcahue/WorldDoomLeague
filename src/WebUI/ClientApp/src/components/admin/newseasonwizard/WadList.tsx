@@ -25,12 +25,11 @@ const WadList = (props) => {
                     .then(response => response.toJSON() as Promise<IWadFilesVm>);
                 const data = response.wadList;
                 setData(data);
-            } catch (e) {
-                if (e.response !== null) {
-                    setErrorMessage(JSON.parse(e.response));
-                } else {
-                    console.log(e);
+                if (data.length > 0) {
+                    handleWadChange("wad", 1);
                 }
+            } catch (e) {
+                setErrorMessage(JSON.parse(e.response));
             }
             setLoading(false);
         };
@@ -38,9 +37,9 @@ const WadList = (props) => {
         fetchData();
     }, [newWadId]);
 
-    const handleWadChange = (e) => {
-        setIndex(e.target.value);
-        props.update(e.target.name, e.target.value);
+    const handleWadChange = (name, value) => {
+        setIndex(value);
+        props.update(name, value);
     };
 
     const handleSubmit = async (evt) => {
@@ -48,14 +47,9 @@ const WadList = (props) => {
             let client = new FilesClient();
             const response = await client.createWadFile(file);
             setNewWadId(response);
-            setIndex(response);
             setFile(null);
         } catch (e) {
-            if (e.response !== null) {
-                setErrorMessage(JSON.parse(e.response));
-            } else {
-                console.log(e);
-            }
+            setErrorMessage(JSON.parse(e.response));
         }
     };
 
@@ -97,8 +91,8 @@ const WadList = (props) => {
         return (
             <React.Fragment>
                 <FormGroup>
-                    <Label for="exampleFile">File</Label>
-                    <Input type="file" name="file" id="file" onChange={handleUpload} />
+                    <Label for="File">Zipped Wad File</Label>
+                    <Input type="file" name="file" id="file" key={newWadId} onChange={handleUpload} />
                     <FormText color="muted">
                         Max upload: 200MB
                         <br />
@@ -115,7 +109,7 @@ const WadList = (props) => {
             <Form>
                 <FormGroup>
                     <Label for="engine">Wad Played</Label>
-                    <Input type="select" name="wadSelect" id="wadSelect" value={index} onChange={(e) => handleWadChange(e)}>
+                    <Input type="select" name="wad" id="wadSelect" value={index} onChange={(e) => handleWadChange(e.target.name, e.target.value)}>
                         {renderWadDropdown()}
                     </Input>
                 </FormGroup>

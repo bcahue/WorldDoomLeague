@@ -316,31 +316,22 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     fk_id_wad_file = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     season_name = table.Column<string>(type: "varchar(64)", nullable: false, collation: "utf8mb4_unicode_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    engine_played = table.Column<string>(type: "varchar(64)", nullable: false, collation: "utf8mb4_unicode_ci")
-                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    fk_id_engine = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     date_start = table.Column<DateTime>(type: "datetime", nullable: false),
-                    fk_id_team_winner = table.Column<int>(type: "int(11)", nullable: true),
-                    EngineIdEngine = table.Column<uint>(type: "int unsigned", nullable: true),
-                    WadFilesIdFile = table.Column<uint>(type: "int(10) unsigned", nullable: true)
+                    fk_id_team_winner = table.Column<int>(type: "int(11)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => x.id_season);
                     table.ForeignKey(
-                        name: "FK_seasons_engine_EngineIdEngine",
-                        column: x => x.EngineIdEngine,
+                        name: "fk_Seasons_Engine",
+                        column: x => x.fk_id_engine,
                         principalTable: "engine",
                         principalColumn: "IdEngine",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "fk_Seasons_Files",
+                        name: "fk_Seasons_WadFiles",
                         column: x => x.fk_id_wad_file,
-                        principalTable: "files",
-                        principalColumn: "id_file",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_seasons_wad_files_WadFilesIdFile",
-                        column: x => x.WadFilesIdFile,
                         principalTable: "wad_files",
                         principalColumn: "id_file",
                         onDelete: ReferentialAction.Restrict);
@@ -1353,11 +1344,11 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "f5813621-f9dc-4710-94ea-25b948637360", "b5b4ccd9-eb24-4a00-aacf-418e65094aa8", "Player", "PLAYER" },
-                    { "f54684be-6c53-4692-820d-65702d13e3e4", "524d12a9-2f65-4f9d-83d1-e5bf81042c38", "Administrator", "ADMINISTRATOR" },
-                    { "8001d833-41c0-458e-a136-786d5b3d36e4", "425bbf73-e964-4cc5-9a4a-74f117f4ad4a", "DemoAdmin", "DEMOADMIN" },
-                    { "524cf799-1257-410f-9ed4-5c921a77a359", "6eb88206-3267-4151-b3da-2f81abb22b6e", "NewsEditor", "NEWSEDITOR" },
-                    { "e03e3af3-3249-473c-86dd-13391166a022", "8365abf9-685b-46a9-b963-63c0083a4f4b", "StatsRunner", "STATSRUNNER" }
+                    { "8071eb7d-7e4b-427b-bfdb-d32a1fad988d", "df521457-9ad4-4b72-8a99-6eed4d2c8b0a", "Player", "PLAYER" },
+                    { "c0cfda4e-4ed6-4f41-94fe-e861024904bc", "d0a57472-fa3f-471a-bb41-f31582dc3666", "Administrator", "ADMINISTRATOR" },
+                    { "aeb81909-daed-41ab-b236-c2186c093fb8", "3b1ecc1a-43c5-46fb-b0c5-4765cf0f596f", "DemoAdmin", "DEMOADMIN" },
+                    { "a503abbf-d0e2-4f5e-8f65-8920fb22beb9", "e195905e-ffd2-4e17-b52b-18c03fdcb8b7", "NewsEditor", "NEWSEDITOR" },
+                    { "cbb01cf3-26d3-4bad-8d5b-ef200143dcc6", "6bf20bce-e53c-4372-b30d-48cfd98fb443", "StatsRunner", "STATSRUNNER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -1817,6 +1808,11 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "fk_Seasons_Engine_idx",
+                table: "seasons",
+                column: "fk_id_engine");
+
+            migrationBuilder.CreateIndex(
                 name: "fk_Seasons_WadFile_idx",
                 table: "seasons",
                 column: "fk_id_wad_file");
@@ -1826,16 +1822,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 table: "seasons",
                 column: "id_season",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_seasons_EngineIdEngine",
-                table: "seasons",
-                column: "EngineIdEngine");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_seasons_WadFilesIdFile",
-                table: "seasons",
-                column: "WadFilesIdFile");
 
             migrationBuilder.CreateIndex(
                 name: "fk_stataccuracy_player_attacker_idx",
@@ -2168,6 +2154,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 name: "weeks");
 
             migrationBuilder.DropTable(
+                name: "files");
+
+            migrationBuilder.DropTable(
                 name: "players");
 
             migrationBuilder.DropTable(
@@ -2175,9 +2164,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "engine");
-
-            migrationBuilder.DropTable(
-                name: "files");
 
             migrationBuilder.DropTable(
                 name: "wad_files");

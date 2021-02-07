@@ -14,6 +14,7 @@ namespace WorldDoomLeague.WebUI.Controllers
     public class FilesController : ApiController
     {
         [Authorize]
+        [RequestSizeLimit(209715200)]
         [HttpPost("wad")]
         public async Task<ActionResult<uint>> CreateWadFile(IFormFile file)
         {

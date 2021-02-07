@@ -10,6 +10,8 @@ namespace WorldDoomLeague.Application.Players.Queries.GetPlayers
 
         public string PlayerName { get; set; }
 
+        public string PlayerAlias { get; set; }
+
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Player, PlayerDto>()

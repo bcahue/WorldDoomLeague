@@ -4773,6 +4773,7 @@ export interface IPlayersVm {
 export class PlayerDto implements IPlayerDto {
     id?: number;
     playerName?: string | undefined;
+    playerAlias?: string | undefined;
 
     constructor(data?: IPlayerDto) {
         if (data) {
@@ -4787,6 +4788,7 @@ export class PlayerDto implements IPlayerDto {
         if (_data) {
             this.id = _data["id"];
             this.playerName = _data["playerName"];
+            this.playerAlias = _data["playerAlias"];
         }
     }
 
@@ -4801,6 +4803,7 @@ export class PlayerDto implements IPlayerDto {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["playerName"] = this.playerName;
+        data["playerAlias"] = this.playerAlias;
         return data; 
     }
 }
@@ -4808,6 +4811,7 @@ export class PlayerDto implements IPlayerDto {
 export interface IPlayerDto {
     id?: number;
     playerName?: string | undefined;
+    playerAlias?: string | undefined;
 }
 
 export class PlayerSummaryVm implements IPlayerSummaryVm {
@@ -5405,6 +5409,9 @@ export interface ISeasonsVm {
 export class SeasonDto implements ISeasonDto {
     id?: number;
     seasonName?: string | undefined;
+    dateStart?: Date;
+    engine?: string | undefined;
+    wadPlayed?: string | undefined;
 
     constructor(data?: ISeasonDto) {
         if (data) {
@@ -5419,6 +5426,9 @@ export class SeasonDto implements ISeasonDto {
         if (_data) {
             this.id = _data["id"];
             this.seasonName = _data["seasonName"];
+            this.dateStart = _data["dateStart"] ? new Date(_data["dateStart"].toString()) : <any>undefined;
+            this.engine = _data["engine"];
+            this.wadPlayed = _data["wadPlayed"];
         }
     }
 
@@ -5433,6 +5443,9 @@ export class SeasonDto implements ISeasonDto {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["seasonName"] = this.seasonName;
+        data["dateStart"] = this.dateStart ? this.dateStart.toISOString() : <any>undefined;
+        data["engine"] = this.engine;
+        data["wadPlayed"] = this.wadPlayed;
         return data; 
     }
 }
@@ -5440,12 +5453,15 @@ export class SeasonDto implements ISeasonDto {
 export interface ISeasonDto {
     id?: number;
     seasonName?: string | undefined;
+    dateStart?: Date;
+    engine?: string | undefined;
+    wadPlayed?: string | undefined;
 }
 
 export class CreateSeasonCommand implements ICreateSeasonCommand {
     wadId?: number;
     seasonName?: string | undefined;
-    enginePlayed?: string | undefined;
+    enginePlayed?: number;
     seasonDateStart?: Date;
 
     constructor(data?: ICreateSeasonCommand) {
@@ -5486,7 +5502,7 @@ export class CreateSeasonCommand implements ICreateSeasonCommand {
 export interface ICreateSeasonCommand {
     wadId?: number;
     seasonName?: string | undefined;
-    enginePlayed?: string | undefined;
+    enginePlayed?: number;
     seasonDateStart?: Date;
 }
 

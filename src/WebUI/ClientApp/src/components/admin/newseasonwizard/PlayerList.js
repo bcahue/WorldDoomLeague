@@ -39,18 +39,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
 var react_1 = require("react");
 var reactstrap_1 = require("reactstrap");
+var react_select_1 = require("react-select");
 var WorldDoomLeague_1 = require("../../../WorldDoomLeague");
 var state_1 = require("../../../state");
-var EngineList = function (props) {
+var PlayerList = function (props) {
     var _a = react_1.useState(false), loading = _a[0], setLoading = _a[1];
     var _b = react_1.useState([]), data = _b[0], setData = _b[1];
-    var _c = react_1.useState(0), index = _c[0], setIndex = _c[1];
-    var _d = react_1.useState(""), engineFormName = _d[0], setEngineFormName = _d[1];
-    var _e = react_1.useState(""), engineFormUrl = _e[0], setEngineFormUrl = _e[1];
-    var _f = react_1.useState(0), newEngineId = _f[0], setNewEngineId = _f[1];
+    var _c = react_1.useState(""), playerFormName = _c[0], setPlayerFormName = _c[1];
+    var _d = react_1.useState(""), playerFormAlias = _d[0], setPlayerFormAlias = _d[1];
+    var _e = react_1.useState(0), newPlayerId = _e[0], setNewPlayerId = _e[1];
     react_1.useEffect(function () {
         var fetchData = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var client, response, data_1, e_1;
+            var client, response, data_1, optionsList_1, e_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -58,20 +58,22 @@ var EngineList = function (props) {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        client = new WorldDoomLeague_1.EngineClient();
+                        client = new WorldDoomLeague_1.PlayersClient();
                         return [4 /*yield*/, client.get()
                                 .then(function (response) { return response.toJSON(); })];
                     case 2:
                         response = _a.sent();
-                        data_1 = response.engineList;
-                        setData(data_1);
-                        if (data_1.length > 0) {
-                            handleEngineChange("engine", 1);
-                        }
+                        data_1 = response.playerList;
+                        optionsList_1 = [];
+                        data_1.forEach(function (element) {
+                            optionsList_1.push({ label: element.playerName, value: element.id });
+                        });
+                        setData(optionsList_1);
+                        props.update("players", optionsList_1);
                         return [3 /*break*/, 4];
                     case 3:
                         e_1 = _a.sent();
-                        state_1.setErrorMessage(JSON.parse(e_1.response));
+                        console.log(e_1);
                         return [3 /*break*/, 4];
                     case 4:
                         setLoading(false);
@@ -80,27 +82,23 @@ var EngineList = function (props) {
             });
         }); };
         fetchData();
-    }, [newEngineId]);
-    var handleEngineChange = function (name, value) {
-        setIndex(value);
-        props.update(name, value);
-    };
+    }, [newPlayerId]);
     var handleSubmit = function (evt) { return __awaiter(void 0, void 0, void 0, function () {
         var client, command, response, e_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    client = new WorldDoomLeague_1.EngineClient();
-                    command = new WorldDoomLeague_1.CreateEngineCommand;
-                    command.engineName = engineFormName;
-                    command.engineUrl = engineFormUrl;
+                    client = new WorldDoomLeague_1.PlayersClient();
+                    command = new WorldDoomLeague_1.CreatePlayerCommand;
+                    command.playerName = playerFormName;
+                    command.playerAlias = playerFormAlias;
                     return [4 /*yield*/, client.create(command)];
                 case 1:
                     response = _a.sent();
-                    setNewEngineId(response);
-                    setEngineFormName('');
-                    setEngineFormUrl('');
+                    setNewPlayerId(response);
+                    setPlayerFormName('');
+                    setPlayerFormAlias('');
                     return [3 /*break*/, 3];
                 case 2:
                     e_2 = _a.sent();
@@ -111,40 +109,38 @@ var EngineList = function (props) {
         });
     }); };
     // create a list for each engine.
-    var renderEngineDropdown = function () {
+    var renderPlayerDropdown = function () {
         var select = null;
         if (!loading) {
             if (data.length > 0) {
-                select = (data.map(function (engine) {
-                    return React.createElement("option", { key: engine.id, value: engine.id }, engine.engineName);
-                }));
+                select = (React.createElement(react_select_1.default, { options: data }));
             }
             else {
-                select = (React.createElement("option", null, "No engines currently in the system."));
+                select = (React.createElement(react_select_1.default, { options: [{ label: "No players found in the system.", value: "Not" }] }));
             }
         }
         else {
-            select = (React.createElement("option", null, "Loading..."));
+            select = (React.createElement(react_select_1.default, { isLoading: true }));
         }
         return (select);
     };
     // create a form for entering a new engine.
-    var renderNewEngineForm = function () {
+    var renderNewPlayerForm = function () {
         return (React.createElement(React.Fragment, null,
             React.createElement(reactstrap_1.FormGroup, null,
-                React.createElement(reactstrap_1.Label, { for: "engineName" }, "Engine Name"),
-                React.createElement(reactstrap_1.Input, { type: "text", name: "engineName", id: "engineName", value: engineFormName, placeholder: "Odamex v0.8.3", onChange: function (e) { return setEngineFormName(e.target.value); } })),
+                React.createElement(reactstrap_1.Label, { for: 'playername' }, "Player Name"),
+                React.createElement(reactstrap_1.Input, { type: 'text', className: 'form-control', id: 'playername', name: 'playername', placeholder: 'Player Name', onChange: function (e) { return setPlayerFormName(e.target.value); } })),
             React.createElement(reactstrap_1.FormGroup, null,
-                React.createElement(reactstrap_1.Label, { for: "engineUrl" }, "Engine Url"),
-                React.createElement(reactstrap_1.Input, { type: "text", name: "engineUrl", id: "engineUrl", value: engineFormUrl, placeholder: "https://odamex.net", onChange: function (e) { return setEngineFormUrl(e.target.value); } })),
-            React.createElement(reactstrap_1.Button, { color: "primary", size: "lg", block: true, disabled: !engineFormUrl || !engineFormName, onClick: handleSubmit }, "Create New Engine")));
+                React.createElement(reactstrap_1.Label, { for: 'playeralias' }, "Player Alias"),
+                React.createElement(reactstrap_1.Input, { type: 'text', className: 'form-control', id: 'playeralias', name: 'playeralias', placeholder: 'Player Alias', onChange: function (e) { return setPlayerFormAlias(e.target.value); } })),
+            React.createElement(reactstrap_1.Button, { color: "primary", size: "lg", block: true, disabled: !playerFormName, onClick: handleSubmit }, "Create New Player")));
     };
     return (React.createElement(React.Fragment, null,
         React.createElement(reactstrap_1.Form, null,
             React.createElement(reactstrap_1.FormGroup, null,
-                React.createElement(reactstrap_1.Label, { for: "engine" }, "Engine"),
-                React.createElement(reactstrap_1.Input, { type: "select", name: "engine", id: "engineSelect", value: index, onChange: function (e) { return handleEngineChange(e.target.name, e.target.value); } }, renderEngineDropdown()))),
-        React.createElement(reactstrap_1.Form, null, renderNewEngineForm())));
+                React.createElement(reactstrap_1.Label, { for: "player" }, "Player"),
+                renderPlayerDropdown())),
+        React.createElement(reactstrap_1.Form, null, renderNewPlayerForm())));
 };
-exports.default = EngineList;
-//# sourceMappingURL=EngineList.js.map
+exports.default = PlayerList;
+//# sourceMappingURL=PlayerList.js.map

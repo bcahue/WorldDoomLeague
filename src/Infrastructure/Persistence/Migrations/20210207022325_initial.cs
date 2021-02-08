@@ -317,7 +317,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     season_name = table.Column<string>(type: "varchar(64)", nullable: false, collation: "utf8mb4_unicode_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     fk_id_engine = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    date_start = table.Column<DateTime>(type: "datetime", nullable: false),
+                    date_start = table.Column<DateTime>(type: "timestamp", nullable: false),
                     fk_id_team_winner = table.Column<int>(type: "int(11)", nullable: true)
                 },
                 constraints: table =>
@@ -1344,11 +1344,11 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "8071eb7d-7e4b-427b-bfdb-d32a1fad988d", "df521457-9ad4-4b72-8a99-6eed4d2c8b0a", "Player", "PLAYER" },
-                    { "c0cfda4e-4ed6-4f41-94fe-e861024904bc", "d0a57472-fa3f-471a-bb41-f31582dc3666", "Administrator", "ADMINISTRATOR" },
-                    { "aeb81909-daed-41ab-b236-c2186c093fb8", "3b1ecc1a-43c5-46fb-b0c5-4765cf0f596f", "DemoAdmin", "DEMOADMIN" },
-                    { "a503abbf-d0e2-4f5e-8f65-8920fb22beb9", "e195905e-ffd2-4e17-b52b-18c03fdcb8b7", "NewsEditor", "NEWSEDITOR" },
-                    { "cbb01cf3-26d3-4bad-8d5b-ef200143dcc6", "6bf20bce-e53c-4372-b30d-48cfd98fb443", "StatsRunner", "STATSRUNNER" }
+                    { "afa1811b-c974-4df4-810b-6d3db7cfd386", "b61e9f45-7e0f-44e3-b549-953ea0c6e99a", "Player", "PLAYER" },
+                    { "b5f25bf7-148a-4c06-8a61-2c829dd9ac98", "e7f933d3-9c40-4bcd-be24-92171cc52920", "Administrator", "ADMINISTRATOR" },
+                    { "a560de1f-d71f-44a7-bf7e-d3c5e63e0ab4", "1d0b4dd4-7b47-4888-91e1-05ac410455c9", "DemoAdmin", "DEMOADMIN" },
+                    { "3d412c4c-dcad-4a5f-9aec-87dae83a6bd8", "269f4b0b-4930-4c31-8227-d8ee06d02883", "NewsEditor", "NEWSEDITOR" },
+                    { "26db849e-75a9-41c0-a89d-ac45a0d6cebd", "291a719f-f1ce-4d5e-9ad3-26161030653f", "StatsRunner", "STATSRUNNER" }
                 });
 
             migrationBuilder.CreateIndex(

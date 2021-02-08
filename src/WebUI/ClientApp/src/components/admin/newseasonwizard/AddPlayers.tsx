@@ -19,7 +19,7 @@ const AddPlayers = props => {
         <Row>
                 <Col sm="12" md={{ size: 6, offset: 3 }}>
                     <PlayerList {...props} onChange={update} />
-                    <StepButtons step={2} {...props} disabled={!(props.players > 24) }/>
+                    <StepButtons step={2} {...props} disabled={props.form.players && (!(props.form.players.length > 24) )}/>
             </Col>
         </Row>
         </React.Fragment>

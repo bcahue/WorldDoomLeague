@@ -1,8 +1,9 @@
 ﻿import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { Spinner, ListGroup, ListGroupItem, Label, Input, FormText, Button } from 'reactstrap';
+import { Spinner, ListGroup, ListGroupItem, Label, Input, FormText, Button, Collapse } from 'reactstrap';
 import DateTimePicker from 'react-datetime-picker';
 import { setErrorMessage } from '../../../state';
+import 'bootstrap/dist/css/bootstrap.css';
 import {
     ISeasonsVm,
     ISeasonDto,
@@ -16,6 +17,9 @@ const SeasonList = (props) => {
     const [seasonName, setSeasonName] = useState<string>("");
     const [newSeasonId, setNewSeasonId] = useState(0);
     const [signupDate, setSignupDate] = useState<Date>(null);
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggle = () => setIsOpen(!isOpen);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -47,7 +51,7 @@ const SeasonList = (props) => {
             command.seasonName = seasonName;
             command.wadId = props.form.wad;
             command.enginePlayed = props.form.engine;
-            command.seasonDateStart = signupDate;
+            command.seasonDateStart = new Date(signupDate);
             const response = await client.create(command);
             setNewSeasonId(response);
             setSeasonName('');
@@ -65,9 +69,12 @@ const SeasonList = (props) => {
                 <Label for='signupDates'>Signups Begin</Label>
                 <DateTimePicker id='signupDates' name='signupDates' onChange={setSignupDate} value={signupDate} />
                 <FormText color="muted">Here is a list of current and former seasons for convenience.</FormText>
-                <ListGroup>
-                    {renderSeasonList()}
-                </ListGroup>
+                <Button color="primary" onClick={toggle} style={{ marginBottom: '1rem' }}>Toggle</Button>
+                <Collapse isOpen={isOpen}>
+                    <ListGroup>
+                        {renderSeasonList()}
+                    </ListGroup>
+                </Collapse>
                 <br />
                 <Button color="primary" size="lg" block disabled={!seasonName || !props.form.wad || !props.form.engine || !signupDate} onClick={handleSubmit}>Create New Season</Button>
             </React.Fragment>
@@ -85,7 +92,8 @@ const SeasonList = (props) => {
                         <ListGroupItem key={value.id}>
                             {value.seasonName}
                             <br />
-                            Signups Begin: {new Date(value.dateStart).toString()}
+                            Signups Begin: {new Intl.DateTimeFormat('default', { dateStyle: 'full', timeStyle: 'long' } as Intl.DateTimeFormatOptions).format(new Date(value.dateStart))}
+                            {console.log(new Date(value.dateStart))}
                         </ListGroupItem>);
                 });
             } else {

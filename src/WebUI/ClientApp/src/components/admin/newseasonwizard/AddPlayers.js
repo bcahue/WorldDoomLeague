@@ -27,7 +27,7 @@ var AddPlayers = function (props) {
         React.createElement(reactstrap_1.Row, null,
             React.createElement(reactstrap_1.Col, { sm: "12", md: { size: 6, offset: 3 } },
                 React.createElement(PlayerList_1.default, __assign({}, props, { onChange: update })),
-                React.createElement(StepButtons_1.default, __assign({ step: 2 }, props, { disabled: !(props.players > 24) }))))));
+                React.createElement(StepButtons_1.default, __assign({ step: 2 }, props, { disabled: props.form.players && (!(props.form.players.length > 24)) }))))));
 };
 exports.default = AddPlayers;
 //# sourceMappingURL=AddPlayers.js.map

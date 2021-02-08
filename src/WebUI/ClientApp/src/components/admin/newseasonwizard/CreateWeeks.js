@@ -54,7 +54,7 @@ var reactstrap_1 = require("reactstrap");
 var react_select_1 = require("react-select");
 var WorldDoomLeague_1 = require("../../../WorldDoomLeague");
 var state_1 = require("../../../state");
-var AddTeams = function (props) {
+var CreateWeeks = function (props) {
     var _a = react_1.useState([{
             teamName: null,
             teamAbbreviation: null,
@@ -221,5 +221,5 @@ var AddTeams = function (props) {
             React.createElement(reactstrap_1.Col, { sm: "12", md: { size: 6, offset: 3 } },
                 React.createElement(StepButtons_1.default, __assign({ step: 3 }, props, { disabled: !(createdTeams === amountTeams) }))))));
 };
-exports.default = AddTeams;
-//# sourceMappingURL=AddTeams.js.map
+exports.default = CreateWeeks;
+//# sourceMappingURL=CreateWeeks.js.map

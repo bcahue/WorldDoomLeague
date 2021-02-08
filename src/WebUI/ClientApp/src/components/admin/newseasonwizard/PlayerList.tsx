@@ -33,8 +33,7 @@ const PlayerList = (props) => {
                 setData(optionsList);
                 props.update("players", optionsList);
             } catch (e) {
-                console.log(e);
-                //setErrorMessage(JSON.parse(e.response));
+                setErrorMessage(JSON.parse(e.response));
             }
             setLoading(false);
         };
@@ -81,11 +80,11 @@ const PlayerList = (props) => {
             <React.Fragment>
                 <FormGroup>
                     <Label for='playername'>Player Name</Label>
-                    <Input type='text' className='form-control' id='playername' name='playername' placeholder='Player Name' onChange={e => setPlayerFormName(e.target.value)} />
+                    <Input type='text' className='form-control' id='playername' name='playername' placeholder='Player Name' value={playerFormName} onChange={e => setPlayerFormName(e.target.value)} />
                 </FormGroup>
                 <FormGroup>
                     <Label for='playeralias'>Player Alias</Label>
-                    <Input type='text' className='form-control' id='playeralias' name='playeralias' placeholder='Player Alias' onChange={e => setPlayerFormAlias(e.target.value)} />
+                    <Input type='text' className='form-control' id='playeralias' name='playeralias' placeholder='Player Alias' value={playerFormAlias} onChange={e => setPlayerFormAlias(e.target.value)} />
                 </FormGroup>
                 <Button color="primary" size="lg" block disabled={!playerFormName} onClick={handleSubmit}>Create New Player</Button>
             </React.Fragment>

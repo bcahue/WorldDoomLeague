@@ -129,10 +129,10 @@ var PlayerList = function (props) {
         return (React.createElement(React.Fragment, null,
             React.createElement(reactstrap_1.FormGroup, null,
                 React.createElement(reactstrap_1.Label, { for: 'playername' }, "Player Name"),
-                React.createElement(reactstrap_1.Input, { type: 'text', className: 'form-control', id: 'playername', name: 'playername', placeholder: 'Player Name', onChange: function (e) { return setPlayerFormName(e.target.value); } })),
+                React.createElement(reactstrap_1.Input, { type: 'text', className: 'form-control', id: 'playername', name: 'playername', placeholder: 'Player Name', value: playerFormName, onChange: function (e) { return setPlayerFormName(e.target.value); } })),
             React.createElement(reactstrap_1.FormGroup, null,
                 React.createElement(reactstrap_1.Label, { for: 'playeralias' }, "Player Alias"),
-                React.createElement(reactstrap_1.Input, { type: 'text', className: 'form-control', id: 'playeralias', name: 'playeralias', placeholder: 'Player Alias', onChange: function (e) { return setPlayerFormAlias(e.target.value); } })),
+                React.createElement(reactstrap_1.Input, { type: 'text', className: 'form-control', id: 'playeralias', name: 'playeralias', placeholder: 'Player Alias', value: playerFormAlias, onChange: function (e) { return setPlayerFormAlias(e.target.value); } })),
             React.createElement(reactstrap_1.Button, { color: "primary", size: "lg", block: true, disabled: !playerFormName, onClick: handleSubmit }, "Create New Player")));
     };
     return (React.createElement(React.Fragment, null,

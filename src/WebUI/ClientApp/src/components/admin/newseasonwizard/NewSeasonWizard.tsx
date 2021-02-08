@@ -1,8 +1,11 @@
 import { Fragment, useState, useEffect } from 'react';
 import * as React from 'react';
 import StepWizard from 'react-step-wizard';
-import SeasonBasics from './SeasonBasics'
-import AddPlayers from './AddPlayers'
+import SeasonBasics from './SeasonBasics';
+import AddPlayers from './AddPlayers';
+import AddTeams from './AddTeams';
+import CreateWeeks from './CreateWeeks';
+import RegisterDraft from './RegisterDraft';
 import { Progress as ProgressBar } from 'reactstrap';
 import { Jumbotron, Container, Row, Col } from 'reactstrap';
 
@@ -47,10 +50,8 @@ const NewSeasonWizard = () => {
                     instance={setInstance}
                 >
                     <SeasonBasics form={state.form} update={updateForm} />
-                    <AddPlayers update={updateForm} />
-                    <Progress />
-                    {null /* will be ignored */}
-                    <Last />
+                    <AddPlayers form={state.form} update={updateForm} />
+                    <AddTeams form={state.form} update={updateForm} />
                 </StepWizard>
             </Jumbotron>
         </Container>

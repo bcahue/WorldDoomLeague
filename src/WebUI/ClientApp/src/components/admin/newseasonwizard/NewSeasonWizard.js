@@ -16,6 +16,7 @@ var React = require("react");
 var react_step_wizard_1 = require("react-step-wizard");
 var SeasonBasics_1 = require("./SeasonBasics");
 var AddPlayers_1 = require("./AddPlayers");
+var AddTeams_1 = require("./AddTeams");
 var reactstrap_1 = require("reactstrap");
 var reactstrap_2 = require("reactstrap");
 /* eslint react/prop-types: 0 */
@@ -44,10 +45,8 @@ var NewSeasonWizard = function () {
                 //transitions={state.transitions}
                 instance: setInstance },
                 React.createElement(SeasonBasics_1.default, { form: state.form, update: updateForm }),
-                React.createElement(AddPlayers_1.default, { update: updateForm }),
-                React.createElement(Progress, null),
-                null /* will be ignored */,
-                React.createElement(Last, null)))));
+                React.createElement(AddPlayers_1.default, { form: state.form, update: updateForm }),
+                React.createElement(AddTeams_1.default, { form: state.form, update: updateForm })))));
 };
 exports.default = NewSeasonWizard;
 /**

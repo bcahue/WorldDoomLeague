@@ -24,10 +24,10 @@ namespace WorldDoomLeague.Application.SeasonWeeks.Commands.CreateSeasonWeeks
                 .NotEmpty().WithMessage("WeekOneDateStart is required.");
 
             RuleFor(v => v.NumWeeksRegularSeason)
-                .NotEmpty().WithMessage("DateStart is required.");
+                .NotEmpty().WithMessage("NumWeeksRegularSeason is required.");
 
             RuleFor(v => v.NumWeeksPlayoffs)
-                .NotEmpty().WithMessage("WeekOneDateStart is required.");
+                .NotEmpty().WithMessage("NumWeeksPlayoffs is required.");
         }
 
         public async Task<bool> BeValidSeason(uint seasonId, CancellationToken cancellationToken)

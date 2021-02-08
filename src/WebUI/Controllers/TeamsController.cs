@@ -3,6 +3,7 @@ using WorldDoomLeague.Application.Teams.Commands.CreateTeam;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using WorldDoomLeague.Application.Teams.Commands.CreateTeams;
 
 namespace WorldDoomLeague.WebUI.Controllers
 {
@@ -19,6 +20,12 @@ namespace WorldDoomLeague.WebUI.Controllers
         {
             return await Mediator.Send(command);
         }
-        
+
+        [HttpPost("teams")]
+        public async Task<ActionResult<uint>> CreateTeams(CreateTeamsCommand command)
+        {
+            return await Mediator.Send(command);
+        }
+
     }
 }

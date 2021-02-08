@@ -40,14 +40,9 @@ namespace WorldDoomLeague.WebUI.Controllers
             return NoContent();
         }
 
-        [HttpPost("{seasonId}/weeks")]
-        public async Task<ActionResult<uint>> CreateWeeks(uint seasonId, CreateSeasonWeeksCommand command)
+        [HttpPost("CreateWeeks")]
+        public async Task<ActionResult<uint>> CreateWeeks(CreateSeasonWeeksCommand command)
         {
-            if (seasonId != command.SeasonId)
-            {
-                return BadRequest();
-            }
-
             return await Mediator.Send(command);
         }
 

@@ -41,6 +41,7 @@ var react_1 = require("react");
 var reactstrap_1 = require("reactstrap");
 var react_datetime_picker_1 = require("react-datetime-picker");
 var state_1 = require("../../../state");
+require("bootstrap/dist/css/bootstrap.css");
 var WorldDoomLeague_1 = require("../../../WorldDoomLeague");
 var SeasonList = function (props) {
     var _a = react_1.useState(false), loading = _a[0], setLoading = _a[1];
@@ -48,6 +49,8 @@ var SeasonList = function (props) {
     var _c = react_1.useState(""), seasonName = _c[0], setSeasonName = _c[1];
     var _d = react_1.useState(0), newSeasonId = _d[0], setNewSeasonId = _d[1];
     var _e = react_1.useState(null), signupDate = _e[0], setSignupDate = _e[1];
+    var _f = react_1.useState(false), isOpen = _f[0], setIsOpen = _f[1];
+    var toggle = function () { return setIsOpen(!isOpen); };
     react_1.useEffect(function () {
         var fetchData = function () { return __awaiter(void 0, void 0, void 0, function () {
             var client, response, data_1, e_1;
@@ -95,7 +98,7 @@ var SeasonList = function (props) {
                     command.seasonName = seasonName;
                     command.wadId = props.form.wad;
                     command.enginePlayed = props.form.engine;
-                    command.seasonDateStart = signupDate;
+                    command.seasonDateStart = new Date(signupDate);
                     return [4 /*yield*/, client.create(command)];
                 case 1:
                     response = _a.sent();
@@ -118,7 +121,9 @@ var SeasonList = function (props) {
             React.createElement(reactstrap_1.Label, { for: 'signupDates' }, "Signups Begin"),
             React.createElement(react_datetime_picker_1.default, { id: 'signupDates', name: 'signupDates', onChange: setSignupDate, value: signupDate }),
             React.createElement(reactstrap_1.FormText, { color: "muted" }, "Here is a list of current and former seasons for convenience."),
-            React.createElement(reactstrap_1.ListGroup, null, renderSeasonList()),
+            React.createElement(reactstrap_1.Button, { color: "primary", onClick: toggle, style: { marginBottom: '1rem' } }, "Toggle"),
+            React.createElement(reactstrap_1.Collapse, { isOpen: isOpen },
+                React.createElement(reactstrap_1.ListGroup, null, renderSeasonList())),
             React.createElement("br", null),
             React.createElement(reactstrap_1.Button, { color: "primary", size: "lg", block: true, disabled: !seasonName || !props.form.wad || !props.form.engine || !signupDate, onClick: handleSubmit }, "Create New Season")));
     };
@@ -133,7 +138,8 @@ var SeasonList = function (props) {
                         value.seasonName,
                         React.createElement("br", null),
                         "Signups Begin: ",
-                        new Date(value.dateStart).toString()));
+                        new Intl.DateTimeFormat('default', { dateStyle: 'full', timeStyle: 'long' }).format(new Date(value.dateStart)),
+                        console.log(new Date(value.dateStart))));
                 });
             }
             else {

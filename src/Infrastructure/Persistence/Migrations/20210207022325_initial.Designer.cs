@@ -9,7 +9,7 @@ using WorldDoomLeague.Infrastructure.Persistence;
 namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210206104830_initial")]
+    [Migration("20210207022325_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -150,36 +150,36 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8071eb7d-7e4b-427b-bfdb-d32a1fad988d",
-                            ConcurrencyStamp = "df521457-9ad4-4b72-8a99-6eed4d2c8b0a",
+                            Id = "afa1811b-c974-4df4-810b-6d3db7cfd386",
+                            ConcurrencyStamp = "b61e9f45-7e0f-44e3-b549-953ea0c6e99a",
                             Name = "Player",
                             NormalizedName = "PLAYER"
                         },
                         new
                         {
-                            Id = "c0cfda4e-4ed6-4f41-94fe-e861024904bc",
-                            ConcurrencyStamp = "d0a57472-fa3f-471a-bb41-f31582dc3666",
+                            Id = "b5f25bf7-148a-4c06-8a61-2c829dd9ac98",
+                            ConcurrencyStamp = "e7f933d3-9c40-4bcd-be24-92171cc52920",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "aeb81909-daed-41ab-b236-c2186c093fb8",
-                            ConcurrencyStamp = "3b1ecc1a-43c5-46fb-b0c5-4765cf0f596f",
+                            Id = "a560de1f-d71f-44a7-bf7e-d3c5e63e0ab4",
+                            ConcurrencyStamp = "1d0b4dd4-7b47-4888-91e1-05ac410455c9",
                             Name = "DemoAdmin",
                             NormalizedName = "DEMOADMIN"
                         },
                         new
                         {
-                            Id = "a503abbf-d0e2-4f5e-8f65-8920fb22beb9",
-                            ConcurrencyStamp = "e195905e-ffd2-4e17-b52b-18c03fdcb8b7",
+                            Id = "3d412c4c-dcad-4a5f-9aec-87dae83a6bd8",
+                            ConcurrencyStamp = "269f4b0b-4930-4c31-8227-d8ee06d02883",
                             Name = "NewsEditor",
                             NormalizedName = "NEWSEDITOR"
                         },
                         new
                         {
-                            Id = "cbb01cf3-26d3-4bad-8d5b-ef200143dcc6",
-                            ConcurrencyStamp = "6bf20bce-e53c-4372-b30d-48cfd98fb443",
+                            Id = "26db849e-75a9-41c0-a89d-ac45a0d6cebd",
+                            ConcurrencyStamp = "291a719f-f1ce-4d5e-9ad3-26161030653f",
                             Name = "StatsRunner",
                             NormalizedName = "STATSRUNNER"
                         });
@@ -1284,7 +1284,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnName("id_season");
 
                     b.Property<DateTime>("DateStart")
-                        .HasColumnType("datetime")
+                        .HasColumnType("timestamp")
                         .HasColumnName("date_start");
 
                     b.Property<uint>("FkIdEngine")

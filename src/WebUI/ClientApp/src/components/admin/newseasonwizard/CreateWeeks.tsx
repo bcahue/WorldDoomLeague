@@ -6,7 +6,7 @@ import Select from 'react-select';
 import { ITeamsRequest, TeamsRequest, TeamsClient, CreateTeamsCommand } from '../../../WorldDoomLeague';
 import { setErrorMessage } from '../../../state';
 
-const AddTeams = props => {
+const CreateWeeks = props => {
     const [teamList, setTeamList] = useState<ITeamsRequest[]>([{
         teamName: null,
         teamAbbreviation: null,
@@ -199,4 +199,4 @@ const AddTeams = props => {
     );
 };
 
-export default AddTeams
+export default CreateWeeks

@@ -29,8 +29,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="NSwag.AspNetCore" Version="13.10.1" />
-    <PackageReference Include="NSwag.MSBuild" Version="13.10.1">
+    <PackageReference Include="NSwag.AspNetCore" Version="13.10.2" />
+    <PackageReference Include="NSwag.MSBuild" Version="13.10.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -86,9 +86,11 @@
       <None Remove="ClientApp\src\components\admin\AdminRoutes.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\AddPlayers.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\AddTeams.tsx" />
+      <None Remove="ClientApp\src\components\admin\newseasonwizard\CreateWeeks.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\EngineList.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\NewSeasonWizard.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\PlayerList.tsx" />
+      <None Remove="ClientApp\src\components\admin\newseasonwizard\RegisterDraft.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\SeasonBasics.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\SeasonList.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\StepButtons.tsx" />
@@ -113,25 +115,22 @@
   </ItemGroup>
 
     <ItemGroup>
-      <None Update="ClientApp\src\components\admin\newseasonwizard\SeasonList - Copy.js">
-        <DependentUpon>SeasonList.js</DependentUpon>
-      </None>
-      <None Update="ClientApp\src\components\admin\newseasonwizard\SeasonList - Copy.js.map">
-        <DependentUpon>SeasonList.js.map</DependentUpon>
-      </None>
-    </ItemGroup>
-
-    <ItemGroup>
       <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\AddPlayers.tsx">
         <SubType>Code</SubType>
       </TypeScriptCompile>
       <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\AddTeams.tsx">
         <SubType>Code</SubType>
       </TypeScriptCompile>
+      <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\CreateWeeks.tsx">
+        <SubType>Code</SubType>
+      </TypeScriptCompile>
       <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\EngineList.tsx">
         <SubType>Code</SubType>
       </TypeScriptCompile>
       <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\PlayerList.tsx">
+        <SubType>Code</SubType>
+      </TypeScriptCompile>
+      <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\RegisterDraft.tsx">
         <SubType>Code</SubType>
       </TypeScriptCompile>
       <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\WadList.tsx">
@@ -141,6 +140,27 @@
 
     <ItemGroup>
       <Folder Include="wwwroot\images\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="ClientApp\src\components\admin\newseasonwizard\AddTeams - Copy %282%29.js">
+        <DependentUpon>AddTeams.js</DependentUpon>
+      </None>
+      <None Update="ClientApp\src\components\admin\newseasonwizard\AddTeams - Copy %282%29.js.map">
+        <DependentUpon>AddTeams.js.map</DependentUpon>
+      </None>
+      <None Update="ClientApp\src\components\admin\newseasonwizard\AddTeams - Copy - Copy.js">
+        <DependentUpon>AddTeams - Copy.js</DependentUpon>
+      </None>
+      <None Update="ClientApp\src\components\admin\newseasonwizard\AddTeams - Copy - Copy.js.map">
+        <DependentUpon>AddTeams - Copy.js.map</DependentUpon>
+      </None>
+      <None Update="ClientApp\src\components\admin\newseasonwizard\AddTeams - Copy.js">
+        <DependentUpon>AddTeams.js</DependentUpon>
+      </None>
+      <None Update="ClientApp\src\components\admin\newseasonwizard\AddTeams - Copy.js.map">
+        <DependentUpon>AddTeams.js.map</DependentUpon>
+      </None>
     </ItemGroup>
 
   <Target Name="NSwag" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">

@@ -17,8 +17,9 @@ var react_step_wizard_1 = require("react-step-wizard");
 var SeasonBasics_1 = require("./SeasonBasics");
 var AddPlayers_1 = require("./AddPlayers");
 var AddTeams_1 = require("./AddTeams");
+var CreateWeeks_1 = require("./CreateWeeks");
+var RegisterDraft_1 = require("./RegisterDraft");
 var reactstrap_1 = require("reactstrap");
-var reactstrap_2 = require("reactstrap");
 /* eslint react/prop-types: 0 */
 /**
  * A basic demonstration of how to use the step wizard
@@ -38,65 +39,17 @@ var NewSeasonWizard = function () {
         // console.log(stats);
     };
     var setInstance = function () { return updateState(__assign({}, state)); };
-    return (React.createElement(reactstrap_2.Container, null,
+    return (React.createElement(reactstrap_1.Container, null,
         React.createElement("h3", null, "New Season Wizard"),
-        React.createElement(reactstrap_2.Jumbotron, null,
+        React.createElement(reactstrap_1.Jumbotron, null,
             React.createElement(react_step_wizard_1.default, { onStepChange: onStepChange, isHashEnabled: false, 
                 //transitions={state.transitions}
                 instance: setInstance },
                 React.createElement(SeasonBasics_1.default, { form: state.form, update: updateForm }),
                 React.createElement(AddPlayers_1.default, { form: state.form, update: updateForm }),
-                React.createElement(AddTeams_1.default, { form: state.form, update: updateForm })))));
+                React.createElement(AddTeams_1.default, { form: state.form, update: updateForm }),
+                React.createElement(RegisterDraft_1.default, { form: state.form, update: updateForm }),
+                React.createElement(CreateWeeks_1.default, { form: state.form, update: updateForm })))));
 };
 exports.default = NewSeasonWizard;
-/**
- * Stats Component - to illustrate the possible functions
- * Could be used for nav buttons or overview
- */
-var Stats = function (_a) {
-    var currentStep = _a.currentStep, firstStep = _a.firstStep, goToStep = _a.goToStep, lastStep = _a.lastStep, nextStep = _a.nextStep, previousStep = _a.previousStep, totalSteps = _a.totalSteps, step = _a.step;
-    return (React.createElement("div", null,
-        React.createElement("hr", null),
-        step > 1 &&
-            React.createElement("button", { className: 'btn btn-default btn-block', onClick: previousStep }, "Go Back"),
-        step < totalSteps ?
-            React.createElement("button", { className: 'btn btn-primary btn-block', onClick: nextStep }, "Continue")
-            :
-                React.createElement("button", { className: 'btn btn-success btn-block', onClick: nextStep }, "Finish")));
-};
-/** Steps */
-var Progress = function (props) {
-    var _a = react_1.useState({
-        timeout: null,
-    }), state = _a[0], updateState = _a[1];
-    react_1.useEffect(function () {
-        var timeout = state.timeout;
-        if (props.isActive && !timeout) {
-            updateState({
-                timeout: setTimeout(function () {
-                    props.nextStep();
-                }, 3000),
-            });
-        }
-        else if (!props.isActive && timeout) {
-            clearTimeout(timeout);
-            updateState({
-                timeout: null
-            });
-        }
-    });
-    return (React.createElement("div", null,
-        React.createElement("p", { className: 'text-center' }, "Automated Progress..."),
-        React.createElement(reactstrap_1.Progress, { value: "25" }, "25%")));
-};
-var Last = function (props) {
-    var submit = function () {
-        alert('You did it! Yay!'); // eslint-disable-line
-    };
-    return (React.createElement("div", null,
-        React.createElement("div", { className: 'text-center' },
-            React.createElement("h3", null, "This is the last step in this example!"),
-            React.createElement("hr", null)),
-        React.createElement(Stats, __assign({ step: 4 }, props, { nextStep: submit }))));
-};
 //# sourceMappingURL=NewSeasonWizard.js.map

@@ -4,12 +4,12 @@ using WorldDoomLeague.Domain.Entities;
 
 namespace WorldDoomLeague.Application.Seasons.Queries.GetSeasonSummaryById
 {
-    public class SeasonFileDto : IMapFrom<GameFiles>
+    public class SeasonWadFileDto : IMapFrom<WadFiles>
     {
         public string FileName { get; set; }
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<GameFiles, SeasonFileDto>();
+            profile.CreateMap<WadFiles, SeasonWadFileDto>();
         }
     }
 }

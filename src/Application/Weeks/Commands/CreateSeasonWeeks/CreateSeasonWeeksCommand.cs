@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 
-namespace WorldDoomLeague.Application.SeasonWeeks.Commands.CreateSeasonWeeks
+namespace WorldDoomLeague.Application.Weeks.Commands.CreateSeasonWeeks
 {
     public partial class CreateSeasonWeeksCommand : IRequest<uint>
     {
@@ -32,19 +32,19 @@ namespace WorldDoomLeague.Application.SeasonWeeks.Commands.CreateSeasonWeeks
 
             for (var i = 0; i < request.NumWeeksRegularSeason; i++)
             {
-                _context.Weeks.Add(new Weeks { FkIdSeason = request.SeasonId, WeekNumber = weekNumber, WeekType = "n", WeekStartDate = weeksRollingStart });
+                _context.Weeks.Add(new Domain.Entities.Weeks { FkIdSeason = request.SeasonId, WeekNumber = weekNumber, WeekType = "n", WeekStartDate = weeksRollingStart });
                 weeksRollingStart = weeksRollingStart.AddDays(7);
                 weekNumber++;
             }
 
             for (var i = 0; i < request.NumWeeksPlayoffs; i++)
             {
-                _context.Weeks.Add(new Weeks { FkIdSeason = request.SeasonId, WeekNumber = weekNumber, WeekType = "p", WeekStartDate = weeksRollingStart });
+                _context.Weeks.Add(new Domain.Entities.Weeks { FkIdSeason = request.SeasonId, WeekNumber = weekNumber, WeekType = "p", WeekStartDate = weeksRollingStart });
                 weeksRollingStart = weeksRollingStart.AddDays(7);
                 weekNumber++;
             }
 
-            _context.Weeks.Add(new Weeks { FkIdSeason = request.SeasonId, WeekNumber = weekNumber, WeekType = "f", WeekStartDate = weeksRollingStart });
+            _context.Weeks.Add(new Domain.Entities.Weeks { FkIdSeason = request.SeasonId, WeekNumber = weekNumber, WeekType = "f", WeekStartDate = weeksRollingStart });
 
             await _context.SaveChangesAsync(cancellationToken);
 

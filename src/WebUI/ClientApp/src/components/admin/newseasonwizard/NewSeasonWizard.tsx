@@ -6,6 +6,7 @@ import AddPlayers from './AddPlayers';
 import AddTeams from './AddTeams';
 import CreateWeeks from './CreateWeeks';
 import RegisterDraft from './RegisterDraft';
+import CreateGames from './CreateGames';
 import { Progress as ProgressBar } from 'reactstrap';
 import { Jumbotron, Container, Row, Col } from 'reactstrap';
 
@@ -52,6 +53,8 @@ const NewSeasonWizard = () => {
                     <SeasonBasics form={state.form} update={updateForm} />
                     <AddPlayers form={state.form} update={updateForm} />
                     <AddTeams form={state.form} update={updateForm} />
+                    <RegisterDraft form={state.form} update={updateForm} />
+                    <CreateWeeks form={state.form} update={updateForm} />
                 </StepWizard>
             </Jumbotron>
         </Container>
@@ -59,78 +62,3 @@ const NewSeasonWizard = () => {
 };
 
 export default NewSeasonWizard;
-
-/**
- * Stats Component - to illustrate the possible functions
- * Could be used for nav buttons or overview
- */
-const Stats = ({
-    currentStep,
-    firstStep,
-    goToStep,
-    lastStep,
-    nextStep,
-    previousStep,
-    totalSteps,
-    step,
-}) => (
-    <div>
-        <hr />
-        { step > 1 &&
-            <button className='btn btn-default btn-block' onClick={previousStep}>Go Back</button>
-        }
-        { step < totalSteps ?
-            <button className='btn btn-primary btn-block' onClick={nextStep}>Continue</button>
-            :
-            <button className='btn btn-success btn-block' onClick={nextStep}>Finish</button>
-        }
-    </div>
-);
-
-/** Steps */
-
-const Progress = (props) => {
-    const [state, updateState] = useState({
-        timeout: null,
-    });
-
-    useEffect(() => {
-        const { timeout } = state;
-
-        if (props.isActive && !timeout) {
-            updateState({
-                timeout: setTimeout(() => {
-                    props.nextStep();
-                }, 3000),
-            });
-        } else if (!props.isActive && timeout) {
-            clearTimeout(timeout);
-            updateState({
-                timeout: null
-            });
-        }
-    });
-
-    return (
-        <div>
-            <p className='text-center'>Automated Progress...</p>
-            <ProgressBar value={"25"}>25%</ProgressBar>
-        </div>
-    );
-};
-
-const Last = (props) => {
-    const submit = () => {
-        alert('You did it! Yay!') // eslint-disable-line
-    };
-
-    return (
-        <div>
-            <div className={'text-center'}>
-                <h3>This is the last step in this example!</h3>
-                <hr />
-            </div>
-            <Stats step={4} {...props} nextStep={submit} />
-        </div>
-    );
-};

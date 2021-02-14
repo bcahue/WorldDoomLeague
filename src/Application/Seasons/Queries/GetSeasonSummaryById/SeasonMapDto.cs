@@ -12,11 +12,9 @@ namespace WorldDoomLeague.Application.Seasons.Queries.GetSeasonSummaryById
         public string MapPack { get; set; }
         public string MapName { get; set; }
         public uint MapNumber { get; set; }
-        public SeasonFileDto File { get; set; }
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Domain.Entities.Maps, SeasonMapDto>()
-                .ForMember(d => d.File, opt => opt.MapFrom(s => s.FkIdFileNavigation));
+            profile.CreateMap<Domain.Entities.Maps, SeasonMapDto>();
         }
     }
 }

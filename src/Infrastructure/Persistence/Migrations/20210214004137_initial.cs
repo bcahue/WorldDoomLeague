@@ -83,7 +83,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "files",
+                name: "image_files",
                 columns: table => new
                 {
                     id_file = table.Column<uint>(type: "int(10) unsigned", nullable: false)
@@ -91,11 +91,30 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     file_size = table.Column<uint>(type: "int(10) unsigned", nullable: false),
                     file_name = table.Column<string>(type: "varchar(64)", nullable: false, collation: "utf8mb4_unicode_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    caption = table.Column<string>(type: "varchar(64)", nullable: true, collation: "utf8mb4_unicode_ci")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     upload_date = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => x.id_file);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "maps",
+                columns: table => new
+                {
+                    id_map = table.Column<uint>(type: "int(10) unsigned", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    map_pack = table.Column<string>(type: "varchar(64)", nullable: false, collation: "utf8mb4_unicode_ci")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    map_name = table.Column<string>(type: "varchar(64)", nullable: false, collation: "utf8mb4_unicode_ci")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    map_number = table.Column<uint>(type: "int(10) unsigned", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PRIMARY", x => x.id_map);
                 });
 
             migrationBuilder.CreateTable(
@@ -277,33 +296,28 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "maps",
+                name: "mapimages",
                 columns: table => new
                 {
-                    id_map = table.Column<uint>(type: "int(10) unsigned", nullable: false)
+                    id_mapimage = table.Column<uint>(type: "int(10) unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    fk_id_file = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    map_pack = table.Column<string>(type: "varchar(64)", nullable: false, collation: "utf8mb4_unicode_ci")
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    map_name = table.Column<string>(type: "varchar(64)", nullable: false, collation: "utf8mb4_unicode_ci")
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    map_number = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    WadFilesIdFile = table.Column<uint>(type: "int(10) unsigned", nullable: true)
+                    fk_id_image_file = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_map = table.Column<uint>(type: "int(10) unsigned", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => x.id_map);
+                    table.PrimaryKey("PRIMARY", x => x.id_mapimage);
                     table.ForeignKey(
-                        name: "fk_Maps_Files",
-                        column: x => x.fk_id_file,
-                        principalTable: "files",
+                        name: "fk_MapImages_Files",
+                        column: x => x.fk_id_image_file,
+                        principalTable: "image_files",
                         principalColumn: "id_file",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_maps_wad_files_WadFilesIdFile",
-                        column: x => x.WadFilesIdFile,
-                        principalTable: "wad_files",
-                        principalColumn: "id_file",
+                        name: "fk_MapImages_Maps",
+                        column: x => x.fk_id_map,
+                        principalTable: "maps",
+                        principalColumn: "id_map",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -317,7 +331,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     season_name = table.Column<string>(type: "varchar(64)", nullable: false, collation: "utf8mb4_unicode_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     fk_id_engine = table.Column<uint>(type: "int(10) unsigned", nullable: false),
-                    date_start = table.Column<DateTime>(type: "timestamp", nullable: false),
+                    date_start = table.Column<DateTime>(type: "datetime", nullable: false),
                     fk_id_team_winner = table.Column<int>(type: "int(11)", nullable: true)
                 },
                 constraints: table =>
@@ -552,6 +566,32 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "Fk_Transaction_Week",
+                        column: x => x.fk_id_week,
+                        principalTable: "weeks",
+                        principalColumn: "id_week",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "weekmaps",
+                columns: table => new
+                {
+                    id_weekmap = table.Column<uint>(type: "int(10) unsigned", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    fk_id_week = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_map = table.Column<uint>(type: "int(10) unsigned", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PRIMARY", x => x.id_weekmap);
+                    table.ForeignKey(
+                        name: "fk_WeekMaps_Maps",
+                        column: x => x.fk_id_map,
+                        principalTable: "maps",
+                        principalColumn: "id_map",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "fk_WeekMaps_Week",
                         column: x => x.fk_id_week,
                         principalTable: "weeks",
                         principalColumn: "id_week",
@@ -906,8 +946,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     weapon_type = table.Column<byte>(type: "tinyint(3) unsigned", nullable: false),
                     hit_miss_ratio = table.Column<double>(type: "double unsigned", nullable: false),
                     sprite_percent = table.Column<double>(type: "double unsigned", nullable: false),
-                    pinpoint_percent = table.Column<double>(type: "double unsigned", nullable: false),
-                    PlayerId = table.Column<uint>(type: "int(10) unsigned", nullable: true)
+                    pinpoint_percent = table.Column<double>(type: "double unsigned", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -924,12 +963,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         principalTable: "rounds",
                         principalColumn: "id_round",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_statsaccuracydata_players_PlayerId",
-                        column: x => x.PlayerId,
-                        principalTable: "players",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -943,8 +976,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     weapon_type = table.Column<byte>(type: "tinyint(3) unsigned", nullable: false),
                     hit_miss_ratio = table.Column<double>(type: "double unsigned", nullable: false),
                     sprite_percent = table.Column<double>(type: "double unsigned", nullable: false),
-                    pinpoint_percent = table.Column<double>(type: "double unsigned", nullable: false),
-                    PlayerId = table.Column<uint>(type: "int(10) unsigned", nullable: true)
+                    pinpoint_percent = table.Column<double>(type: "double unsigned", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -960,12 +992,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         column: x => x.fk_id_round,
                         principalTable: "rounds",
                         principalColumn: "id_round",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_statsaccuracywithflagdata_players_PlayerId",
-                        column: x => x.PlayerId,
-                        principalTable: "players",
-                        principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -1344,11 +1370,11 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "afa1811b-c974-4df4-810b-6d3db7cfd386", "b61e9f45-7e0f-44e3-b549-953ea0c6e99a", "Player", "PLAYER" },
-                    { "b5f25bf7-148a-4c06-8a61-2c829dd9ac98", "e7f933d3-9c40-4bcd-be24-92171cc52920", "Administrator", "ADMINISTRATOR" },
-                    { "a560de1f-d71f-44a7-bf7e-d3c5e63e0ab4", "1d0b4dd4-7b47-4888-91e1-05ac410455c9", "DemoAdmin", "DEMOADMIN" },
-                    { "3d412c4c-dcad-4a5f-9aec-87dae83a6bd8", "269f4b0b-4930-4c31-8227-d8ee06d02883", "NewsEditor", "NEWSEDITOR" },
-                    { "26db849e-75a9-41c0-a89d-ac45a0d6cebd", "291a719f-f1ce-4d5e-9ad3-26161030653f", "StatsRunner", "STATSRUNNER" }
+                    { "e0480187-aab0-427c-aef6-1096a0a73a2c", "10e78324-e203-436a-a106-101316c9e637", "Player", "PLAYER" },
+                    { "356dec2b-0a53-4bd4-a600-b02915aab74f", "a9ef6a45-7f00-45da-ba38-fd04084be34f", "Administrator", "ADMINISTRATOR" },
+                    { "0142a9b3-c205-4e02-9129-3e0584a14838", "a3ad542f-eb8f-4cfb-a715-3b040f545eb3", "DemoAdmin", "DEMOADMIN" },
+                    { "bb5e7953-16b0-4db3-a1a8-95658eb3d7ec", "4f4d0d27-8bbe-4f1a-b661-e119a43f4b91", "NewsEditor", "NEWSEDITOR" },
+                    { "a3ba0f62-651b-44b9-b3c2-c1e241c5720a", "fc7819ef-868d-40a4-ba3a-af37024f37a3", "StatsRunner", "STATSRUNNER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -1419,12 +1445,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 name: "id_engine_UNIQUE",
                 table: "engine",
                 column: "IdEngine",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "id_file_UNIQUE",
-                table: "files",
-                column: "id_file",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -1532,20 +1552,32 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 column: "fk_id_opponentteam");
 
             migrationBuilder.CreateIndex(
-                name: "fk_Maps_Files_idx",
-                table: "maps",
-                column: "fk_id_file");
+                name: "id_file_UNIQUE",
+                table: "image_files",
+                column: "id_file",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "fk_MapImages_ImageFile_idx",
+                table: "mapimages",
+                column: "fk_id_image_file");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_MapImages_Map_idx",
+                table: "mapimages",
+                column: "fk_id_map");
+
+            migrationBuilder.CreateIndex(
+                name: "id_map_image_UNIQUE",
+                table: "mapimages",
+                column: "id_mapimage",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "id_map_UNIQUE",
                 table: "maps",
                 column: "id_map",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_maps_WadFilesIdFile",
-                table: "maps",
-                column: "WadFilesIdFile");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PersistedGrants_Expiration",
@@ -1840,11 +1872,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_statsaccuracydata_PlayerId",
-                table: "statsaccuracydata",
-                column: "PlayerId");
-
-            migrationBuilder.CreateIndex(
                 name: "fk_stataccuracy_player_attacker_idx",
                 table: "statsaccuracywithflagdata",
                 column: "fk_id_player_attacker");
@@ -1859,11 +1886,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 table: "statsaccuracywithflagdata",
                 column: "id_stats_accuracy_flagout_data",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_statsaccuracywithflagdata_PlayerId",
-                table: "statsaccuracywithflagdata",
-                column: "PlayerId");
 
             migrationBuilder.CreateIndex(
                 name: "fk_statsdamage_player_attacker_idx",
@@ -2044,6 +2066,22 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "fk_WeekMaps_Maps_idx",
+                table: "weekmaps",
+                column: "fk_id_map");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_WeekMaps_Week_idx",
+                table: "weekmaps",
+                column: "fk_id_week");
+
+            migrationBuilder.CreateIndex(
+                name: "id_weekmap_UNIQUE",
+                table: "weekmaps",
+                column: "id_weekmap",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "fk_stats_Weeks_Season_idx",
                 table: "weeks",
                 column: "fk_id_season");
@@ -2088,6 +2126,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 name: "gameteamstats");
 
             migrationBuilder.DropTable(
+                name: "mapimages");
+
+            migrationBuilder.DropTable(
                 name: "PersistedGrants");
 
             migrationBuilder.DropTable(
@@ -2130,10 +2171,16 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 name: "statspickupdata");
 
             migrationBuilder.DropTable(
+                name: "weekmaps");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "image_files");
 
             migrationBuilder.DropTable(
                 name: "statsrounds");
@@ -2152,9 +2199,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "weeks");
-
-            migrationBuilder.DropTable(
-                name: "files");
 
             migrationBuilder.DropTable(
                 name: "players");

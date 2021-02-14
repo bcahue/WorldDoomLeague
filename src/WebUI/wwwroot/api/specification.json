@@ -189,6 +189,49 @@
         ]
       }
     },
+    "/api/Files/mapimage": {
+      "post": {
+        "tags": [
+          "Files"
+        ],
+        "operationId": "Files_CreateMapImage",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "File": {
+                    "type": "string",
+                    "format": "binary",
+                    "nullable": true
+                  },
+                  "Caption": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "MapId": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Files/wads": {
       "get": {
         "tags": [
@@ -420,7 +463,7 @@
         }
       }
     },
-    "/api/Matches/create": {
+    "/api/Matches": {
       "post": {
         "tags": [
           "Matches"
@@ -432,6 +475,38 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CreateMatchCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Matches/CreateRegularSeason": {
+      "post": {
+        "tags": [
+          "Matches"
+        ],
+        "operationId": "Matches_CreateRegularSeason",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMatchesCommand"
               }
             }
           },
@@ -971,6 +1046,37 @@
               "application/json": {
                 "schema": {
                   "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Weeks/{seasonId}/RegularSeason": {
+      "get": {
+        "tags": [
+          "Weeks"
+        ],
+        "operationId": "Weeks_GetRegularSeasonWeeks",
+        "parameters": [
+          {
+            "name": "seasonId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegularSeasonWeeksVm"
                 }
               }
             }
@@ -2395,9 +2501,6 @@
             "type": "string",
             "nullable": true
           },
-          "fileId": {
-            "type": "integer"
-          },
           "mapNumber": {
             "type": "integer"
           }
@@ -2995,6 +3098,58 @@
           "week": {
             "type": "integer"
           },
+          "redTeam": {
+            "type": "integer"
+          },
+          "blueTeam": {
+            "type": "integer"
+          },
+          "gameDateTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "CreateMatchesCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "seasonId": {
+            "type": "integer"
+          },
+          "weeklyGames": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/WeeklyRequest"
+            }
+          }
+        }
+      },
+      "WeeklyRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "weekId": {
+            "type": "integer"
+          },
+          "mapId": {
+            "type": "integer"
+          },
+          "gameList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/NewGame"
+            }
+          }
+        }
+      },
+      "NewGame": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
           "redTeam": {
             "type": "integer"
           },
@@ -3680,24 +3835,6 @@
           },
           "mapNumber": {
             "type": "integer"
-          },
-          "file": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/SeasonFileDto"
-              }
-            ]
-          }
-        }
-      },
-      "SeasonFileDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "fileName": {
-            "type": "string",
-            "nullable": true
           }
         }
       },
@@ -4298,6 +4435,128 @@
           },
           "teamCaptain": {
             "type": "integer"
+          }
+        }
+      },
+      "RegularSeasonWeeksVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "weekList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/RegularSeasonWeeksDto"
+            }
+          }
+        }
+      },
+      "RegularSeasonWeeksDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "weekNumber": {
+            "type": "integer"
+          },
+          "weekStartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "weekMaps": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/WeekMapsDto"
+            }
+          }
+        }
+      },
+      "WeekMapsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maps": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MapDto"
+              }
+            ]
+          }
+        }
+      },
+      "MapDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "mapPack": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapName": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapNumber": {
+            "type": "integer"
+          },
+          "mapImages": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/MapImagesDto"
+            }
+          }
+        }
+      },
+      "MapImagesDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "image": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ImageFileDto"
+              }
+            ]
+          }
+        }
+      },
+      "ImageFileDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fileSize": {
+            "type": "integer"
+          },
+          "fileName": {
+            "type": "string",
+            "nullable": true
+          },
+          "caption": {
+            "type": "string",
+            "nullable": true
+          },
+          "uploadDate": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       }

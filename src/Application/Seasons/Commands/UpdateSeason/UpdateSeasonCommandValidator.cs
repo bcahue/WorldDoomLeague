@@ -37,7 +37,7 @@ namespace WorldDoomLeague.Application.Seasons.Commands.UpdateSeason
 
         public async Task<bool> WadFileExists(UpdateSeasonCommand model, uint id, CancellationToken cancellationToken)
         {
-            return await _context.Files
+            return await _context.WadFiles
                 .Where(w => w.IdFile == model.WadId)
                 !.AnyAsync();
         }

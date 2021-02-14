@@ -9,7 +9,6 @@ namespace WorldDoomLeague.Application.Maps.Commands.CreateMap
     {
         public string MapName { get; set; }
         public string MapPack { get; set; }
-        public uint FileId { get; set; }
         public uint MapNumber { get; set; }
     }
 
@@ -26,7 +25,6 @@ namespace WorldDoomLeague.Application.Maps.Commands.CreateMap
         {
             var entity = new Domain.Entities.Maps
             {
-                FkIdFile = request.FileId,
                 MapName = request.MapName,
                 MapNumber = request.MapNumber,
                 MapPack = request.MapPack

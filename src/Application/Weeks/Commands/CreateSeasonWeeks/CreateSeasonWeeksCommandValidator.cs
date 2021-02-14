@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 
-namespace WorldDoomLeague.Application.SeasonWeeks.Commands.CreateSeasonWeeks
+namespace WorldDoomLeague.Application.Weeks.Commands.CreateSeasonWeeks
 {
     public class CreateSeasonWeeksCommandValidator : AbstractValidator<CreateSeasonWeeksCommand>
     {
@@ -40,8 +40,7 @@ namespace WorldDoomLeague.Application.SeasonWeeks.Commands.CreateSeasonWeeks
         public async Task<bool> BeSeasonWithoutWeeks(uint seasonId, CancellationToken cancellationToken)
         {
             return await _context.Weeks
-                .Where(w => w.FkIdSeason == seasonId)
-                !.AnyAsync();
+                .AllAsync(p => p.FkIdSeason != seasonId);
         }
     }
 }

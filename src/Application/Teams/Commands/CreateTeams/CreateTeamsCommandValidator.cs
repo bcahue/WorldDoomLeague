@@ -22,7 +22,7 @@ namespace WorldDoomLeague.Application.Teams.Commands.CreateTeams
                 .MustAsync(BeValidSeason).WithMessage("The specified season already has teams.");
 
             RuleFor(v => v.TeamsRequestList)
-                .NotEmpty().WithMessage("Season is required.")
+                .NotEmpty().WithMessage("TeamsRequestList is required.")
                 .Must(BeUniqueTeamAbv).WithMessage("One of the specified abbreviations is a duplicate with another in this request.")
                 .Must(BeUniqueTeamName).WithMessage("One of the specified team names is a duplicate with another in this request.")
                 .Must(BeUniqueCaptain).WithMessage("One of the specified captains is a duplicate with another in this request.");

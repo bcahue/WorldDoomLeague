@@ -17,7 +17,7 @@ namespace WorldDoomLeague.Infrastructure.Files
             {
                 using var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture);
 
-                csvWriter.Configuration.RegisterClassMap<RoundRecordMap>();
+                csvWriter.Context.RegisterClassMap<RoundRecordMap>();
                 csvWriter.WriteRecords(records);
             }
 

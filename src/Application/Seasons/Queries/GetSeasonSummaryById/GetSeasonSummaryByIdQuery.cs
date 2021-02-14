@@ -55,7 +55,6 @@ namespace WorldDoomLeague.Application.Seasons.Queries.GetSeasonSummaryById
                         .ThenInclude(ti => ti.Games)
                             .ThenInclude(ti => ti.Rounds)
                                 .ThenInclude(ti => ti.FkIdMapNavigation)
-                                    .ThenInclude(ti => ti.FkIdFileNavigation)
                     .Where(w => w.IdSeason == request.Id)
                     .ProjectTo<SeasonSummaryDto>(_mapper.ConfigurationProvider)
                     .FirstOrDefaultAsync(cancellationToken)

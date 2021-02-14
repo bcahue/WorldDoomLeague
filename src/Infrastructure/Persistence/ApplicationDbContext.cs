@@ -35,7 +35,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence
         public virtual DbSet<RoundPlayers> RoundPlayers { get; set; }
         public virtual DbSet<Rounds> Rounds { get; set; }
         public virtual DbSet<Season> Season { get; set; }
-        public virtual DbSet<GameFiles> Files { get; set; }
         public virtual DbSet<GamePlayers> GamePlayers { get; set; }
         public virtual DbSet<GameTeamStats> GameTeamStats { get; set; }
         public virtual DbSet<RoundFlagTouchCaptures> RoundFlagTouchCaptures { get; set; }
@@ -54,8 +53,11 @@ namespace WorldDoomLeague.Infrastructure.Persistence
         public virtual DbSet<PlayerTransactions> PlayerTransactions { get; set; }
         public virtual DbSet<PlayerDraft> PlayerDraft { get; set; }
         public virtual DbSet<GameMaps> GameMaps { get; set; }
+        public virtual DbSet<WeekMaps> WeekMaps { get; set; }
         public virtual DbSet<Engine> Engines { get; set; }
         public virtual DbSet<WadFiles> WadFiles { get; set; }
+        public virtual DbSet<ImageFiles> ImageFiles { get; set; }
+        public virtual DbSet<MapImages> MapImages { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

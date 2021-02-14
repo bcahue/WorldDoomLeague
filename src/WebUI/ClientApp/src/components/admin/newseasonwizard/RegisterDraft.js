@@ -56,55 +56,103 @@ var WorldDoomLeague_1 = require("../../../WorldDoomLeague");
 var state_1 = require("../../../state");
 var RegisterDraft = function (props) {
     var _a = react_1.useState([{
-            teamName: null,
-            teamAbbreviation: null,
-            teamCaptain: null
-        }]), teamList = _a[0], setTeamList = _a[1];
-    var _b = react_1.useState(6), amountTeams = _b[0], setAmountTeams = _b[1];
-    var _c = react_1.useState(0), createdTeams = _c[0], setCreatedTeams = _c[1];
-    var _d = react_1.useState(false), toggle = _d[0], setToggle = _d[1];
-    var _e = react_1.useState(false), canSubmitTeams = _e[0], setCanSubmitTeams = _e[1];
-    react_1.useEffect(function () {
+            nominatedPlayer: null,
+            nominatingPlayer: null,
+            playerSoldTo: null,
+            sellPrice: 0
+        }]), draftList = _a[0], setDraftList = _a[1];
+    var _b = react_1.useState(3), playersPerTeam = _b[0], setPlayersPerTeam = _b[1];
+    var _c = react_1.useState(false), canSubmitDraft = _c[0], setCanSubmitDraft = _c[1];
+    var _d = react_1.useState(false), completedDraft = _d[0], setCompletedDraft = _d[1];
+    var _e = react_1.useState(true), canCreateDraft = _e[0], setCanCreateDraft = _e[1];
+    var createDraftPicks = function () {
+        setCanCreateDraft(false);
         var pad_array = function (arr, len, fill) {
             return arr.concat(Array(len).fill(fill)).slice(0, len);
         };
-        var newTeamList = pad_array(teamList, amountTeams, {
-            teamName: null,
-            teamAbbreviation: null,
-            teamCaptain: null
-        });
-        setTeamList(newTeamList);
-    }, [amountTeams]);
-    var enableTeamList = function () {
-        setToggle(true);
+        if (props.form.captains) {
+            var maxPlayersDrafted = props.form.captains.length * playersPerTeam;
+            var newDraftList = pad_array(draftList, maxPlayersDrafted, {
+                nominatedPlayer: null,
+                nominatingPlayer: null,
+                playerSoldTo: null,
+                sellPrice: 0
+            });
+            var playersPerTeamMinusCaptain_1 = playersPerTeam;
+            var newCaptainArray = props.form.captains.map(function (s, _idx) {
+                return __assign(__assign({}, s), { playersLeft: playersPerTeamMinusCaptain_1 });
+            });
+            props.update("captains", newCaptainArray);
+            setDraftList(newDraftList);
+        }
     };
-    var handleTeamNameChange = function (idx, value) {
-        var newTeamName = teamList.map(function (team, sidx) {
+    var handleNominatingSelected = function (idx, value) {
+        var newNominatingPlayer = draftList.map(function (draft, sidx) {
             if (idx !== sidx)
-                return team;
-            return __assign(__assign({}, team), { teamName: value });
+                return draft;
+            return __assign(__assign({}, draft), { nominatingPlayer: value.value });
         });
-        setTeamList(newTeamName);
-        checkIfFormComplete(newTeamName);
+        setDraftList(newNominatingPlayer);
+        checkIfFormComplete(newNominatingPlayer);
     };
-    var handleTeamAbvChange = function (idx, value) {
-        var newTeamName = teamList.map(function (team, sidx) {
+    // Handle the sell price
+    var handleSoldForInput = function (idx, value) {
+        var newSellPrice = draftList.map(function (draft, sidx) {
             if (idx !== sidx)
-                return team;
-            return __assign(__assign({}, team), { teamAbbreviation: value });
+                return draft;
+            return __assign(__assign({}, draft), { sellPrice: value });
         });
-        setTeamList(newTeamName);
-        checkIfFormComplete(newTeamName);
+        setDraftList(newSellPrice);
+        checkIfFormComplete(newSellPrice);
     };
-    var handlePlayerSelected = function (idx, value) {
+    var handleSoldToSelected = function (idx, value) {
+        // subtract the playersleft to handle disables
+        var newCaptainsArray = props.form.captains.map(function (s, _idx) {
+            if (s.value !== value.value)
+                return s;
+            var left = s.playersLeft - 1;
+            return __assign(__assign({}, s), { playersLeft: left });
+        });
+        // re-enable a captain if they are deselected.
+        if (draftList[idx].playerSoldTo !== null) {
+            var reenabledOldCaptain = newCaptainsArray.map(function (s, _idx) {
+                if (s.value !== draftList[idx].playerSoldTo)
+                    return s;
+                var left = s.playersLeft + 1;
+                return __assign(__assign({}, s), { playersLeft: left });
+            });
+            var newCaptainList = reenabledOldCaptain.map(function (s, _idx) {
+                if (s.playersLeft > 0)
+                    return __assign(__assign({}, s), { isdisabled: false });
+                return __assign(__assign({}, s), { isdisabled: true });
+            });
+            props.update("captains", newCaptainList);
+        }
+        else {
+            var newCaptainList = newCaptainsArray.map(function (s, _idx) {
+                if (s.playersLeft > 0)
+                    return __assign(__assign({}, s), { isdisabled: false });
+                return __assign(__assign({}, s), { isdisabled: true });
+            });
+            props.update("captains", newCaptainList);
+        }
+        var newCaptainSoldTo = draftList.map(function (draft, sidx) {
+            if (idx !== sidx)
+                return draft;
+            return __assign(__assign({}, draft), { playerSoldTo: value.value });
+        });
+        setDraftList(newCaptainSoldTo);
+        checkIfFormComplete(newCaptainSoldTo);
+    };
+    var handleNominatedSelected = function (idx, value) {
         var newPlayerArray = props.form.players.map(function (s, _idx) {
             if (s.value !== value.value)
                 return s;
             return __assign(__assign({}, s), { isdisabled: true });
         });
-        if (teamList[idx].teamCaptain !== null) {
+        if (draftList[idx].nominatedPlayer !== null) {
             var reenabledOldPlayer = newPlayerArray.map(function (s, _idx) {
-                if (s.value !== teamList[idx].teamCaptain)
+                if (s.value !== draftList[idx].nominatedPlayer)
                     return s;
                 return __assign(__assign({}, s), { isdisabled: false });
             });
@@ -113,42 +161,38 @@ var RegisterDraft = function (props) {
         else {
             props.update("players", newPlayerArray);
         }
-        var newCaptain = teamList.map(function (team, sidx) {
+        var newCaptain = draftList.map(function (draft, sidx) {
             if (idx !== sidx)
-                return team;
-            return __assign(__assign({}, team), { teamCaptain: value.value });
+                return draft;
+            return __assign(__assign({}, draft), { nominatedPlayer: value.value });
         });
-        setTeamList(newCaptain);
+        setDraftList(newCaptain);
         checkIfFormComplete(newCaptain);
     };
-    var createTeams = function (evt) { return __awaiter(void 0, void 0, void 0, function () {
-        var client, command, teams, idx, addTeam, response, captains, players, e_1;
+    var createDraft = function (evt) { return __awaiter(void 0, void 0, void 0, function () {
+        var client, command, draft, idx, addPick, response, e_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    client = new WorldDoomLeague_1.TeamsClient();
-                    command = new WorldDoomLeague_1.CreateTeamsCommand;
-                    teams = [];
-                    for (idx = 0; idx < teamList.length; idx++) {
-                        addTeam = new WorldDoomLeague_1.TeamsRequest();
-                        addTeam.teamName = teamList[idx].teamName;
-                        addTeam.teamAbbreviation = teamList[idx].teamAbbreviation;
-                        addTeam.teamCaptain = teamList[idx].teamCaptain;
-                        teams.push(addTeam);
+                    client = new WorldDoomLeague_1.DraftClient();
+                    command = new WorldDoomLeague_1.CreateDraftCommand;
+                    draft = [];
+                    for (idx = 0; idx < draftList.length; idx++) {
+                        addPick = new WorldDoomLeague_1.DraftRequest();
+                        addPick.nominatedPlayer = draftList[idx].nominatedPlayer;
+                        addPick.nominatingPlayer = draftList[idx].nominatingPlayer;
+                        addPick.playerSoldTo = draftList[idx].playerSoldTo;
+                        addPick.sellPrice = draftList[idx].sellPrice;
+                        draft.push(addPick);
                     }
                     command.season = props.form.season;
-                    command.teamsRequestList = teams;
-                    return [4 /*yield*/, client.createTeams(command)];
+                    command.draftRequestList = draft;
+                    return [4 /*yield*/, client.create(command)];
                 case 1:
                     response = _a.sent();
-                    setCreatedTeams(response);
-                    captains = createCaptainsList();
-                    setCanSubmitTeams(false);
-                    setAmountTeams(response);
-                    props.update("captains", captains);
-                    players = createPlayersList();
-                    props.update("players", players);
+                    setCanSubmitDraft(false);
+                    setCompletedDraft(true);
                     return [3 /*break*/, 3];
                 case 2:
                     e_1 = _a.sent();
@@ -158,68 +202,91 @@ var RegisterDraft = function (props) {
             }
         });
     }); };
-    var createCaptainsList = function () {
-        return teamList.map(function (s, _idx) {
-            var captain = props.form.players.find(function (i) { return i.value === s.teamCaptain; });
-            if (s.teamCaptain !== captain.value)
-                return s;
-            // this should add the captain names to the objects.
-            return __assign(__assign({}, s), { label: captain.label, value: captain.value });
-        });
-    };
-    var createPlayersList = function () {
-        return props.form.players.filter(function (s, _idx) { return s.isdisabled !== true; });
-    };
-    var checkIfFormComplete = function (teams) {
-        if (teams.every(function (element) { return element.teamAbbreviation && element.teamCaptain && element.teamName &&
-            element.teamAbbreviation.length > 0 && element.teamName.length > 0; })) {
-            setCanSubmitTeams(true);
+    var checkIfFormComplete = function (draft) {
+        if (draft.every(function (element) { return element.nominatedPlayer && element.nominatingPlayer && element.playerSoldTo &&
+            element.sellPrice.length > 0; })) {
+            setCanSubmitDraft(true);
         }
         else {
-            setCanSubmitTeams(false);
+            setCanSubmitDraft(false);
         }
     };
     var update = function (e) {
         props.update(e.target.name, e.target.value);
     };
-    // create a list for each engine.
-    var renderPlayerDropdown = function (idx) {
+    // create a list for each captain who bought a player.
+    var renderSoldForInput = function (idx) {
         var select = null;
-        if (props.form.players) {
-            select = (React.createElement(react_select_1.default, { options: props.form.players, onChange: function (e) { return handlePlayerSelected(idx, e); }, isOptionDisabled: function (option) { return option.isdisabled; }, isDisabled: (createdTeams === amountTeams), isSearchable: true }));
+        select = (React.createElement(reactstrap_1.InputGroup, null,
+            React.createElement(reactstrap_1.InputGroupAddon, { addonType: "prepend" },
+                React.createElement(reactstrap_1.InputGroupText, null, "$")),
+            React.createElement(reactstrap_1.Input, { placeholder: "Amount", min: 1, max: 28, type: "number", step: "1", disabled: completedDraft, onChange: function (e) { return handleSoldForInput(idx, e.target.value); } })));
+        return (select);
+    };
+    // create a list for each captain who bought a player.
+    var renderSoldToDropdown = function (idx) {
+        var select = null;
+        if (props.form.captains) {
+            select = (React.createElement(react_select_1.default, { options: props.form.captains, onChange: function (e) { return handleSoldToSelected(idx, e); }, isOptionDisabled: function (option) { return option.isdisabled; }, isDisabled: completedDraft, isSearchable: true }));
         }
         else {
-            select = (React.createElement(react_select_1.default, { options: [{ label: "No players left!", value: "Not" }], isDisabled: (createdTeams === amountTeams) }));
+            select = (React.createElement(react_select_1.default, { options: [{ label: "No captains left!", value: "Not" }], isDisabled: completedDraft }));
+        }
+        return (select);
+    };
+    // create a list for each nominating captain.
+    var renderNominatingCaptainDropdown = function (idx) {
+        var select = null;
+        if (props.form.captains) {
+            select = (React.createElement(react_select_1.default, { options: props.form.captains, onChange: function (e) { return handleNominatingSelected(idx, e); }, isOptionDisabled: function (option) { return option.isdisabled; }, isDisabled: completedDraft, isSearchable: true }));
+        }
+        else {
+            select = (React.createElement(react_select_1.default, { options: [{ label: "No captains left!", value: "Not" }], isDisabled: completedDraft }));
+        }
+        return (select);
+    };
+    // create a list for each nominated player.
+    var renderNominatedPlayerDropdown = function (idx) {
+        var select = null;
+        if (props.form.players) {
+            select = (React.createElement(react_select_1.default, { options: props.form.players, onChange: function (e) { return handleNominatedSelected(idx, e); }, isOptionDisabled: function (option) { return option.isdisabled; }, isDisabled: completedDraft, isSearchable: true }));
+        }
+        else {
+            select = (React.createElement(react_select_1.default, { options: [{ label: "No players left!", value: "Not" }], isDisabled: completedDraft }));
         }
         return (select);
     };
     return (React.createElement(React.Fragment, null,
         React.createElement(reactstrap_1.Row, null,
             React.createElement(reactstrap_1.Col, { sm: "12", md: { size: 6, offset: 3 } },
-                React.createElement("h3", { className: 'text-center' }, "Add Teams"),
-                React.createElement("p", null, "This step will add the teams that will play during the season."),
-                React.createElement(reactstrap_1.Label, { for: "amountTeams" }, "Amount of teams"),
-                React.createElement(reactstrap_1.Input, { placeholder: "Amount", name: "amountTeams", min: 4, max: 512, type: "number", step: "2", value: amountTeams, disabled: toggle, onChange: function (e) { return setAmountTeams(parseInt(e.target.value, 10)); } }),
+                React.createElement("h3", { className: 'text-center' }, "Register Draft"),
+                React.createElement("p", null, "Please input the draft information. When completed, the team rosters will be finalized."),
+                React.createElement(reactstrap_1.Label, { for: "amountTeams" }, "Amount of players per team"),
+                React.createElement(reactstrap_1.Input, { placeholder: "Amount", name: "amountPlayers", min: 4, max: 4, type: "number", step: "1", value: 4, disabled: true }),
                 React.createElement("br", null),
-                React.createElement(reactstrap_1.Button, { color: "primary", size: "lg", block: true, disabled: toggle, onClick: enableTeamList }, "Generate Team Cards"),
+                React.createElement(reactstrap_1.Button, { color: "primary", size: "lg", block: true, disabled: !canCreateDraft, onClick: createDraftPicks }, "Create Draft Picks"),
                 React.createElement("hr", null))),
-        React.createElement(reactstrap_1.Row, null, teamList && toggle && (teamList.map(function (team, index) { return (React.createElement(reactstrap_1.Col, { xs: "6", sm: "4" },
+        React.createElement(reactstrap_1.Row, null, draftList && canCreateDraft == false && (draftList.map(function (draft, index) { return (React.createElement(reactstrap_1.Col, { xs: "6", sm: "4" },
             React.createElement(reactstrap_1.Card, null,
                 React.createElement(reactstrap_1.CardBody, null,
-                    React.createElement(reactstrap_1.CardTitle, { tag: "h5" }, "Team"),
-                    React.createElement(reactstrap_1.Label, { for: "teamName" }, "Team Name"),
-                    React.createElement(reactstrap_1.Input, { type: "text", value: team.teamName, placeholder: "Super Chargers", disabled: (createdTeams === amountTeams), onChange: function (e) { return handleTeamNameChange(index, e.target.value); } }),
-                    React.createElement(reactstrap_1.Label, { for: "teamName" }, "Team Abbreviation"),
-                    React.createElement(reactstrap_1.Input, { type: "text", value: team.teamAbbreviation, placeholder: "SUC", disabled: (createdTeams === amountTeams), onChange: function (e) { return handleTeamAbvChange(index, e.target.value); } }),
-                    React.createElement(reactstrap_1.Label, { for: "teamName" }, "Team Captain"),
-                    renderPlayerDropdown(index))),
+                    React.createElement(reactstrap_1.CardTitle, { tag: "h5" },
+                        "Draft Pick #",
+                        index + 1),
+                    "Captain",
+                    renderNominatingCaptainDropdown(index),
+                    "nominates player",
+                    renderNominatedPlayerDropdown(index),
+                    "who is bought by",
+                    renderSoldToDropdown(index),
+                    "for",
+                    renderSoldForInput(index))),
             React.createElement("br", null))); }))),
         React.createElement(reactstrap_1.Row, null,
             React.createElement(reactstrap_1.Col, { sm: "12", md: { size: 6, offset: 3 } },
-                React.createElement(reactstrap_1.Button, { color: "primary", size: "lg", block: true, disabled: !canSubmitTeams, onClick: createTeams }, "Create Teams"))),
+                React.createElement(reactstrap_1.Button, { color: "primary", size: "lg", block: true, disabled: !canSubmitDraft, onClick: createDraft }, "Finalize Draft"))),
         React.createElement(reactstrap_1.Row, null,
             React.createElement(reactstrap_1.Col, { sm: "12", md: { size: 6, offset: 3 } },
-                React.createElement(StepButtons_1.default, __assign({ step: 3 }, props, { disabled: !(createdTeams === amountTeams) }))))));
+                React.createElement(StepButtons_1.default, __assign({ step: 3 }, props, { disabled: !completedDraft }))))));
 };
 exports.default = RegisterDraft;
 //# sourceMappingURL=RegisterDraft.js.map

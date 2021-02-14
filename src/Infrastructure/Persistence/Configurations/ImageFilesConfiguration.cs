@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
 {
-    public class GameFilesConfiguration : IEntityTypeConfiguration<GameFiles>
+    public class ImageFilesConfiguration : IEntityTypeConfiguration<ImageFiles>
     {
-        public void Configure(EntityTypeBuilder<GameFiles> builder)
+        public void Configure(EntityTypeBuilder<ImageFiles> builder)
         {
             builder.HasKey(e => e.IdFile)
                 .HasName("PRIMARY");
 
-            builder.ToTable("files");
+            builder.ToTable("image_files");
 
             builder.HasIndex(e => e.IdFile)
                 .HasDatabaseName("id_file_UNIQUE")
@@ -24,6 +24,12 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.Property(e => e.FileName)
                 .IsRequired()
                 .HasColumnName("file_name")
+                .HasColumnType("varchar(64)")
+                .HasCharSet("utf8mb4")
+                .HasCollation("utf8mb4_unicode_ci");
+
+            builder.Property(e => e.Caption)
+                .HasColumnName("caption")
                 .HasColumnType("varchar(64)")
                 .HasCharSet("utf8mb4")
                 .HasCollation("utf8mb4_unicode_ci");

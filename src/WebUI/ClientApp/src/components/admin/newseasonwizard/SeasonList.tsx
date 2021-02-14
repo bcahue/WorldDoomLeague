@@ -93,7 +93,6 @@ const SeasonList = (props) => {
                             {value.seasonName}
                             <br />
                             Signups Begin: {new Intl.DateTimeFormat('default', { dateStyle: 'full', timeStyle: 'long' } as Intl.DateTimeFormatOptions).format(new Date(value.dateStart))}
-                            {console.log(new Date(value.dateStart))}
                         </ListGroupItem>);
                 });
             } else {

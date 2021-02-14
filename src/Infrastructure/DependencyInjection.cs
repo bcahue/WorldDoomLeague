@@ -49,6 +49,7 @@ namespace WorldDoomLeague.Infrastructure
             services.AddTransient<IGetMatchJson, GetMatchJson>();
             services.AddTransient<IProfileService, ProfileService>();
             services.AddTransient<IWadFileHandler, WadFileHandler>();
+            services.AddTransient<IImageFileHandler, ImageFileHandler>();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt()

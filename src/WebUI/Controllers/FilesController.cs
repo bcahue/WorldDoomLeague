@@ -1,4 +1,5 @@
 ﻿using WorldDoomLeague.Application.Files.Commands.CreateWadFile;
+using WorldDoomLeague.Application.Files.Commands.CreateMapImageFile;
 using WorldDoomLeague.Application.Files.Queries.GetRoundJsonFiles;
 using WorldDoomLeague.Application.Files.Queries.GetRoundObject;
 using WorldDoomLeague.Application.Files.Queries.GetWadFiles;
@@ -19,6 +20,13 @@ namespace WorldDoomLeague.WebUI.Controllers
         public async Task<ActionResult<uint>> CreateWadFile(IFormFile file)
         {
             return await Mediator.Send(new CreateWadFileCommand(file));
+        }
+
+        [HttpPost("mapimage")]
+        [Consumes("multipart/form-data")]
+        public async Task<ActionResult<uint>> CreateMapImage([FromForm] CreateMapImageFileCommand command)
+        {
+            return await Mediator.Send(command);
         }
 
         [Authorize]

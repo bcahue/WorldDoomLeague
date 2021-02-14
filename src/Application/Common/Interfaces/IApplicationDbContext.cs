@@ -14,7 +14,6 @@ namespace WorldDoomLeague.Application.Common.Interfaces
         DbSet<RoundPlayers> RoundPlayers { get; set; }
         DbSet<Domain.Entities.Rounds> Rounds { get; set; }
         DbSet<Season> Season { get; set; }
-        DbSet<GameFiles> Files { get; set; }
         DbSet<GamePlayers> GamePlayers { get; set; }
         DbSet<GameTeamStats> GameTeamStats { get; set; }
         DbSet<RoundFlagTouchCaptures> RoundFlagTouchCaptures { get; set; }
@@ -27,14 +26,17 @@ namespace WorldDoomLeague.Application.Common.Interfaces
         DbSet<StatsPickupData> StatsPickupData { get; set; }
         DbSet<StatsRounds> StatsRounds { get; set; }
         DbSet<Domain.Entities.Teams> Teams { get; set; }
-        DbSet<Weeks> Weeks { get; set; }
+        DbSet<Domain.Entities.Weeks> Weeks { get; set; }
         DbSet<PlayerGameRecord> PlayerGameRecords { get; set; }
         DbSet<PlayerRoundRecord> PlayerRoundRecords { get; set; }
         DbSet<PlayerTransactions> PlayerTransactions { get; set; }
         DbSet<PlayerDraft> PlayerDraft { get; set; }
         DbSet<GameMaps> GameMaps { get; set; }
+        DbSet<WeekMaps> WeekMaps { get; set; }
         DbSet<Domain.Entities.Engine> Engines { get; set; }
         DbSet<WadFiles> WadFiles { get; set; }
+        DbSet<ImageFiles> ImageFiles { get; set; }
+        DbSet<MapImages> MapImages { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 

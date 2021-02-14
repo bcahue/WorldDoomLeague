@@ -7,7 +7,6 @@ namespace WorldDoomLeague.Domain.Entities
     {
         public WadFiles()
         {
-            Maps = new HashSet<Maps>();
             Seasons = new HashSet<Season>();
         }
 
@@ -16,7 +15,6 @@ namespace WorldDoomLeague.Domain.Entities
         public string FileName { get; set; }
         public DateTime UploadDate { get; set; }
 
-        public virtual ICollection<Maps> Maps { get; set; }
         public virtual ICollection<Season> Seasons { get; set; }
     }
 }

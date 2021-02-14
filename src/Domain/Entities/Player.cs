@@ -10,9 +10,7 @@ namespace WorldDoomLeague.Domain.Entities
             GamePlayers = new HashSet<GamePlayers>();
             RoundPlayers = new HashSet<RoundPlayers>();
             StatsAccuracyDataFkIdPlayerAttackerNavigation = new HashSet<StatsAccuracyData>();
-            StatsAccuracyDataFkIdPlayerTargetNavigation = new HashSet<StatsAccuracyData>();
             StatsAccuracyFlagOutDataFkIdPlayerAttackerNavigation = new HashSet<StatsAccuracyWithFlagData>();
-            StatsAccuracyFlagOutDataFkIdPlayerTargetNavigation = new HashSet<StatsAccuracyWithFlagData>();
             StatsDamageCarrierDataFkIdPlayerAttackerNavigation = new HashSet<StatsDamageWithFlagData>();
             StatsDamageCarrierDataFkIdPlayerTargetNavigation = new HashSet<StatsDamageWithFlagData>();
             StatsDamageDataFkIdPlayerAttackerNavigation = new HashSet<StatsDamageData>();
@@ -42,9 +40,7 @@ namespace WorldDoomLeague.Domain.Entities
         public virtual ICollection<GamePlayers> GamePlayers { get; set; }
         public virtual ICollection<RoundPlayers> RoundPlayers { get; set; }
         public virtual ICollection<StatsAccuracyData> StatsAccuracyDataFkIdPlayerAttackerNavigation { get; set; }
-        public virtual ICollection<StatsAccuracyData> StatsAccuracyDataFkIdPlayerTargetNavigation { get; set; }
         public virtual ICollection<StatsAccuracyWithFlagData> StatsAccuracyFlagOutDataFkIdPlayerAttackerNavigation { get; set; }
-        public virtual ICollection<StatsAccuracyWithFlagData> StatsAccuracyFlagOutDataFkIdPlayerTargetNavigation { get; set; }
         public virtual ICollection<StatsDamageWithFlagData> StatsDamageCarrierDataFkIdPlayerAttackerNavigation { get; set; }
         public virtual ICollection<StatsDamageWithFlagData> StatsDamageCarrierDataFkIdPlayerTargetNavigation { get; set; }
         public virtual ICollection<StatsDamageData> StatsDamageDataFkIdPlayerAttackerNavigation { get; set; }

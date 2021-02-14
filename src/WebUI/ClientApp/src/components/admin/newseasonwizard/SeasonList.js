@@ -138,8 +138,7 @@ var SeasonList = function (props) {
                         value.seasonName,
                         React.createElement("br", null),
                         "Signups Begin: ",
-                        new Intl.DateTimeFormat('default', { dateStyle: 'full', timeStyle: 'long' }).format(new Date(value.dateStart)),
-                        console.log(new Date(value.dateStart))));
+                        new Intl.DateTimeFormat('default', { dateStyle: 'full', timeStyle: 'long' }).format(new Date(value.dateStart))));
                 });
             }
             else {

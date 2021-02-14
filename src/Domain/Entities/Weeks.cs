@@ -16,6 +16,7 @@ namespace WorldDoomLeague.Domain.Entities
             StatsRounds = new HashSet<StatsRounds>();
             PlayerGameRecords = new HashSet<PlayerGameRecord>();
             PlayerRoundRecords = new HashSet<PlayerRoundRecord>();
+            WeekMaps = new HashSet<WeekMaps>();
         }
 
         public uint IdWeek { get; set; }
@@ -34,5 +35,6 @@ namespace WorldDoomLeague.Domain.Entities
         public virtual ICollection<PlayerGameRecord> PlayerGameRecords { get; set; }
         public virtual ICollection<PlayerRoundRecord> PlayerRoundRecords { get; set; }
         public virtual ICollection<PlayerTransactions> Transactions { get; set; }
+        public virtual ICollection<WeekMaps> WeekMaps { get; set; }
     }
 }

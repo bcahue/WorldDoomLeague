@@ -5,7 +5,7 @@ using WorldDoomLeague.Application.Seasons.Queries.GetSeasonStandingsById;
 using WorldDoomLeague.Application.Seasons.Queries.GetSeasonPlayersBySeasonId;
 using WorldDoomLeague.Application.Seasons.Commands.CreateSeason;
 using WorldDoomLeague.Application.Seasons.Commands.UpdateSeason;
-using WorldDoomLeague.Application.SeasonWeeks.Commands.CreateSeasonWeeks;
+using WorldDoomLeague.Application.Weeks.Commands.CreateSeasonWeeks;
 using WorldDoomLeague.Application.Seasons.Queries.GetCurrentSeasonStandings;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;

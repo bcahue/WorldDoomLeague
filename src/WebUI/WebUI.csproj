@@ -16,16 +16,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="5.0.2" />
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.1.2">
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="5.0.3" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.1.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.2">
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -86,6 +86,7 @@
       <None Remove="ClientApp\src\components\admin\AdminRoutes.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\AddPlayers.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\AddTeams.tsx" />
+      <None Remove="ClientApp\src\components\admin\newseasonwizard\CreateGames.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\CreateWeeks.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\EngineList.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\NewSeasonWizard.tsx" />
@@ -119,6 +120,9 @@
         <SubType>Code</SubType>
       </TypeScriptCompile>
       <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\AddTeams.tsx">
+        <SubType>Code</SubType>
+      </TypeScriptCompile>
+      <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\CreateGames.tsx">
         <SubType>Code</SubType>
       </TypeScriptCompile>
       <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\CreateWeeks.tsx">

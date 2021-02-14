@@ -1,5 +1,6 @@
 ﻿using WorldDoomLeague.Application.Matches.Queries.GetMatchSummaryByMatchId;
 using WorldDoomLeague.Application.Matches.Commands.CreateMatch;
+using WorldDoomLeague.Application.Matches.Commands.CreateMatches;
 using WorldDoomLeague.Application.Matches.Commands.ProcessMatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -14,8 +15,14 @@ namespace WorldDoomLeague.WebUI.Controllers
             return await Mediator.Send(new GetMatchSummaryByMatchIdQuery(matchId));
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<ActionResult<uint>> Create(CreateMatchCommand command)
+        {
+            return await Mediator.Send(command);
+        }
+
+        [HttpPost("CreateRegularSeason")]
+        public async Task<ActionResult<uint>> CreateRegularSeason(CreateMatchesCommand command)
         {
             return await Mediator.Send(command);
         }

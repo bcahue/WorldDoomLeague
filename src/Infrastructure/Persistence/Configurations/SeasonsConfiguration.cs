@@ -33,7 +33,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.DateStart)
                 .HasColumnName("date_start")
-                .HasColumnType("timestamp");
+                .HasColumnType("datetime");
 
             builder.Property(e => e.FkIdWadFile)
                 .HasColumnName("fk_id_wad_file")

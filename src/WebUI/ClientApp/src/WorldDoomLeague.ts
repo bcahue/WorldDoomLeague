@@ -202,6 +202,7 @@ export class EngineClient extends ApiClientBase implements IEngineClient {
 
 export interface IFilesClient {
     createWadFile(file: FileParameter | null | undefined): Promise<number>;
+    createMapImage(file: FileParameter | null | undefined, caption: string | null | undefined, mapId: number | undefined): Promise<number>;
     getWadFiles(): Promise<WadFilesVm>;
     getRoundJsonFiles(): Promise<string[]>;
     getRoundObject(fileName: string | null | undefined): Promise<Round>;
@@ -242,6 +243,53 @@ export class FilesClient extends ApiClientBase implements IFilesClient {
     }
 
     protected processCreateWadFile(response: Response): Promise<number> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(<any>null);
+    }
+
+    createMapImage(file: FileParameter | null | undefined, caption: string | null | undefined, mapId: number | undefined): Promise<number> {
+        let url_ = this.baseUrl + "/api/Files/mapimage";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (file !== null && file !== undefined)
+            content_.append("File", file.data, file.fileName ? file.fileName : "File");
+        if (caption !== null && caption !== undefined)
+            content_.append("Caption", caption.toString());
+        if (mapId === null || mapId === undefined)
+            throw new Error("The parameter 'mapId' cannot be null.");
+        else
+            content_.append("MapId", mapId.toString());
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processCreateMapImage(_response);
+        });
+    }
+
+    protected processCreateMapImage(response: Response): Promise<number> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -533,6 +581,7 @@ export class MapsClient extends ApiClientBase implements IMapsClient {
 export interface IMatchesClient {
     get(matchId: number): Promise<MatchSummaryVm>;
     create(command: CreateMatchCommand): Promise<number>;
+    createRegularSeason(command: CreateMatchesCommand): Promise<number>;
     process(command: ProcessMatchCommand): Promise<number>;
 }
 
@@ -587,7 +636,7 @@ export class MatchesClient extends ApiClientBase implements IMatchesClient {
     }
 
     create(command: CreateMatchCommand): Promise<number> {
-        let url_ = this.baseUrl + "/api/Matches/create";
+        let url_ = this.baseUrl + "/api/Matches";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -609,6 +658,46 @@ export class MatchesClient extends ApiClientBase implements IMatchesClient {
     }
 
     protected processCreate(response: Response): Promise<number> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(<any>null);
+    }
+
+    createRegularSeason(command: CreateMatchesCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Matches/CreateRegularSeason";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processCreateRegularSeason(_response);
+        });
+    }
+
+    protected processCreateRegularSeason(response: Response): Promise<number> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1361,6 +1450,61 @@ export class TeamsClient extends ApiClientBase implements ITeamsClient {
             });
         }
         return Promise.resolve<number>(<any>null);
+    }
+}
+
+export interface IWeeksClient {
+    getRegularSeasonWeeks(seasonId: number): Promise<RegularSeasonWeeksVm>;
+}
+
+export class WeeksClient extends ApiClientBase implements IWeeksClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getRegularSeasonWeeks(seasonId: number): Promise<RegularSeasonWeeksVm> {
+        let url_ = this.baseUrl + "/api/Weeks/{seasonId}/RegularSeason";
+        if (seasonId === undefined || seasonId === null)
+            throw new Error("The parameter 'seasonId' must be defined.");
+        url_ = url_.replace("{seasonId}", encodeURIComponent("" + seasonId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetRegularSeasonWeeks(_response);
+        });
+    }
+
+    protected processGetRegularSeasonWeeks(response: Response): Promise<RegularSeasonWeeksVm> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RegularSeasonWeeksVm.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<RegularSeasonWeeksVm>(<any>null);
     }
 }
 
@@ -3715,7 +3859,6 @@ export interface IPlayerLeaderboardAllTimeStatsVm {
 export class CreateMapCommand implements ICreateMapCommand {
     mapName?: string | undefined;
     mapPack?: string | undefined;
-    fileId?: number;
     mapNumber?: number;
 
     constructor(data?: ICreateMapCommand) {
@@ -3731,7 +3874,6 @@ export class CreateMapCommand implements ICreateMapCommand {
         if (_data) {
             this.mapName = _data["mapName"];
             this.mapPack = _data["mapPack"];
-            this.fileId = _data["fileId"];
             this.mapNumber = _data["mapNumber"];
         }
     }
@@ -3747,7 +3889,6 @@ export class CreateMapCommand implements ICreateMapCommand {
         data = typeof data === 'object' ? data : {};
         data["mapName"] = this.mapName;
         data["mapPack"] = this.mapPack;
-        data["fileId"] = this.fileId;
         data["mapNumber"] = this.mapNumber;
         return data; 
     }
@@ -3756,7 +3897,6 @@ export class CreateMapCommand implements ICreateMapCommand {
 export interface ICreateMapCommand {
     mapName?: string | undefined;
     mapPack?: string | undefined;
-    fileId?: number;
     mapNumber?: number;
 }
 
@@ -4643,6 +4783,150 @@ export class CreateMatchCommand implements ICreateMatchCommand {
 export interface ICreateMatchCommand {
     season?: number;
     week?: number;
+    redTeam?: number;
+    blueTeam?: number;
+    gameDateTime?: Date | undefined;
+}
+
+export class CreateMatchesCommand implements ICreateMatchesCommand {
+    seasonId?: number;
+    weeklyGames?: WeeklyRequest[] | undefined;
+
+    constructor(data?: ICreateMatchesCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.seasonId = _data["seasonId"];
+            if (Array.isArray(_data["weeklyGames"])) {
+                this.weeklyGames = [] as any;
+                for (let item of _data["weeklyGames"])
+                    this.weeklyGames!.push(WeeklyRequest.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): CreateMatchesCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateMatchesCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["seasonId"] = this.seasonId;
+        if (Array.isArray(this.weeklyGames)) {
+            data["weeklyGames"] = [];
+            for (let item of this.weeklyGames)
+                data["weeklyGames"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ICreateMatchesCommand {
+    seasonId?: number;
+    weeklyGames?: WeeklyRequest[] | undefined;
+}
+
+export class WeeklyRequest implements IWeeklyRequest {
+    weekId?: number;
+    mapId?: number;
+    gameList?: NewGame[] | undefined;
+
+    constructor(data?: IWeeklyRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.weekId = _data["weekId"];
+            this.mapId = _data["mapId"];
+            if (Array.isArray(_data["gameList"])) {
+                this.gameList = [] as any;
+                for (let item of _data["gameList"])
+                    this.gameList!.push(NewGame.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): WeeklyRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new WeeklyRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["weekId"] = this.weekId;
+        data["mapId"] = this.mapId;
+        if (Array.isArray(this.gameList)) {
+            data["gameList"] = [];
+            for (let item of this.gameList)
+                data["gameList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IWeeklyRequest {
+    weekId?: number;
+    mapId?: number;
+    gameList?: NewGame[] | undefined;
+}
+
+export class NewGame implements INewGame {
+    redTeam?: number;
+    blueTeam?: number;
+    gameDateTime?: Date | undefined;
+
+    constructor(data?: INewGame) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.redTeam = _data["redTeam"];
+            this.blueTeam = _data["blueTeam"];
+            this.gameDateTime = _data["gameDateTime"] ? new Date(_data["gameDateTime"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): NewGame {
+        data = typeof data === 'object' ? data : {};
+        let result = new NewGame();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["redTeam"] = this.redTeam;
+        data["blueTeam"] = this.blueTeam;
+        data["gameDateTime"] = this.gameDateTime ? this.gameDateTime.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface INewGame {
     redTeam?: number;
     blueTeam?: number;
     gameDateTime?: Date | undefined;
@@ -5969,7 +6253,6 @@ export class SeasonMapDto implements ISeasonMapDto {
     mapPack?: string | undefined;
     mapName?: string | undefined;
     mapNumber?: number;
-    file?: SeasonFileDto | undefined;
 
     constructor(data?: ISeasonMapDto) {
         if (data) {
@@ -5986,7 +6269,6 @@ export class SeasonMapDto implements ISeasonMapDto {
             this.mapPack = _data["mapPack"];
             this.mapName = _data["mapName"];
             this.mapNumber = _data["mapNumber"];
-            this.file = _data["file"] ? SeasonFileDto.fromJS(_data["file"]) : <any>undefined;
         }
     }
 
@@ -6003,7 +6285,6 @@ export class SeasonMapDto implements ISeasonMapDto {
         data["mapPack"] = this.mapPack;
         data["mapName"] = this.mapName;
         data["mapNumber"] = this.mapNumber;
-        data["file"] = this.file ? this.file.toJSON() : <any>undefined;
         return data; 
     }
 }
@@ -6013,43 +6294,6 @@ export interface ISeasonMapDto {
     mapPack?: string | undefined;
     mapName?: string | undefined;
     mapNumber?: number;
-    file?: SeasonFileDto | undefined;
-}
-
-export class SeasonFileDto implements ISeasonFileDto {
-    fileName?: string | undefined;
-
-    constructor(data?: ISeasonFileDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.fileName = _data["fileName"];
-        }
-    }
-
-    static fromJS(data: any): SeasonFileDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new SeasonFileDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["fileName"] = this.fileName;
-        return data; 
-    }
-}
-
-export interface ISeasonFileDto {
-    fileName?: string | undefined;
 }
 
 export class SeasonListVm implements ISeasonListVm {
@@ -7030,6 +7274,294 @@ export interface ITeamsRequest {
     teamName?: string | undefined;
     teamAbbreviation?: string | undefined;
     teamCaptain?: number;
+}
+
+export class RegularSeasonWeeksVm implements IRegularSeasonWeeksVm {
+    weekList?: RegularSeasonWeeksDto[] | undefined;
+
+    constructor(data?: IRegularSeasonWeeksVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["weekList"])) {
+                this.weekList = [] as any;
+                for (let item of _data["weekList"])
+                    this.weekList!.push(RegularSeasonWeeksDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): RegularSeasonWeeksVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegularSeasonWeeksVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.weekList)) {
+            data["weekList"] = [];
+            for (let item of this.weekList)
+                data["weekList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IRegularSeasonWeeksVm {
+    weekList?: RegularSeasonWeeksDto[] | undefined;
+}
+
+export class RegularSeasonWeeksDto implements IRegularSeasonWeeksDto {
+    id?: number;
+    weekNumber?: number;
+    weekStartDate?: Date;
+    weekMaps?: WeekMapsDto[] | undefined;
+
+    constructor(data?: IRegularSeasonWeeksDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.weekNumber = _data["weekNumber"];
+            this.weekStartDate = _data["weekStartDate"] ? new Date(_data["weekStartDate"].toString()) : <any>undefined;
+            if (Array.isArray(_data["weekMaps"])) {
+                this.weekMaps = [] as any;
+                for (let item of _data["weekMaps"])
+                    this.weekMaps!.push(WeekMapsDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): RegularSeasonWeeksDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegularSeasonWeeksDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["weekNumber"] = this.weekNumber;
+        data["weekStartDate"] = this.weekStartDate ? this.weekStartDate.toISOString() : <any>undefined;
+        if (Array.isArray(this.weekMaps)) {
+            data["weekMaps"] = [];
+            for (let item of this.weekMaps)
+                data["weekMaps"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IRegularSeasonWeeksDto {
+    id?: number;
+    weekNumber?: number;
+    weekStartDate?: Date;
+    weekMaps?: WeekMapsDto[] | undefined;
+}
+
+export class WeekMapsDto implements IWeekMapsDto {
+    id?: number;
+    maps?: MapDto | undefined;
+
+    constructor(data?: IWeekMapsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.maps = _data["maps"] ? MapDto.fromJS(_data["maps"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): WeekMapsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new WeekMapsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["maps"] = this.maps ? this.maps.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IWeekMapsDto {
+    id?: number;
+    maps?: MapDto | undefined;
+}
+
+export class MapDto implements IMapDto {
+    id?: number;
+    mapPack?: string | undefined;
+    mapName?: string | undefined;
+    mapNumber?: number;
+    mapImages?: MapImagesDto[] | undefined;
+
+    constructor(data?: IMapDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.mapPack = _data["mapPack"];
+            this.mapName = _data["mapName"];
+            this.mapNumber = _data["mapNumber"];
+            if (Array.isArray(_data["mapImages"])) {
+                this.mapImages = [] as any;
+                for (let item of _data["mapImages"])
+                    this.mapImages!.push(MapImagesDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): MapDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MapDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["mapPack"] = this.mapPack;
+        data["mapName"] = this.mapName;
+        data["mapNumber"] = this.mapNumber;
+        if (Array.isArray(this.mapImages)) {
+            data["mapImages"] = [];
+            for (let item of this.mapImages)
+                data["mapImages"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IMapDto {
+    id?: number;
+    mapPack?: string | undefined;
+    mapName?: string | undefined;
+    mapNumber?: number;
+    mapImages?: MapImagesDto[] | undefined;
+}
+
+export class MapImagesDto implements IMapImagesDto {
+    image?: ImageFileDto | undefined;
+
+    constructor(data?: IMapImagesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.image = _data["image"] ? ImageFileDto.fromJS(_data["image"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): MapImagesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MapImagesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["image"] = this.image ? this.image.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IMapImagesDto {
+    image?: ImageFileDto | undefined;
+}
+
+export class ImageFileDto implements IImageFileDto {
+    id?: number;
+    fileSize?: number;
+    fileName?: string | undefined;
+    caption?: string | undefined;
+    uploadDate?: Date;
+
+    constructor(data?: IImageFileDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fileSize = _data["fileSize"];
+            this.fileName = _data["fileName"];
+            this.caption = _data["caption"];
+            this.uploadDate = _data["uploadDate"] ? new Date(_data["uploadDate"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ImageFileDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ImageFileDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["fileSize"] = this.fileSize;
+        data["fileName"] = this.fileName;
+        data["caption"] = this.caption;
+        data["uploadDate"] = this.uploadDate ? this.uploadDate.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IImageFileDto {
+    id?: number;
+    fileSize?: number;
+    fileName?: string | undefined;
+    caption?: string | undefined;
+    uploadDate?: Date;
 }
 
 export interface FileParameter {

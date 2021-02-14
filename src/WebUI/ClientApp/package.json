@@ -13,6 +13,7 @@
     "popper.js": "^1.16.0",
     "query-string": "^6.13.6",
     "react": "16.11.0",
+    "react-date-picker": "^8.0.7",
     "react-datetime-picker": "^3.0.5",
     "react-dom": "16.11.0",
     "react-hooks-global-state": "^1.0.1",

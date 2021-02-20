@@ -33,7 +33,7 @@ export default class AuthorizeRoute extends Component {
         if (!ready) {
             return <div></div>;
         } else {
-            const { component: Component, componmentroles, ...rest } = this.props;
+            const { component: Component, componentroles, ...rest } = this.props;
             return <Route {...rest}
                 render={(props) => {
                     if (authenticated && this.containsDuplicate(this.componentroles, roles)) {

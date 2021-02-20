@@ -401,6 +401,24 @@
       }
     },
     "/api/Maps": {
+      "get": {
+        "tags": [
+          "Maps"
+        ],
+        "operationId": "Maps_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MapsVm"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
           "Maps"
@@ -963,7 +981,7 @@
         "tags": [
           "Teams"
         ],
-        "operationId": "Teams_Get",
+        "operationId": "Teams_GetTeamSummaryById",
         "parameters": [
           {
             "name": "teamId",
@@ -982,6 +1000,37 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TeamSummaryVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Teams/{seasonId}": {
+      "get": {
+        "tags": [
+          "Teams"
+        ],
+        "operationId": "Teams_GetTeamsBySeasonId",
+        "parameters": [
+          {
+            "name": "seasonId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamsVm"
                 }
               }
             }
@@ -2486,6 +2535,40 @@
             "items": {
               "$ref": "#/components/schemas/PlayerLeaderboardStatsDto"
             }
+          }
+        }
+      },
+      "MapsVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "mapList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/MapsDto"
+            }
+          }
+        }
+      },
+      "MapsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "mapName": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapPack": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapNumber": {
+            "type": "integer"
           }
         }
       },
@@ -4385,6 +4468,37 @@
           }
         }
       },
+      "TeamsVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "teamList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/TeamsDto"
+            }
+          }
+        }
+      },
+      "TeamsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "teamName": {
+            "type": "string",
+            "nullable": true
+          },
+          "teamAbbreviation": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "CreateTeamCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -4463,98 +4577,6 @@
             "type": "integer"
           },
           "weekStartDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "weekMaps": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "$ref": "#/components/schemas/WeekMapsDto"
-            }
-          }
-        }
-      },
-      "WeekMapsDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "maps": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/MapDto"
-              }
-            ]
-          }
-        }
-      },
-      "MapDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "mapPack": {
-            "type": "string",
-            "nullable": true
-          },
-          "mapName": {
-            "type": "string",
-            "nullable": true
-          },
-          "mapNumber": {
-            "type": "integer"
-          },
-          "mapImages": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "$ref": "#/components/schemas/MapImagesDto"
-            }
-          }
-        }
-      },
-      "MapImagesDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "image": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/ImageFileDto"
-              }
-            ]
-          }
-        }
-      },
-      "ImageFileDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "fileSize": {
-            "type": "integer"
-          },
-          "fileName": {
-            "type": "string",
-            "nullable": true
-          },
-          "caption": {
-            "type": "string",
-            "nullable": true
-          },
-          "uploadDate": {
             "type": "string",
             "format": "date-time"
           }

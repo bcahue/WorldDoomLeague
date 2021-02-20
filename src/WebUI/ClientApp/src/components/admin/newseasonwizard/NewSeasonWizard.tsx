@@ -55,6 +55,7 @@ const NewSeasonWizard = () => {
                     <AddTeams form={state.form} update={updateForm} />
                     <RegisterDraft form={state.form} update={updateForm} />
                     <CreateWeeks form={state.form} update={updateForm} />
+                    <CreateGames form={state.form} update={updateForm} />
                 </StepWizard>
             </Jumbotron>
         </Container>

@@ -20,7 +20,6 @@
   <ItemGroup>
     <Folder Include="Common\Mappings\" />
     <Folder Include="Draft\Queries\" />
-    <Folder Include="Maps\Queries\" />
     <Folder Include="PlayerTransactions\Queries\" />
     <Folder Include="Stats\Queries\" />
   </ItemGroup>

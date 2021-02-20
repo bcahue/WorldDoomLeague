@@ -16,7 +16,7 @@ namespace WorldDoomLeague.Application.Weeks.Queries.GetRegularSeasonWeeks
 
         public uint MapNumber { get; set; }
 
-        public ICollection<MapImagesDto> MapImages { get; set; }
+        //public ICollection<MapImagesDto> MapImages { get; set; }
 
         public void Mapping(Profile profile)
         {

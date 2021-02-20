@@ -523,6 +523,7 @@ export class LeaderboardStatsClient extends ApiClientBase implements ILeaderboar
 }
 
 export interface IMapsClient {
+    get(): Promise<MapsVm>;
     create(command: CreateMapCommand): Promise<number>;
 }
 
@@ -535,6 +536,42 @@ export class MapsClient extends ApiClientBase implements IMapsClient {
         super();
         this.http = http ? http : <any>window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    get(): Promise<MapsVm> {
+        let url_ = this.baseUrl + "/api/Maps";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGet(_response);
+        });
+    }
+
+    protected processGet(response: Response): Promise<MapsVm> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MapsVm.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MapsVm>(<any>null);
     }
 
     create(command: CreateMapCommand): Promise<number> {
@@ -1317,7 +1354,8 @@ export class SeasonsClient extends ApiClientBase implements ISeasonsClient {
 }
 
 export interface ITeamsClient {
-    get(teamId: number): Promise<TeamSummaryVm>;
+    getTeamSummaryById(teamId: number): Promise<TeamSummaryVm>;
+    getTeamsBySeasonId(seasonId: number): Promise<TeamsVm>;
     create(command: CreateTeamCommand): Promise<number>;
     createTeams(command: CreateTeamsCommand): Promise<number>;
 }
@@ -1333,7 +1371,7 @@ export class TeamsClient extends ApiClientBase implements ITeamsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    get(teamId: number): Promise<TeamSummaryVm> {
+    getTeamSummaryById(teamId: number): Promise<TeamSummaryVm> {
         let url_ = this.baseUrl + "/api/Teams/{teamId}/summary";
         if (teamId === undefined || teamId === null)
             throw new Error("The parameter 'teamId' must be defined.");
@@ -1350,11 +1388,11 @@ export class TeamsClient extends ApiClientBase implements ITeamsClient {
         return this.transformOptions(options_).then(transformedOptions_ => {
             return this.http.fetch(url_, transformedOptions_);
         }).then((_response: Response) => {
-            return this.processGet(_response);
+            return this.processGetTeamSummaryById(_response);
         });
     }
 
-    protected processGet(response: Response): Promise<TeamSummaryVm> {
+    protected processGetTeamSummaryById(response: Response): Promise<TeamSummaryVm> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1370,6 +1408,45 @@ export class TeamsClient extends ApiClientBase implements ITeamsClient {
             });
         }
         return Promise.resolve<TeamSummaryVm>(<any>null);
+    }
+
+    getTeamsBySeasonId(seasonId: number): Promise<TeamsVm> {
+        let url_ = this.baseUrl + "/api/Teams/{seasonId}";
+        if (seasonId === undefined || seasonId === null)
+            throw new Error("The parameter 'seasonId' must be defined.");
+        url_ = url_.replace("{seasonId}", encodeURIComponent("" + seasonId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetTeamsBySeasonId(_response);
+        });
+    }
+
+    protected processGetTeamsBySeasonId(response: Response): Promise<TeamsVm> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TeamsVm.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<TeamsVm>(<any>null);
     }
 
     create(command: CreateTeamCommand): Promise<number> {
@@ -3854,6 +3931,98 @@ export class PlayerLeaderboardAllTimeStatsVm implements IPlayerLeaderboardAllTim
 export interface IPlayerLeaderboardAllTimeStatsVm {
     description?: string | undefined;
     playerLeaderboardStats?: PlayerLeaderboardStatsDto[] | undefined;
+}
+
+export class MapsVm implements IMapsVm {
+    mapList?: MapsDto[] | undefined;
+
+    constructor(data?: IMapsVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["mapList"])) {
+                this.mapList = [] as any;
+                for (let item of _data["mapList"])
+                    this.mapList!.push(MapsDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): MapsVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new MapsVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.mapList)) {
+            data["mapList"] = [];
+            for (let item of this.mapList)
+                data["mapList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IMapsVm {
+    mapList?: MapsDto[] | undefined;
+}
+
+export class MapsDto implements IMapsDto {
+    id?: number;
+    mapName?: string | undefined;
+    mapPack?: string | undefined;
+    mapNumber?: number;
+
+    constructor(data?: IMapsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.mapName = _data["mapName"];
+            this.mapPack = _data["mapPack"];
+            this.mapNumber = _data["mapNumber"];
+        }
+    }
+
+    static fromJS(data: any): MapsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MapsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["mapName"] = this.mapName;
+        data["mapPack"] = this.mapPack;
+        data["mapNumber"] = this.mapNumber;
+        return data; 
+    }
+}
+
+export interface IMapsDto {
+    id?: number;
+    mapName?: string | undefined;
+    mapPack?: string | undefined;
+    mapNumber?: number;
 }
 
 export class CreateMapCommand implements ICreateMapCommand {
@@ -7136,6 +7305,94 @@ export interface ITeamStatsDto {
     powerups?: number;
 }
 
+export class TeamsVm implements ITeamsVm {
+    teamList?: TeamsDto[] | undefined;
+
+    constructor(data?: ITeamsVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["teamList"])) {
+                this.teamList = [] as any;
+                for (let item of _data["teamList"])
+                    this.teamList!.push(TeamsDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): TeamsVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new TeamsVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.teamList)) {
+            data["teamList"] = [];
+            for (let item of this.teamList)
+                data["teamList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ITeamsVm {
+    teamList?: TeamsDto[] | undefined;
+}
+
+export class TeamsDto implements ITeamsDto {
+    id?: number;
+    teamName?: string | undefined;
+    teamAbbreviation?: string | undefined;
+
+    constructor(data?: ITeamsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.teamName = _data["teamName"];
+            this.teamAbbreviation = _data["teamAbbreviation"];
+        }
+    }
+
+    static fromJS(data: any): TeamsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TeamsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["teamName"] = this.teamName;
+        data["teamAbbreviation"] = this.teamAbbreviation;
+        return data; 
+    }
+}
+
+export interface ITeamsDto {
+    id?: number;
+    teamName?: string | undefined;
+    teamAbbreviation?: string | undefined;
+}
+
 export class CreateTeamCommand implements ICreateTeamCommand {
     teamName?: string | undefined;
     teamAbbreviation?: string | undefined;
@@ -7324,7 +7581,6 @@ export class RegularSeasonWeeksDto implements IRegularSeasonWeeksDto {
     id?: number;
     weekNumber?: number;
     weekStartDate?: Date;
-    weekMaps?: WeekMapsDto[] | undefined;
 
     constructor(data?: IRegularSeasonWeeksDto) {
         if (data) {
@@ -7340,11 +7596,6 @@ export class RegularSeasonWeeksDto implements IRegularSeasonWeeksDto {
             this.id = _data["id"];
             this.weekNumber = _data["weekNumber"];
             this.weekStartDate = _data["weekStartDate"] ? new Date(_data["weekStartDate"].toString()) : <any>undefined;
-            if (Array.isArray(_data["weekMaps"])) {
-                this.weekMaps = [] as any;
-                for (let item of _data["weekMaps"])
-                    this.weekMaps!.push(WeekMapsDto.fromJS(item));
-            }
         }
     }
 
@@ -7360,11 +7611,6 @@ export class RegularSeasonWeeksDto implements IRegularSeasonWeeksDto {
         data["id"] = this.id;
         data["weekNumber"] = this.weekNumber;
         data["weekStartDate"] = this.weekStartDate ? this.weekStartDate.toISOString() : <any>undefined;
-        if (Array.isArray(this.weekMaps)) {
-            data["weekMaps"] = [];
-            for (let item of this.weekMaps)
-                data["weekMaps"].push(item.toJSON());
-        }
         return data; 
     }
 }
@@ -7373,195 +7619,6 @@ export interface IRegularSeasonWeeksDto {
     id?: number;
     weekNumber?: number;
     weekStartDate?: Date;
-    weekMaps?: WeekMapsDto[] | undefined;
-}
-
-export class WeekMapsDto implements IWeekMapsDto {
-    id?: number;
-    maps?: MapDto | undefined;
-
-    constructor(data?: IWeekMapsDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.maps = _data["maps"] ? MapDto.fromJS(_data["maps"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): WeekMapsDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new WeekMapsDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["maps"] = this.maps ? this.maps.toJSON() : <any>undefined;
-        return data; 
-    }
-}
-
-export interface IWeekMapsDto {
-    id?: number;
-    maps?: MapDto | undefined;
-}
-
-export class MapDto implements IMapDto {
-    id?: number;
-    mapPack?: string | undefined;
-    mapName?: string | undefined;
-    mapNumber?: number;
-    mapImages?: MapImagesDto[] | undefined;
-
-    constructor(data?: IMapDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.mapPack = _data["mapPack"];
-            this.mapName = _data["mapName"];
-            this.mapNumber = _data["mapNumber"];
-            if (Array.isArray(_data["mapImages"])) {
-                this.mapImages = [] as any;
-                for (let item of _data["mapImages"])
-                    this.mapImages!.push(MapImagesDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): MapDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new MapDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["mapPack"] = this.mapPack;
-        data["mapName"] = this.mapName;
-        data["mapNumber"] = this.mapNumber;
-        if (Array.isArray(this.mapImages)) {
-            data["mapImages"] = [];
-            for (let item of this.mapImages)
-                data["mapImages"].push(item.toJSON());
-        }
-        return data; 
-    }
-}
-
-export interface IMapDto {
-    id?: number;
-    mapPack?: string | undefined;
-    mapName?: string | undefined;
-    mapNumber?: number;
-    mapImages?: MapImagesDto[] | undefined;
-}
-
-export class MapImagesDto implements IMapImagesDto {
-    image?: ImageFileDto | undefined;
-
-    constructor(data?: IMapImagesDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.image = _data["image"] ? ImageFileDto.fromJS(_data["image"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): MapImagesDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new MapImagesDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["image"] = this.image ? this.image.toJSON() : <any>undefined;
-        return data; 
-    }
-}
-
-export interface IMapImagesDto {
-    image?: ImageFileDto | undefined;
-}
-
-export class ImageFileDto implements IImageFileDto {
-    id?: number;
-    fileSize?: number;
-    fileName?: string | undefined;
-    caption?: string | undefined;
-    uploadDate?: Date;
-
-    constructor(data?: IImageFileDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.fileSize = _data["fileSize"];
-            this.fileName = _data["fileName"];
-            this.caption = _data["caption"];
-            this.uploadDate = _data["uploadDate"] ? new Date(_data["uploadDate"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): ImageFileDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ImageFileDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["fileSize"] = this.fileSize;
-        data["fileName"] = this.fileName;
-        data["caption"] = this.caption;
-        data["uploadDate"] = this.uploadDate ? this.uploadDate.toISOString() : <any>undefined;
-        return data; 
-    }
-}
-
-export interface IImageFileDto {
-    id?: number;
-    fileSize?: number;
-    fileName?: string | undefined;
-    caption?: string | undefined;
-    uploadDate?: Date;
 }
 
 export interface FileParameter {

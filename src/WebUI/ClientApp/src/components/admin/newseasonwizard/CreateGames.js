@@ -47,246 +47,513 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var StepButtons_1 = require("./StepButtons");
 var React = require("react");
 var react_1 = require("react");
 var reactstrap_1 = require("reactstrap");
 var react_select_1 = require("react-select");
 var WorldDoomLeague_1 = require("../../../WorldDoomLeague");
+var react_router_dom_1 = require("react-router-dom");
 var state_1 = require("../../../state");
 var CreateGames = function (props) {
     var _a = react_1.useState([{
-            nominatedPlayer: null,
-            nominatingPlayer: null,
-            playerSoldTo: null,
-            sellPrice: 0
-        }]), draftList = _a[0], setDraftList = _a[1];
-    var _b = react_1.useState(3), playersPerTeam = _b[0], setPlayersPerTeam = _b[1];
-    var _c = react_1.useState(false), canSubmitDraft = _c[0], setCanSubmitDraft = _c[1];
-    var _d = react_1.useState(false), completedDraft = _d[0], setCompletedDraft = _d[1];
-    var _e = react_1.useState(true), canCreateDraft = _e[0], setCanCreateDraft = _e[1];
-    var createDraftPicks = function () {
-        setCanCreateDraft(false);
-        var pad_array = function (arr, len, fill) {
-            return arr.concat(Array(len).fill(fill)).slice(0, len);
-        };
-        if (props.form.captains) {
-            var maxPlayersDrafted = props.form.captains.length * playersPerTeam;
-            var newDraftList = pad_array(draftList, maxPlayersDrafted, {
-                nominatedPlayer: null,
-                nominatingPlayer: null,
-                playerSoldTo: null,
-                sellPrice: 0
-            });
-            var playersPerTeamMinusCaptain_1 = playersPerTeam;
-            var newCaptainArray = props.form.captains.map(function (s, _idx) {
-                return __assign(__assign({}, s), { playersLeft: playersPerTeamMinusCaptain_1 });
-            });
-            props.update("captains", newCaptainArray);
-            setDraftList(newDraftList);
-        }
+            weekId: null,
+            mapId: null,
+            gameList: []
+        }]), games = _a[0], setGames = _a[1];
+    var _b = react_1.useState([{
+            id: null,
+            weekNumber: null,
+            weekStartDate: null
+        }]), weeks = _b[0], setWeeks = _b[1];
+    var _c = react_1.useState(true), loading = _c[0], setLoading = _c[1];
+    var _d = react_1.useState(1), gamesPerWeek = _d[0], setGamesPerWeek = _d[1];
+    var _e = react_1.useState(0), currentWeek = _e[0], setCurrentWeek = _e[1];
+    var _f = react_1.useState(false), canSubmitGames = _f[0], setCanSubmitGames = _f[1];
+    var _g = react_1.useState(false), completedGames = _g[0], setCompletedGames = _g[1];
+    var _h = react_1.useState(true), canCreateGames = _h[0], setCanCreateGames = _h[1];
+    var _j = react_1.useState([]), data = _j[0], setData = _j[1];
+    var _k = react_1.useState(0), index = _k[0], setIndex = _k[1];
+    var _l = react_1.useState(""), mapPack = _l[0], setMapPack = _l[1];
+    var _m = react_1.useState(""), mapName = _m[0], setMapName = _m[1];
+    var _o = react_1.useState(0), mapNumber = _o[0], setMapNumber = _o[1];
+    var _p = react_1.useState(0), newMapId = _p[0], setNewMapId = _p[1];
+    var history = react_router_dom_1.useHistory();
+    var redirect = function () {
+        history.push('/');
     };
-    var handleNominatingSelected = function (idx, value) {
-        var newNominatingPlayer = draftList.map(function (draft, sidx) {
-            if (idx !== sidx)
-                return draft;
-            return __assign(__assign({}, draft), { nominatingPlayer: value.value });
-        });
-        setDraftList(newNominatingPlayer);
-        checkIfFormComplete(newNominatingPlayer);
-    };
-    // Handle the sell price
-    var handleSoldForInput = function (idx, value) {
-        var newSellPrice = draftList.map(function (draft, sidx) {
-            if (idx !== sidx)
-                return draft;
-            return __assign(__assign({}, draft), { sellPrice: value });
-        });
-        setDraftList(newSellPrice);
-        checkIfFormComplete(newSellPrice);
-    };
-    var handleSoldToSelected = function (idx, value) {
-        // subtract the playersleft to handle disables
-        var newCaptainsArray = props.form.captains.map(function (s, _idx) {
-            if (s.value !== value.value)
-                return s;
-            var left = s.playersLeft - 1;
-            return __assign(__assign({}, s), { playersLeft: left });
-        });
-        // re-enable a captain if they are deselected.
-        if (draftList[idx].playerSoldTo !== null) {
-            var reenabledOldCaptain = newCaptainsArray.map(function (s, _idx) {
-                if (s.value !== draftList[idx].playerSoldTo)
-                    return s;
-                var left = s.playersLeft + 1;
-                return __assign(__assign({}, s), { playersLeft: left });
+    react_1.useEffect(function () {
+        var fetchData = function () { return __awaiter(void 0, void 0, void 0, function () {
+            var client, response, data_1, e_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        setLoading(true);
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        client = new WorldDoomLeague_1.MapsClient();
+                        return [4 /*yield*/, client.get()
+                                .then(function (response) { return response.toJSON(); })];
+                    case 2:
+                        response = _a.sent();
+                        data_1 = response.mapList;
+                        setData(data_1);
+                        return [3 /*break*/, 4];
+                    case 3:
+                        e_1 = _a.sent();
+                        state_1.setErrorMessage(JSON.parse(e_1.response));
+                        return [3 /*break*/, 4];
+                    case 4:
+                        setLoading(false);
+                        return [2 /*return*/];
+                }
             });
-            var newCaptainList = reenabledOldCaptain.map(function (s, _idx) {
-                if (s.playersLeft > 0)
-                    return __assign(__assign({}, s), { isdisabled: false });
-                return __assign(__assign({}, s), { isdisabled: true });
-            });
-            props.update("captains", newCaptainList);
-        }
-        else {
-            var newCaptainList = newCaptainsArray.map(function (s, _idx) {
-                if (s.playersLeft > 0)
-                    return __assign(__assign({}, s), { isdisabled: false });
-                return __assign(__assign({}, s), { isdisabled: true });
-            });
-            props.update("captains", newCaptainList);
-        }
-        var newCaptainSoldTo = draftList.map(function (draft, sidx) {
-            if (idx !== sidx)
-                return draft;
-            return __assign(__assign({}, draft), { playerSoldTo: value.value });
+        }); };
+        fetchData();
+    }, [newMapId]);
+    var getWeeks = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var fetchData;
+        return __generator(this, function (_a) {
+            fetchData = function () { return __awaiter(void 0, void 0, void 0, function () {
+                var client, response, weekData, e_2;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            setLoading(true);
+                            _a.label = 1;
+                        case 1:
+                            _a.trys.push([1, 3, , 4]);
+                            client = new WorldDoomLeague_1.WeeksClient();
+                            return [4 /*yield*/, client.getRegularSeasonWeeks(props.form.season)
+                                    .then(function (response) { return response.toJSON(); })];
+                        case 2:
+                            response = _a.sent();
+                            weekData = response.weekList;
+                            setLoading(false);
+                            return [2 /*return*/, weekData];
+                        case 3:
+                            e_2 = _a.sent();
+                            state_1.setErrorMessage(JSON.parse(e_2.response));
+                            return [3 /*break*/, 4];
+                        case 4: return [2 /*return*/];
+                    }
+                });
+            }); };
+            return [2 /*return*/, fetchData()];
         });
-        setDraftList(newCaptainSoldTo);
-        checkIfFormComplete(newCaptainSoldTo);
-    };
-    var handleNominatedSelected = function (idx, value) {
-        var newPlayerArray = props.form.players.map(function (s, _idx) {
-            if (s.value !== value.value)
-                return s;
-            return __assign(__assign({}, s), { isdisabled: true });
+    }); };
+    var getTeams = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var fetchData;
+        return __generator(this, function (_a) {
+            fetchData = function () { return __awaiter(void 0, void 0, void 0, function () {
+                var client, response, teamData, e_3;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            setLoading(true);
+                            _a.label = 1;
+                        case 1:
+                            _a.trys.push([1, 3, , 4]);
+                            client = new WorldDoomLeague_1.TeamsClient();
+                            return [4 /*yield*/, client.getTeamsBySeasonId(props.form.season)
+                                    .then(function (response) { return response.toJSON(); })];
+                        case 2:
+                            response = _a.sent();
+                            teamData = response.teamList;
+                            setLoading(false);
+                            return [2 /*return*/, teamData];
+                        case 3:
+                            e_3 = _a.sent();
+                            state_1.setErrorMessage(JSON.parse(e_3.response));
+                            return [3 /*break*/, 4];
+                        case 4: return [2 /*return*/];
+                    }
+                });
+            }); };
+            return [2 /*return*/, fetchData()];
         });
-        if (draftList[idx].nominatedPlayer !== null) {
-            var reenabledOldPlayer = newPlayerArray.map(function (s, _idx) {
-                if (s.value !== draftList[idx].nominatedPlayer)
-                    return s;
-                return __assign(__assign({}, s), { isdisabled: false });
-            });
-            props.update("players", reenabledOldPlayer);
-        }
-        else {
-            props.update("players", newPlayerArray);
-        }
-        var newCaptain = draftList.map(function (draft, sidx) {
-            if (idx !== sidx)
-                return draft;
-            return __assign(__assign({}, draft), { nominatedPlayer: value.value });
-        });
-        setDraftList(newCaptain);
-        checkIfFormComplete(newCaptain);
-    };
-    var createDraft = function (evt) { return __awaiter(void 0, void 0, void 0, function () {
-        var client, command, draft, idx, addPick, response, e_1;
+    }); };
+    var submitGames = function (evt) { return __awaiter(void 0, void 0, void 0, function () {
+        var client, command, weekly, idx, addPick, response, e_4;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    client = new WorldDoomLeague_1.DraftClient();
-                    command = new WorldDoomLeague_1.CreateDraftCommand;
-                    draft = [];
-                    for (idx = 0; idx < draftList.length; idx++) {
-                        addPick = new WorldDoomLeague_1.DraftRequest();
-                        addPick.nominatedPlayer = draftList[idx].nominatedPlayer;
-                        addPick.nominatingPlayer = draftList[idx].nominatingPlayer;
-                        addPick.playerSoldTo = draftList[idx].playerSoldTo;
-                        addPick.sellPrice = draftList[idx].sellPrice;
-                        draft.push(addPick);
+                    client = new WorldDoomLeague_1.MatchesClient();
+                    command = new WorldDoomLeague_1.CreateMatchesCommand;
+                    weekly = [];
+                    for (idx = 0; idx < games.length; idx++) {
+                        addPick = new WorldDoomLeague_1.WeeklyRequest();
+                        addPick.weekId = games[idx].weekId;
+                        addPick.mapId = games[idx].mapId;
+                        addPick.gameList = [];
+                        games[idx].gameList.map(function (s, _sidx) {
+                            var addGame = new WorldDoomLeague_1.NewGame();
+                            addGame.blueTeam = s.blueTeam;
+                            addGame.redTeam = s.redTeam;
+                            addGame.gameDateTime = s.gameDateTime;
+                            addPick.gameList.push(addGame);
+                        });
+                        weekly.push(addPick);
                     }
-                    command.season = props.form.season;
-                    command.draftRequestList = draft;
-                    return [4 /*yield*/, client.create(command)];
+                    command.seasonId = props.form.season;
+                    command.weeklyGames = weekly;
+                    return [4 /*yield*/, client.createRegularSeason(command)];
                 case 1:
                     response = _a.sent();
-                    setCanSubmitDraft(false);
-                    setCompletedDraft(true);
+                    setCanSubmitGames(false);
+                    setCompletedGames(true);
                     return [3 /*break*/, 3];
                 case 2:
-                    e_1 = _a.sent();
-                    state_1.setErrorMessage(JSON.parse(e_1.response));
+                    e_4 = _a.sent();
+                    console.log(e_4);
+                    console.log(e_4.response);
+                    state_1.setErrorMessage(JSON.parse(e_4.response));
                     return [3 /*break*/, 3];
                 case 3: return [2 /*return*/];
             }
         });
     }); };
-    var checkIfFormComplete = function (draft) {
-        if (draft.every(function (element) { return element.nominatedPlayer && element.nominatingPlayer && element.playerSoldTo &&
-            element.sellPrice.length > 0; })) {
-            setCanSubmitDraft(true);
+    var submitMaps = function (evt) { return __awaiter(void 0, void 0, void 0, function () {
+        var client, command, response, e_5;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    client = new WorldDoomLeague_1.MapsClient();
+                    command = new WorldDoomLeague_1.CreateMapCommand;
+                    command.mapName = mapName;
+                    command.mapPack = mapPack;
+                    command.mapNumber = mapNumber;
+                    return [4 /*yield*/, client.create(command)];
+                case 1:
+                    response = _a.sent();
+                    setNewMapId(response);
+                    setMapPack('');
+                    setMapName('');
+                    setMapNumber(0);
+                    return [3 /*break*/, 3];
+                case 2:
+                    e_5 = _a.sent();
+                    state_1.setErrorMessage(JSON.parse(e_5.response));
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); };
+    var createGames = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var pad_array, teams, gameWeeks, maxGamesPerWeek, newGames, newTeams, i, buildGames, newTeamsArray, i, weekTeams;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    pad_array = function (arr, len, fill) {
+                        return arr.concat(Array(len).fill(fill)).slice(0, len);
+                    };
+                    setCanCreateGames(false);
+                    return [4 /*yield*/, getTeams()];
+                case 1:
+                    teams = _a.sent();
+                    return [4 /*yield*/, getWeeks()];
+                case 2:
+                    gameWeeks = _a.sent();
+                    if (teams) {
+                        maxGamesPerWeek = (teams.length / 2) * gamesPerWeek;
+                        newGames = [];
+                        newTeams = [];
+                        for (i = 0; i < gameWeeks.length; i++) {
+                            buildGames = newGames.concat({
+                                weekId: gameWeeks[i].id,
+                                mapId: null,
+                                gameList: pad_array([], maxGamesPerWeek, {
+                                    redTeam: null,
+                                    blueTeam: null,
+                                    gameDateTime: null
+                                })
+                            });
+                            newGames = buildGames;
+                        }
+                        ;
+                        newTeamsArray = teams.map(function (s, _idx) {
+                            return __assign(__assign({}, s), { label: s.teamAbbreviation, value: s.id, gamesLeft: gamesPerWeek, isdisabled: false });
+                        });
+                        for (i = 0; i < gameWeeks.length; i++) {
+                            weekTeams = [];
+                            weekTeams.push.apply(weekTeams, newTeamsArray);
+                            newTeams.push(weekTeams);
+                        }
+                        ;
+                        setGames(newGames);
+                        setWeeks(gameWeeks);
+                        props.update("teams", newTeams);
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    }); };
+    var handleMapChange = function (weekIndex, value) {
+        var newWeeks = games.map(function (game, _idx) {
+            console.log(_idx);
+            if (_idx !== weekIndex)
+                return game;
+            return __assign(__assign({}, game), { mapId: value });
+        });
+        setGames(newWeeks);
+        checkIfFormComplete(newWeeks);
+    };
+    var handleRedTeamSelected = function (weekIndex, gameIndex, value) {
+        // subtract the gamesLeft to handle disables
+        var newTeamsArray = props.form.teams.map(function (s, _idx) {
+            if (_idx !== weekIndex)
+                return s;
+            return s.map(function (t, _sidx) {
+                if (t.value !== value.value)
+                    return t;
+                var left = t.gamesLeft - 1;
+                var disable = left <= 0;
+                return __assign(__assign({}, t), { gamesLeft: left, isdisabled: disable });
+            });
+        });
+        // re-enable a captain if they are deselected.
+        if (games[weekIndex].gameList[gameIndex].redTeam !== null) {
+            var reenabledOldTeam = newTeamsArray.map(function (s, _idx) {
+                if (_idx !== weekIndex)
+                    return s;
+                return s.map(function (t, _sidx) {
+                    if (t.value !== games[weekIndex].gameList[gameIndex].redTeam)
+                        return t;
+                    var left = t.gamesLeft + 1;
+                    var disable = left <= 0;
+                    return __assign(__assign({}, t), { gamesLeft: left, isdisabled: disable });
+                });
+            });
+            props.update("teams", reenabledOldTeam);
         }
         else {
-            setCanSubmitDraft(false);
+            var newTeamList = newTeamsArray.map(function (s, _idx) {
+                if (_idx !== weekIndex)
+                    return s;
+                return s.map(function (t, _sidx) {
+                    if (t.value !== value.value)
+                        return t;
+                    if (t.playersLeft > 0)
+                        return __assign(__assign({}, t), { isdisabled: false });
+                    return __assign(__assign({}, t), { isdisabled: true });
+                });
+            });
+            props.update("teams", newTeamList);
+        }
+        var newRedTeam = games.map(function (game, _idx) {
+            if (_idx !== weekIndex)
+                return game;
+            var newGameList = game.gameList.map(function (t, _sidx) {
+                if (_sidx !== gameIndex)
+                    return t;
+                return __assign(__assign({}, t), { redTeam: value.value });
+            });
+            return __assign(__assign({}, game), { gameList: newGameList });
+        });
+        setGames(newRedTeam);
+        checkIfFormComplete(newRedTeam);
+    };
+    var handleBlueTeamSelected = function (weekIndex, gameIndex, value) {
+        // subtract the gamesLeft to handle disables
+        var newTeamsArray = props.form.teams.map(function (s, _idx) {
+            if (_idx !== weekIndex)
+                return s;
+            return s.map(function (t, _sidx) {
+                if (t.value !== value.value)
+                    return t;
+                var left = t.gamesLeft - 1;
+                var disable = left <= 0;
+                return __assign(__assign({}, t), { gamesLeft: left, isdisabled: disable });
+            });
+        });
+        // re-enable a captain if they are deselected.
+        if (games[weekIndex].gameList[gameIndex].blueTeam !== null) {
+            var reenabledOldTeam = newTeamsArray.map(function (s, _idx) {
+                if (_idx !== weekIndex)
+                    return s;
+                return s.map(function (t, _sidx) {
+                    if (t.value !== games[weekIndex].gameList[gameIndex].blueTeam)
+                        return t;
+                    var left = t.gamesLeft + 1;
+                    var disable = left <= 0;
+                    return __assign(__assign({}, t), { gamesLeft: left, isdisabled: disable });
+                });
+            });
+            props.update("teams", reenabledOldTeam);
+        }
+        else {
+            var newTeamList = newTeamsArray.map(function (s, _idx) {
+                if (_idx !== weekIndex)
+                    return s;
+                return s.map(function (t, _sidx) {
+                    if (t.value !== value.value)
+                        return t;
+                    if (t.playersLeft > 0)
+                        return __assign(__assign({}, t), { isdisabled: false });
+                    return __assign(__assign({}, t), { isdisabled: true });
+                });
+            });
+            props.update("teams", newTeamList);
+        }
+        var newBlueTeam = games.map(function (game, _idx) {
+            if (_idx !== weekIndex)
+                return game;
+            var newGameList = game.gameList.map(function (t, _sidx) {
+                if (_sidx !== gameIndex)
+                    return t;
+                return __assign(__assign({}, t), { blueTeam: value.value });
+            });
+            return __assign(__assign({}, game), { gameList: newGameList });
+        });
+        setGames(newBlueTeam);
+        checkIfFormComplete(newBlueTeam);
+    };
+    var checkIfFormComplete = function (weeks) {
+        if (weeks.every(function (element) { return element.mapId && element.weekId && element.gameList.every(function (game) { return game.blueTeam && game.redTeam; }); })) {
+            setCanSubmitGames(true);
+        }
+        else {
+            setCanSubmitGames(false);
         }
     };
     var update = function (e) {
         props.update(e.target.name, e.target.value);
     };
-    // create a list for each captain who bought a player.
-    var renderSoldForInput = function (idx) {
+    // create a list for each engine.
+    var renderMapDropdown = function (weekIndex) {
         var select = null;
-        select = (React.createElement(reactstrap_1.InputGroup, null,
-            React.createElement(reactstrap_1.InputGroupAddon, { addonType: "prepend" },
-                React.createElement(reactstrap_1.InputGroupText, null, "$")),
-            React.createElement(reactstrap_1.Input, { placeholder: "Amount", min: 1, max: 28, type: "number", step: "1", disabled: completedDraft, onChange: function (e) { return handleSoldForInput(idx, e.target.value); } })));
-        return (select);
-    };
-    // create a list for each captain who bought a player.
-    var renderSoldToDropdown = function (idx) {
-        var select = null;
-        if (props.form.captains) {
-            select = (React.createElement(react_select_1.default, { options: props.form.captains, onChange: function (e) { return handleSoldToSelected(idx, e); }, isOptionDisabled: function (option) { return option.isdisabled; }, isDisabled: completedDraft, isSearchable: true }));
+        console.log("map dropdown rerender!!");
+        if (data.length > 0) {
+            var maps = [];
+            for (var idx = 0; idx < data.length; idx++) {
+                var map = new WorldDoomLeague_1.MapsDto();
+                map.id = data[idx].id;
+                map.mapName = data[idx].mapName;
+                map.mapNumber = data[idx].mapNumber;
+                map.mapPack = data[idx].mapPack;
+                maps.push(map);
+            }
+            ;
+            select = (React.createElement(react_select_1.default, { options: maps, onChange: function (e) { return handleMapChange(weekIndex, e.id); }, isOptionDisabled: function (option) { return option.isdisabled; }, isDisabled: completedGames, isSearchable: true, value: maps.find(function (o) { return o.id == games[weekIndex].mapId; }) || null, getOptionValue: function (value) { return value.id; }, getOptionLabel: function (label) { return label.mapName + " | " + label.mapPack; }, isLoading: loading }));
         }
         else {
-            select = (React.createElement(react_select_1.default, { options: [{ label: "No captains left!", value: "Not" }], isDisabled: completedDraft }));
+            select = (React.createElement(react_select_1.default, { options: [{ label: "No maps left!", value: "Not" }], isDisabled: completedGames }));
+        }
+        return (select);
+    };
+    // create a form for entering a new engine.
+    var renderNewMapForm = function () {
+        return (React.createElement(React.Fragment, null,
+            React.createElement(reactstrap_1.FormGroup, null,
+                React.createElement(reactstrap_1.Label, { for: "mapName" }, "Map Name"),
+                React.createElement(reactstrap_1.Input, { type: "text", name: "mapName", id: "mapName", value: mapName, placeholder: "N's Base of Boppin'", onChange: function (e) { return setMapName(e.target.value); } })),
+            React.createElement(reactstrap_1.FormGroup, null,
+                React.createElement(reactstrap_1.Label, { for: "mapPack" }, "Pack"),
+                React.createElement(reactstrap_1.Input, { type: "text", name: "mapPack", id: "mapPack", value: mapPack, placeholder: "32in24-4", onChange: function (e) { return setMapPack(e.target.value); } })),
+            React.createElement(reactstrap_1.FormGroup, null,
+                React.createElement(reactstrap_1.Label, { for: "engineUrl" }, "Map Number"),
+                React.createElement(reactstrap_1.Input, { placeholder: "Amount", min: 1, max: 32, type: "number", step: "1", value: mapNumber, onChange: function (e) { return setMapNumber(parseInt(e.target.value, 10)); } })),
+            React.createElement(reactstrap_1.Button, { color: "primary", size: "lg", block: true, disabled: !mapName || !mapName || !mapNumber || completedGames, onClick: submitMaps }, "Create New Map")));
+    };
+    var renderMapSelect = function (weekIndex) {
+        return (React.createElement(React.Fragment, null,
+            React.createElement(reactstrap_1.Row, null,
+                React.createElement(reactstrap_1.Col, null,
+                    React.createElement(reactstrap_1.Form, null,
+                        React.createElement(reactstrap_1.FormGroup, null,
+                            React.createElement(reactstrap_1.Label, { for: "engine" }, "Map"),
+                            renderMapDropdown(weekIndex)))))));
+    };
+    var renderMapCreate = function () {
+        return (React.createElement(React.Fragment, null,
+            React.createElement(reactstrap_1.Row, null,
+                React.createElement(reactstrap_1.Col, null,
+                    React.createElement(reactstrap_1.Form, null, renderNewMapForm())))));
+    };
+    // create a list for each nominating captain.
+    var renderRedTeamSelection = function (weekIndex, gameIndex) {
+        var select = null;
+        if (props.form.teams) {
+            select = (React.createElement(react_select_1.default, { options: props.form.teams[weekIndex], onChange: function (e) { return handleRedTeamSelected(weekIndex, gameIndex, e); }, isOptionDisabled: function (option) { return option.isdisabled; }, isDisabled: completedGames, value: props.form.teams[weekIndex].find(function (o) { return o.id == games[weekIndex].gameList[gameIndex].redTeam; }) || null, isSearchable: true }));
+        }
+        else {
+            select = (React.createElement(react_select_1.default, { options: [{ label: "No teams left!", value: "Not" }], isDisabled: completedGames }));
         }
         return (select);
     };
     // create a list for each nominating captain.
-    var renderNominatingCaptainDropdown = function (idx) {
+    var renderBlueTeamSelection = function (weekIndex, gameIndex) {
         var select = null;
-        if (props.form.captains) {
-            select = (React.createElement(react_select_1.default, { options: props.form.captains, onChange: function (e) { return handleNominatingSelected(idx, e); }, isOptionDisabled: function (option) { return option.isdisabled; }, isDisabled: completedDraft, isSearchable: true }));
+        if (props.form.teams) {
+            select = (React.createElement(react_select_1.default, { options: props.form.teams[weekIndex], onChange: function (e) { return handleBlueTeamSelected(weekIndex, gameIndex, e); }, isOptionDisabled: function (option) { return option.isdisabled; }, isDisabled: completedGames, value: props.form.teams[weekIndex].find(function (o) { return o.id == games[weekIndex].gameList[gameIndex].blueTeam; }) || null, isSearchable: true }));
         }
         else {
-            select = (React.createElement(react_select_1.default, { options: [{ label: "No captains left!", value: "Not" }], isDisabled: completedDraft }));
+            select = (React.createElement(react_select_1.default, { options: [{ label: "No teams left!", value: "Not" }], isDisabled: completedGames }));
         }
         return (select);
     };
-    // create a list for each nominated player.
-    var renderNominatedPlayerDropdown = function (idx) {
+    var renderPagination = function (weekIndex) {
         var select = null;
-        if (props.form.players) {
-            select = (React.createElement(react_select_1.default, { options: props.form.players, onChange: function (e) { return handleNominatedSelected(idx, e); }, isOptionDisabled: function (option) { return option.isdisabled; }, isDisabled: completedDraft, isSearchable: true }));
-        }
-        else {
-            select = (React.createElement(react_select_1.default, { options: [{ label: "No players left!", value: "Not" }], isDisabled: completedDraft }));
-        }
+        select = (React.createElement(reactstrap_1.Row, null,
+            React.createElement(reactstrap_1.Col, { sm: "3", md: { size: 6, offset: 3 } },
+                React.createElement(reactstrap_1.Pagination, { size: "lg", "aria-label": "Page navigation example" }, weeks && weeks.map(function (week, idx) {
+                    return React.createElement(reactstrap_1.PaginationItem, { active: week.weekNumber - 1 == weekIndex },
+                        React.createElement(reactstrap_1.PaginationLink, { key: week.id, onClick: function (e) { return setCurrentWeek(week.weekNumber - 1); } }, week.weekNumber));
+                })))));
         return (select);
+    };
+    // render the game list
+    var renderGamesList = function (weekIndex) {
+        var gameList = (React.createElement(React.Fragment, null, games[weekIndex] && canCreateGames == false && (games[weekIndex].gameList.map(function (game, gameIndex) { return (React.createElement(reactstrap_1.Row, null,
+            React.createElement(reactstrap_1.Col, { xs: "6" },
+                React.createElement("div", null,
+                    "Red Team: ",
+                    renderRedTeamSelection(weekIndex, gameIndex)),
+                React.createElement("br", null)),
+            React.createElement(reactstrap_1.Col, { xs: "6" },
+                React.createElement("div", null,
+                    "Blue Team: ",
+                    renderBlueTeamSelection(weekIndex, gameIndex)),
+                React.createElement("br", null)))); }))));
+        return (gameList);
+    };
+    // render the game list container.
+    var renderGamesListContainer = function (weekIndex) {
+        var games = (React.createElement(React.Fragment, null,
+            React.createElement(reactstrap_1.Row, null,
+                React.createElement(reactstrap_1.Col, { sm: "12", md: { size: 6, offset: 3 } },
+                    React.createElement("h4", { className: "text-center" },
+                        "Week #",
+                        weeks[weekIndex] && weeks[weekIndex].weekNumber))),
+            renderGamesList(weekIndex),
+            React.createElement("br", null),
+            renderMapSelect(weekIndex),
+            React.createElement("br", null),
+            renderPagination(weekIndex),
+            React.createElement("br", null),
+            renderMapCreate(),
+            React.createElement("br", null)));
+        return (games);
     };
     return (React.createElement(React.Fragment, null,
         React.createElement(reactstrap_1.Row, null,
             React.createElement(reactstrap_1.Col, { sm: "12", md: { size: 6, offset: 3 } },
-                React.createElement("h3", { className: 'text-center' }, "Register Draft"),
-                React.createElement("p", null, "Please input the draft information. When completed, the team rosters will be finalized."),
-                React.createElement(reactstrap_1.Label, { for: "amountTeams" }, "Amount of players per team"),
-                React.createElement(reactstrap_1.Input, { placeholder: "Amount", name: "amountPlayers", min: 4, max: 4, type: "number", step: "1", value: 4, disabled: true }),
+                React.createElement("h3", { className: 'text-center' }, "Create Regular Season Games"),
+                React.createElement("p", null, "Please input the games that will be scheduled for each week in the regular season."),
+                React.createElement(reactstrap_1.Label, { for: "amountTeams" }, "Amount of games per team"),
+                React.createElement(reactstrap_1.Input, { placeholder: "Amount", name: "gamesPerTeam", min: 1, max: 4, type: "number", step: "1", value: gamesPerWeek, disabled: true }),
                 React.createElement("br", null),
-                React.createElement(reactstrap_1.Button, { color: "primary", size: "lg", block: true, disabled: !canCreateDraft, onClick: createDraftPicks }, "Create Draft Picks"),
+                React.createElement(reactstrap_1.Button, { color: "primary", size: "lg", block: true, disabled: !canCreateGames || loading, onClick: createGames }, "Create Games"),
                 React.createElement("hr", null))),
-        React.createElement(reactstrap_1.Row, null, draftList && canCreateDraft == false && (draftList.map(function (draft, index) { return (React.createElement(reactstrap_1.Col, { xs: "6", sm: "4" },
-            React.createElement(reactstrap_1.Card, null,
-                React.createElement(reactstrap_1.CardBody, null,
-                    React.createElement(reactstrap_1.CardTitle, { tag: "h5" },
-                        "Draft Pick #",
-                        index + 1),
-                    "Captain",
-                    renderNominatingCaptainDropdown(index),
-                    "nominates player",
-                    renderNominatedPlayerDropdown(index),
-                    "who is bought by",
-                    renderSoldToDropdown(index),
-                    "for",
-                    renderSoldForInput(index))),
-            React.createElement("br", null))); }))),
+        games && canCreateGames == false && (renderGamesListContainer(currentWeek)),
         React.createElement(reactstrap_1.Row, null,
             React.createElement(reactstrap_1.Col, { sm: "12", md: { size: 6, offset: 3 } },
-                React.createElement(reactstrap_1.Button, { color: "primary", size: "lg", block: true, disabled: !canSubmitDraft, onClick: createDraft }, "Finalize Draft"))),
+                React.createElement(reactstrap_1.Button, { color: "primary", size: "lg", block: true, disabled: !canSubmitGames, onClick: submitGames }, "Finalize Games"))),
         React.createElement(reactstrap_1.Row, null,
             React.createElement(reactstrap_1.Col, { sm: "12", md: { size: 6, offset: 3 } },
-                React.createElement(StepButtons_1.default, __assign({ step: 3 }, props, { disabled: !completedDraft }))))));
+                React.createElement(reactstrap_1.Button, { color: "secondary", size: "lg", blockdisabled: !completedGames, onClick: redirect }, "Finish")))));
 };
 exports.default = CreateGames;
 //# sourceMappingURL=CreateGames.js.map

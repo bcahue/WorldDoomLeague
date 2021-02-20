@@ -44,8 +44,10 @@ namespace WorldDoomLeague.Application.Weeks.Queries.GetRegularSeasonWeeks
             {
                 WeekList = await _context.Weeks
                     .Where(w => w.FkIdSeason == request.SeasonId && w.WeekType == "n")
-                    .Include(i => i.WeekMaps)
-                        .ThenInclude(ti => ti.FkIdMapNavigation)
+                    //.Include(i => i.WeekMaps)
+                        //.ThenInclude(ti => ti.FkIdMapNavigation)
+                            //.ThenInclude(ti => ti.MapImages)
+                                //.ThenInclude(ti => ti.FkIdImageFileNavigation)
                     .ProjectTo<RegularSeasonWeeksDto>(_mapper.ConfigurationProvider)
                     .OrderBy(t => t.WeekNumber)
                     .ToListAsync(cancellationToken)

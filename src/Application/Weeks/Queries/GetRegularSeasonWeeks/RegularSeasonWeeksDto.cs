@@ -14,7 +14,7 @@ namespace WorldDoomLeague.Application.Weeks.Queries.GetRegularSeasonWeeks
 
         public DateTime WeekStartDate { get; set; }
 
-        public ICollection<WeekMapsDto> WeekMaps {get; set;}
+        //public ICollection<WeekMapsDto> WeekMaps {get; set;}
 
         public void Mapping(Profile profile)
         {

@@ -1,68 +1,39 @@
-﻿import StepButtons from './StepButtons'
-import * as React from 'react';
+﻿import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { Label, Input, Row, Col, Button, Pagination, PaginationLink, PaginationItem, FormGroup, Form } from 'reactstrap';
+import { Label, Input, Row, Col, Button, FormGroup, Form } from 'reactstrap';
 import Select from 'react-select';
 import {
-    ITeamsVm,
-    ITeamsDto,
-    IWeeklyRequest,
-    IRegularSeasonWeeksVm,
-    IRegularSeasonWeeksDto,
+    IRoundObject,
+    ISeasonDto,
+    ISeasonsVm,
     MatchesClient,
-    WeeksClient,
-    CreateMatchesCommand,
-    WeeklyRequest,
-    NewGame,
-    TeamsClient,
-    INewGame,
-    IMapsVm,
-    IMapsDto,
-    MapsClient,
-    CreateMapCommand,
-    MapsDto
+    ProcessMatchCommand,
+    SeasonsClient,
+    TeamsClient
 } from '../../../WorldDoomLeague';
-import { useHistory } from 'react-router-dom';
 import { setErrorMessage } from '../../../state';
 
-const CreateGames = props => {
-    const [games, setGames] = useState<IWeeklyRequest[]>([{
-        weekId: null,
-        mapId: null,
-        gameList: [] as NewGame[]
-    }]);
-    const [weeks, setWeeks] = useState<IRegularSeasonWeeksDto[]>([{
-        id: null,
-        weekNumber: null,
-        weekStartDate: null
-    }]);
+const ProcessGameWizard = props => {
     const [loading, setLoading] = useState(true);
-    const [gamesPerWeek, setGamesPerWeek] = useState(1);
-    const [currentWeek, setCurrentWeek] = useState(0);
-    const [canSubmitGames, setCanSubmitGames] = useState(false);
-    const [completedGames, setCompletedGames] = useState(false);
-    const [canCreateGames, setCanCreateGames] = useState(true);
-    const [data, setData] = useState<IMapsDto[]>([]);
-    const [index, setIndex] = useState(0);
-    const [mapPack, setMapPack] = useState<string>("");
-    const [mapName, setMapName] = useState<string>("");
-    const [mapNumber, setMapNumber] = useState(0);
-    const [newMapId, setNewMapId] = useState(0);
-    let history = useHistory();
-
-    const redirect = () => {
-        history.push('/');
-    };
+    const [season, setSeason] = useState(0);
+    const [game, setGame] = useState(0);
+    const [flipTeams, setFlipTeams] = useState(false);
+    const [canProcessGame, setCanProcessGame] = useState(false);
+    const [completedGame, setCompletedGame] = useState(false);
+    const [canSelectSeason, setCanSelectSeason] = useState(false);
+    const [canSelectGame, setCanSelectGame] = useState(false);
+    const [seasonData, setSeasonData] = useState<ISeasonDto[]>();
+    const [rounds, setRounds] = useState<IRoundObject[]>();
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                let client = new MapsClient();
+                let client = new SeasonsClient();
                 const response = await client.get()
-                    .then(response => response.toJSON() as Promise<IMapsVm>);
-                const data = response.mapList;
-                setData(data);
+                    .then(response => response.toJSON() as Promise<ISeasonsVm>);
+                const data = response.seasonList;
+                setSeasonData(data);
             } catch (e) {
                 setErrorMessage(JSON.parse(e.response));
             }
@@ -70,48 +41,12 @@ const CreateGames = props => {
         };
 
         fetchData();
-    }, [newMapId]);
+    }, []);
 
-    const getWeeks = async () => {
-        const fetchData = async () => {
-                setLoading(true);
-                try {
-                    let client = new WeeksClient();
-                    const response = await client.getRegularSeasonWeeks(props.form.season)
-                        .then(response => response.toJSON() as Promise<IRegularSeasonWeeksVm>);
-                    const weekData = response.weekList;
-                    setLoading(false);
-                    return weekData;
-                } catch (e) {
-                    setErrorMessage(JSON.parse(e.response));
-                }
-            };
-
-            return fetchData();
-    };
-
-    const getTeams = async () => {
-        const fetchData = async () => {
-                setLoading(true);
-                try {
-                    let client = new TeamsClient();
-                    const response = await client.getTeamsBySeasonId(props.form.season)
-                        .then(response => response.toJSON() as Promise<ITeamsVm>);
-                    const teamData = response.teamList;
-                    setLoading(false);
-                    return teamData;
-                } catch (e) {
-                    setErrorMessage(JSON.parse(e.response));
-                }
-            };
-
-            return fetchData();
-    };
-
-    const submitGames = async (evt) => {
+    const processGame = async (evt) => {
         try {
             let client = new MatchesClient();
-            const command = new CreateMatchesCommand;
+            const command = new ProcessMatchCommand;
             // Need to do this to get around an NSwag generator bug.
             // https://github.com/RicoSuter/NSwag/issues/2862
             let weekly = [] as WeeklyRequest[];
@@ -132,11 +67,11 @@ const CreateGames = props => {
                 weekly.push(addPick);
             }
 
-            command.seasonId = props.form.season;
-            command.weeklyGames = weekly;
-            const response = await client.createRegularSeason(command);
-            setCanSubmitGames(false);
-            setCompletedGames(true);
+            command.flipTeams = flipTeams;
+            command.matchId = game;
+            const response = await client.process(command);
+            setCanProcessGame(false);
+            setCanSelectGame(false);
         } catch (e) {
             console.log(e);
             console.log(e.response);
@@ -144,41 +79,22 @@ const CreateGames = props => {
         }
     };
 
-    const submitMaps = async (evt) => {
-        try {
-            let client = new MapsClient();
-            const command = new CreateMapCommand;
-            command.mapName = mapName;
-            command.mapPack = mapPack;
-            command.mapNumber = mapNumber;
-            const response = await client.create(command);
-            setNewMapId(response);
-            setMapPack('');
-            setMapName('');
-            setMapNumber(0);
-        } catch (e) {
-            setErrorMessage(JSON.parse(e.response));
-        }
-    };
+    const createGames = () => {
+        setCanSelectGame(false);
 
-    const createGames = async () => {
         const pad_array = (arr, len, fill) => {
             return arr.concat(Array(len).fill(fill)).slice(0, len);
         };
 
-        setCanCreateGames(false);
-        const teams = await getTeams();
-        const gameWeeks = await getWeeks();
-
-        if (teams) {
-            const maxGamesPerWeek = (teams.length / 2) * gamesPerWeek;
+        if (props.form.teams) {
+            const maxGamesPerWeek = (props.form.teams.length / 2) * gamesPerWeek;
 
             var newGames = [] as IWeeklyRequest[];
             var newTeams = [];
 
-            for (var i = 0; i < gameWeeks.length; i++) {
+            for (var i = 0; i < weeks.length; i++) {
                 const buildGames = newGames.concat({
-                    weekId: gameWeeks[i].id,
+                    weekId: weeks[i].id,
                     mapId: null,
                     gameList: pad_array([] as NewGame[], maxGamesPerWeek, {
                         redTeam: null,
@@ -190,23 +106,24 @@ const CreateGames = props => {
                 newGames = buildGames;
             };
 
-            const newTeamsArray = teams.map((s, _idx) => {
+            const newTeamsArray = props.form.teams.map((s, _idx) => {
                 return { ...s, label: s.teamAbbreviation, value: s.id, gamesLeft: gamesPerWeek, isdisabled: false };
             });
 
-            for (var i = 0; i < gameWeeks.length; i++) {
+            for (var i = 0; i < weeks.length; i++) {
                 var weekTeams = [];
                 weekTeams.push(...newTeamsArray);
                 newTeams.push(weekTeams);
             };
 
             setGames(newGames);
-            setWeeks(gameWeeks);
             props.update("teams", newTeams);
         }
     };
 
     const handleMapChange = (weekIndex, value) => {
+        console.log(value);
+        console.log(weekIndex);
         const newWeeks = games.map((game, _idx) => {
             console.log(_idx);
             if (_idx !== weekIndex) return game;
@@ -323,62 +240,24 @@ const CreateGames = props => {
         }
     };
 
-    const update = (e) => {
-        props.update(e.target.name, e.target.value);
-    };
-
     // create a list for each engine.
-    const renderMapDropdown = (weekIndex) => {
+    const renderMapDropdown = (roundIndex) => {
         let select = null;
-        console.log("map dropdown rerender!!");
         if (data.length > 0) {
-            let maps = [];
-
-            for (var idx = 0; idx < data.length; idx++) {
-                var map = new MapsDto();
-                map.id = data[idx].id;
-                map.mapName = data[idx].mapName;
-                map.mapNumber = data[idx].mapNumber;
-                map.mapPack = data[idx].mapPack;
-                maps.push(map);
-            };
-
             select = (<Select
-                options={maps}
+                options={data}
                 onChange={e => handleMapChange(weekIndex, e.id)}
                 isOptionDisabled={(option) => option.isdisabled}
-                isDisabled={completedGames}
+                isDisabled={completedGame}
                 isSearchable={true}
-                value={maps.find(o => o.id == games[weekIndex].mapId) || null}
                 getOptionValue={value => value.id}
-                getOptionLabel={label => label.mapName + " | " + label.mapPack }
+                getOptionLabel={label => label.mapName + " | " + label.mapPack}
                 isLoading={loading}
             />);
         } else {
             select = (<Select options={[{ label: "No maps left!", value: "Not" }]} isDisabled={completedGames} />);
         }
         return (select);
-    };
-
-    // create a form for entering a new engine.
-    const renderNewMapForm = () => {
-        return (
-            <React.Fragment>
-                <FormGroup>
-                    <Label for="mapName">Map Name</Label>
-                    <Input type="text" name="mapName" id="mapName" value={mapName} placeholder="N's Base of Boppin'" onChange={e => setMapName(e.target.value)} />
-                </FormGroup>
-                <FormGroup>
-                    <Label for="mapPack">Pack</Label>
-                    <Input type="text" name="mapPack" id="mapPack" value={mapPack} placeholder="32in24-4" onChange={e => setMapPack(e.target.value)} />
-                </FormGroup>
-                <FormGroup>
-                    <Label for="engineUrl">Map Number</Label>
-                    <Input placeholder="Amount" min={1} max={32} type="number" step="1" value={mapNumber} onChange={e => setMapNumber(parseInt(e.target.value, 10))} />
-                </FormGroup>
-                <Button color="primary" size="lg" block disabled={!mapName || !mapName || !mapNumber || completedGames} onClick={submitMaps}>Create New Map</Button>
-            </React.Fragment>
-        );
     };
 
     const renderMapSelect = (weekIndex) => {
@@ -398,20 +277,6 @@ const CreateGames = props => {
         );
     };
 
-    const renderMapCreate = () => {
-        return (
-            <React.Fragment>
-                <Row>
-                    <Col>
-                        <Form>
-                            {renderNewMapForm()}
-                        </Form>
-                    </Col>
-                </Row>
-            </React.Fragment>
-        );
-    };
-
     // create a list for each nominating captain.
     const renderRedTeamSelection = (weekIndex, gameIndex) => {
         let select = null;
@@ -421,12 +286,11 @@ const CreateGames = props => {
                     options={props.form.teams[weekIndex]}
                     onChange={e => handleRedTeamSelected(weekIndex, gameIndex, e)}
                     isOptionDisabled={(option) => option.isdisabled}
-                    isDisabled={completedGames}
-                    value={props.form.teams[weekIndex].find(o => o.id == games[weekIndex].gameList[gameIndex].redTeam) || null}
+                    isDisabled={completedGame}
                     isSearchable={true}
                 />)
         } else {
-            select = (<Select options={[{ label: "No teams left!", value: "Not" }]} isDisabled={completedGames} />);
+            select = (<Select options={[{ label: "No teams left!", value: "Not" }]} isDisabled={completedGame} />);
         }
 
         return (select);
@@ -441,33 +305,35 @@ const CreateGames = props => {
                     options={props.form.teams[weekIndex]}
                     onChange={e => handleBlueTeamSelected(weekIndex, gameIndex, e)}
                     isOptionDisabled={(option) => option.isdisabled}
-                    isDisabled={completedGames}
-                    value={props.form.teams[weekIndex].find(o => o.id == games[weekIndex].gameList[gameIndex].blueTeam) || null}
+                    isDisabled={completedGame}
                     isSearchable={true}
                 />)
         } else {
-            select = (<Select options={[{ label: "No teams left!", value: "Not" }]} isDisabled={completedGames} />);
+            select = (<Select options={[{ label: "No teams left!", value: "Not" }]} isDisabled={completedGame} />);
         }
 
         return (select);
     };
 
-    const renderPagination = (weekIndex) => {
+    // create a list for each nominating captain.
+    const renderSeasonList = () => {
         let select = null;
-        select = (
-            <Row>
-                <Col sm="3" md={{ size: 6, offset: 3 }}>
-                    <Pagination size="lg" aria-label="Page navigation example">
-                        {weeks && weeks.map((week, idx) =>
-                            <PaginationItem active={week.weekNumber - 1 == weekIndex}>
-                                <PaginationLink key={week.id} onClick={e => setCurrentWeek(week.weekNumber - 1)}>
-                                    {week.weekNumber}
-                                </PaginationLink>
-                            </PaginationItem>
-                        )}
-                        </Pagination>
-                </Col>
-            </Row>);
+        if (seasonData) {
+            select = (
+                <Select
+                    options={seasonData}
+                    onChange={e => setSeason(e)}
+                    isOptionDisabled={(option) => option.isdisabled}
+                    isDisabled={completedGame}
+                    isSearchable={true}
+                    getOptionValue={value => value.id}
+                    getOptionLabel={label => label.mapName + " | " + label.mapPack}
+                    isLoading={loading}
+                />)
+        } else {
+            select = (<Select options={[{ label: "No seasons!", value: "Not" }]} isDisabled={completedGame} />);
+        }
+
         return (select);
     };
 
@@ -493,7 +359,7 @@ const CreateGames = props => {
     };
 
     // render the game list container.
-    const renderGamesListContainer = (weekIndex) => {
+    const renderGamesListContainer = () => {
         let games = (
             <React.Fragment>
             <Row>
@@ -505,10 +371,6 @@ const CreateGames = props => {
                 <br />
                 {renderMapSelect(weekIndex)}
                 <br />
-                {renderPagination(weekIndex)}
-                <br />
-                {renderMapCreate()}
-                <br />
             </React.Fragment>);
         return (games);
     };
@@ -517,30 +379,37 @@ const CreateGames = props => {
         <React.Fragment>
             <Row>
                 <Col sm="12" md={{ size: 6, offset: 3 }}>
-                    <h3 className='text-center'>Create Regular Season Games</h3>
-                    <p>Please input the games that will be scheduled for each week in the regular season.</p>
-                    <Label for="amountTeams">Amount of games per team</Label>
-                    <Input placeholder="Amount" name="gamesPerTeam" min={1} max={4} type="number" step="1" value={gamesPerWeek} disabled={true} />
+                    <h3 className='text-center'>Process Game</h3>
+                    <p>Please select the ongoing season where a game needs to be played.</p>
+                    <Label for="seasonSelect">Select a season</Label>
+                    {renderSeasonList()}
                     <br />
-                    <Button color="primary" size="lg" block disabled={!canCreateGames || loading} onClick={createGames}>Create Games</Button>
+                    <Button color="primary" size="lg" block disabled={!(season > 0) || loading} onClick={selectSeason}>Select Season</Button>
                     <hr />
                 </Col>
             </Row>
-            {games && canCreateGames == false && (
-                renderGamesListContainer(currentWeek)
+            <Row>
+                <Col sm="12" md={{ size: 6, offset: 3 }}>
+                    <Label for="gameSelect">Select a Game</Label>
+                    {renderGameList()}
+                    <Button color="primary" size="lg" block disabled={!canSelectGame} onClick={selectGame}>Select Game</Button>
+                </Col>
+            </Row>
+            {canCreateGame && (
+                renderGamesListContainer()
             )}
             <Row>
                 <Col sm="12" md={{ size: 6, offset: 3 }}>
-                    <Button color="primary" size="lg" block disabled={!canSubmitGames} onClick={submitGames}>Finalize Games</Button>
+                    <Button color="primary" size="lg" block disabled={!canProcessGame} onClick={processGame}>Process Game</Button>
                 </Col>
             </Row>
         <Row>
                 <Col sm="12" md={{ size: 6, offset: 3 }}>
-                    <Button color="secondary" size="lg" blockdisabled={!completedGames} onClick={redirect}>Finish</Button>
+                    <Button color="primary" size="lg" block disabled={!completedGame}>Finish</Button>
             </Col>
         </Row>
         </React.Fragment>
     );
 };
 
-export default CreateGames
+export default ProcessGameWizard

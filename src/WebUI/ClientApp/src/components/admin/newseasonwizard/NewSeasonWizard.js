@@ -19,6 +19,7 @@ var AddPlayers_1 = require("./AddPlayers");
 var AddTeams_1 = require("./AddTeams");
 var CreateWeeks_1 = require("./CreateWeeks");
 var RegisterDraft_1 = require("./RegisterDraft");
+var CreateGames_1 = require("./CreateGames");
 var reactstrap_1 = require("reactstrap");
 /* eslint react/prop-types: 0 */
 /**
@@ -49,7 +50,8 @@ var NewSeasonWizard = function () {
                 React.createElement(AddPlayers_1.default, { form: state.form, update: updateForm }),
                 React.createElement(AddTeams_1.default, { form: state.form, update: updateForm }),
                 React.createElement(RegisterDraft_1.default, { form: state.form, update: updateForm }),
-                React.createElement(CreateWeeks_1.default, { form: state.form, update: updateForm })))));
+                React.createElement(CreateWeeks_1.default, { form: state.form, update: updateForm }),
+                React.createElement(CreateGames_1.default, { form: state.form, update: updateForm })))));
 };
 exports.default = NewSeasonWizard;
 //# sourceMappingURL=NewSeasonWizard.js.map

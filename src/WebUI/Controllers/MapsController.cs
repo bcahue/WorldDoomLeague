@@ -1,5 +1,6 @@
 ﻿//using WorldDoomLeague.Application.Maps.Queries.GetMapSummaryById;
 using WorldDoomLeague.Application.Maps.Commands.CreateMap;
+using WorldDoomLeague.Application.Maps.Queries.GetMaps;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,13 +9,12 @@ namespace WorldDoomLeague.WebUI.Controllers
 {
     public class MapsController : ApiController
     {
-        /*
-        [HttpGet("{seasonId}")]
-        public async Task<TeamSummaryVm> Get(uint seasonId)
+        [HttpGet]
+        public async Task<MapsVm> Get()
         {
-            return await Mediator.Send(new GetDraftBySeasonId(seasonId));
+            return await Mediator.Send(new GetMapsQuery());
         }
-        */
+
         [HttpPost]
         public async Task<ActionResult<uint>> Create(CreateMapCommand command)
         {

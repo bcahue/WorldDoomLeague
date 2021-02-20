@@ -9,29 +9,29 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WorldDoomLeague.Application.Engine.Queries.GetEngines
+namespace WorldDoomLeague.Application.Maps.Queries.GetMaps
 {
-    public class GetEnginesQuery : IRequest<EnginesVm>
+    public class GetMapsQuery : IRequest<MapsVm>
     {
     }
 
-    public class GetEnginesQueryHandler : IRequestHandler<GetEnginesQuery, EnginesVm>
+    public class GetMapsQueryHandler : IRequestHandler<GetMapsQuery, MapsVm>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public GetEnginesQueryHandler(IApplicationDbContext context, IMapper mapper)
+        public GetMapsQueryHandler(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        public async Task<EnginesVm> Handle(GetEnginesQuery request, CancellationToken cancellationToken)
+        public async Task<MapsVm> Handle(GetMapsQuery request, CancellationToken cancellationToken)
         {
-            return new EnginesVm
+            return new MapsVm
             {
-                EngineList = await _context.Engines
-                    .ProjectTo<EnginesDto>(_mapper.ConfigurationProvider)
+                MapList = await _context.Maps
+                    .ProjectTo<MapsDto>(_mapper.ConfigurationProvider)
                     .OrderBy(t => t.Id)
                     .ToListAsync(cancellationToken)
             };

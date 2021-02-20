@@ -89,6 +89,7 @@
       <None Remove="ClientApp\src\components\admin\newseasonwizard\CreateGames.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\CreateWeeks.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\EngineList.tsx" />
+      <None Remove="ClientApp\src\components\admin\newseasonwizard\MapList.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\NewSeasonWizard.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\PlayerList.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\RegisterDraft.tsx" />
@@ -96,6 +97,7 @@
       <None Remove="ClientApp\src\components\admin\newseasonwizard\SeasonList.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\StepButtons.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\WadList.tsx" />
+      <None Remove="ClientApp\src\components\admin\processgamewizard\ProcessGameWizard.tsx" />
       <None Remove="ClientApp\src\components\LeaderboardAllTimeStats.tsx" />
       <None Remove="ClientApp\src\ErrorResponse.tsx" />
       <None Remove="ClientApp\src\reportWebVitals.ts" />
@@ -131,6 +133,9 @@
       <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\EngineList.tsx">
         <SubType>Code</SubType>
       </TypeScriptCompile>
+      <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\MapList.tsx">
+        <SubType>Code</SubType>
+      </TypeScriptCompile>
       <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\PlayerList.tsx">
         <SubType>Code</SubType>
       </TypeScriptCompile>
@@ -138,6 +143,9 @@
         <SubType>Code</SubType>
       </TypeScriptCompile>
       <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\WadList.tsx">
+        <SubType>Code</SubType>
+      </TypeScriptCompile>
+      <TypeScriptCompile Update="ClientApp\src\components\admin\processgamewizard\ProcessGameWizard.tsx">
         <SubType>Code</SubType>
       </TypeScriptCompile>
     </ItemGroup>

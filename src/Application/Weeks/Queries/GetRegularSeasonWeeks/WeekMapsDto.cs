@@ -10,13 +10,13 @@ namespace WorldDoomLeague.Application.Weeks.Queries.GetRegularSeasonWeeks
     {
         public int Id {get; set;}
 
-        public MapDto Maps { get; set; }
+        public MapDto Map { get; set; }
 
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Domain.Entities.WeekMaps, WeekMapsDto>()
                 .ForMember(d => d.Id, opt => opt.MapFrom(s => (int)s.IdWeekMap))
-                .ForMember(d => d.Maps, opt => opt.MapFrom(s => s.FkIdMapNavigation));
+                .ForMember(d => d.Map, opt => opt.MapFrom(s => s.FkIdMapNavigation));
         }
     }
 }

@@ -72,11 +72,10 @@ var CreateGames = function (props) {
     var _g = react_1.useState(false), completedGames = _g[0], setCompletedGames = _g[1];
     var _h = react_1.useState(true), canCreateGames = _h[0], setCanCreateGames = _h[1];
     var _j = react_1.useState([]), data = _j[0], setData = _j[1];
-    var _k = react_1.useState(0), index = _k[0], setIndex = _k[1];
-    var _l = react_1.useState(""), mapPack = _l[0], setMapPack = _l[1];
-    var _m = react_1.useState(""), mapName = _m[0], setMapName = _m[1];
-    var _o = react_1.useState(0), mapNumber = _o[0], setMapNumber = _o[1];
-    var _p = react_1.useState(0), newMapId = _p[0], setNewMapId = _p[1];
+    var _k = react_1.useState(""), mapPack = _k[0], setMapPack = _k[1];
+    var _l = react_1.useState(""), mapName = _l[0], setMapName = _l[1];
+    var _m = react_1.useState(0), mapNumber = _m[0], setMapNumber = _m[1];
+    var _o = react_1.useState(0), newMapId = _o[0], setNewMapId = _o[1];
     var history = react_router_dom_1.useHistory();
     var redirect = function () {
         history.push('/');
@@ -206,8 +205,6 @@ var CreateGames = function (props) {
                     return [3 /*break*/, 3];
                 case 2:
                     e_4 = _a.sent();
-                    console.log(e_4);
-                    console.log(e_4.response);
                     state_1.setErrorMessage(JSON.parse(e_4.response));
                     return [3 /*break*/, 3];
                 case 3: return [2 /*return*/];
@@ -292,7 +289,6 @@ var CreateGames = function (props) {
     }); };
     var handleMapChange = function (weekIndex, value) {
         var newWeeks = games.map(function (game, _idx) {
-            console.log(_idx);
             if (_idx !== weekIndex)
                 return game;
             return __assign(__assign({}, game), { mapId: value });
@@ -424,7 +420,6 @@ var CreateGames = function (props) {
     // create a list for each engine.
     var renderMapDropdown = function (weekIndex) {
         var select = null;
-        console.log("map dropdown rerender!!");
         if (data.length > 0) {
             var maps = [];
             for (var idx = 0; idx < data.length; idx++) {

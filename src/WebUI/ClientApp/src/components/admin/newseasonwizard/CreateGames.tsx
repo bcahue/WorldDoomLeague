@@ -43,7 +43,6 @@ const CreateGames = props => {
     const [completedGames, setCompletedGames] = useState(false);
     const [canCreateGames, setCanCreateGames] = useState(true);
     const [data, setData] = useState<IMapsDto[]>([]);
-    const [index, setIndex] = useState(0);
     const [mapPack, setMapPack] = useState<string>("");
     const [mapName, setMapName] = useState<string>("");
     const [mapNumber, setMapNumber] = useState(0);
@@ -138,8 +137,6 @@ const CreateGames = props => {
             setCanSubmitGames(false);
             setCompletedGames(true);
         } catch (e) {
-            console.log(e);
-            console.log(e.response);
             setErrorMessage(JSON.parse(e.response));
         }
     };
@@ -208,7 +205,6 @@ const CreateGames = props => {
 
     const handleMapChange = (weekIndex, value) => {
         const newWeeks = games.map((game, _idx) => {
-            console.log(_idx);
             if (_idx !== weekIndex) return game;
             return { ...game, mapId: value }
         });
@@ -330,7 +326,6 @@ const CreateGames = props => {
     // create a list for each engine.
     const renderMapDropdown = (weekIndex) => {
         let select = null;
-        console.log("map dropdown rerender!!");
         if (data.length > 0) {
             let maps = [];
 

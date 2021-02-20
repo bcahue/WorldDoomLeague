@@ -536,7 +536,7 @@ const CreateGames = props => {
             </Row>
         <Row>
                 <Col sm="12" md={{ size: 6, offset: 3 }}>
-                    <Button color="secondary" size="lg" blockdisabled={!completedGames} onClick={redirect}>Finish</Button>
+                    <Button color="secondary" size="lg" block disabled={!completedGames} onClick={redirect}>Finish</Button>
             </Col>
         </Row>
         </React.Fragment>

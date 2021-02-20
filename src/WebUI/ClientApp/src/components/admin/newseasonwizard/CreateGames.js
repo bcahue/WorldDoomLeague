@@ -553,7 +553,7 @@ var CreateGames = function (props) {
                 React.createElement(reactstrap_1.Button, { color: "primary", size: "lg", block: true, disabled: !canSubmitGames, onClick: submitGames }, "Finalize Games"))),
         React.createElement(reactstrap_1.Row, null,
             React.createElement(reactstrap_1.Col, { sm: "12", md: { size: 6, offset: 3 } },
-                React.createElement(reactstrap_1.Button, { color: "secondary", size: "lg", blockdisabled: !completedGames, onClick: redirect }, "Finish")))));
+                React.createElement(reactstrap_1.Button, { color: "secondary", size: "lg", block: true, disabled: !completedGames, onClick: redirect }, "Finish")))));
 };
 exports.default = CreateGames;
 //# sourceMappingURL=CreateGames.js.map

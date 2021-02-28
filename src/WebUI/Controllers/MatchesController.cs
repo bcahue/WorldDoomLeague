@@ -2,6 +2,9 @@
 using WorldDoomLeague.Application.Matches.Commands.CreateMatch;
 using WorldDoomLeague.Application.Matches.Commands.CreateMatches;
 using WorldDoomLeague.Application.Matches.Commands.ProcessMatch;
+using WorldDoomLeague.Application.Matches.Queries.GetUnplayedGames;
+using WorldDoomLeague.Application.Matches.Queries.GetPlayerLineup;
+using WorldDoomLeague.Application.Matches.Queries.GetGameMaps;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -13,6 +16,24 @@ namespace WorldDoomLeague.WebUI.Controllers
         public async Task<MatchSummaryVm> Get(uint matchId)
         {
             return await Mediator.Send(new GetMatchSummaryByMatchIdQuery(matchId));
+        }
+
+        [HttpGet("{matchId}/lineup")]
+        public async Task<PlayerLineupVm> GetPlayerLineup(uint matchId)
+        {
+            return await Mediator.Send(new GetPlayerLineupQuery(matchId));
+        }
+
+        [HttpGet("{seasonId}/unplayed")]
+        public async Task<UnplayedGamesVm> GetUnplayedGames(uint seasonId)
+        {
+            return await Mediator.Send(new GetUnplayedGamesQuery(seasonId));
+        }
+
+        [HttpGet("{matchId}/maps")]
+        public async Task<GameMapsVm> GetGameMaps(uint matchId)
+        {
+            return await Mediator.Send(new GetGameMapsQuery(matchId));
         }
 
         [HttpPost]

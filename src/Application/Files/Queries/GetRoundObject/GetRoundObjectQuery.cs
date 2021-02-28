@@ -10,7 +10,7 @@ using WorldDoomLeague.Application.ConfigModels;
 
 namespace WorldDoomLeague.Application.Files.Queries.GetRoundObject
 {
-    [Authorize(Roles = "Administrator,StatsRunner")]
+    //[Authorize(Roles = "Administrator,StatsRunner")]
     public class GetRoundObjectQuery : IRequest<Round>
     {
         public string FileName { get; }

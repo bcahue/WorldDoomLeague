@@ -36,14 +36,12 @@ namespace WorldDoomLeague.WebUI.Controllers
             return await Mediator.Send(new GetWadFilesQuery());
         }
 
-        [Authorize]
         [HttpGet("json")]
         public async Task<IEnumerable<string>> GetRoundJsonFiles()
         {
             return await Mediator.Send(new GetRoundJsonFilesQuery());
         }
 
-        [Authorize]
         [HttpGet("json/rounddata")]
         public async Task<Round> GetRoundObject([FromQuery(Name = "FileName")] string fileName)
         {

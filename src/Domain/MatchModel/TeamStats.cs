@@ -19,6 +19,6 @@ namespace WorldDoomLeague.Domain.MatchModel
         public int Damage { get; set; }
         public int FlagDefenses { get; set; }
         public int PowerPickups { get; set; }
-        public IList<string> TeamPlayers { get; private set; }
+        public IList<string> TeamPlayers { get; set; }
     }
 }

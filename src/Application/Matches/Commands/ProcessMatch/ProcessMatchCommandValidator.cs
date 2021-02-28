@@ -20,9 +20,6 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
                 .MustAsync(BeValidGame).WithMessage("The specified game does not exist.")
                 .MustAsync(BeGameNotPlayed).WithMessage("The specified game has already been played.");
 
-            RuleFor(v => v.FlipTeams)
-                .NotEmpty().WithMessage("FlipTeams is required.");
-
             RuleForEach(v => v.GameRounds)
                 .NotEmpty().WithMessage("Rounds is required.")
                 .MustAsync(BeValidPlayerIds).WithMessage("The playerids listed for one of the rounds is invalid.")

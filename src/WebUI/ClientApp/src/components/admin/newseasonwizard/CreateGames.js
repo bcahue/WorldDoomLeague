@@ -504,12 +504,12 @@ var CreateGames = function (props) {
         var gameList = (React.createElement(React.Fragment, null, games[weekIndex] && canCreateGames == false && (games[weekIndex].gameList.map(function (game, gameIndex) { return (React.createElement(reactstrap_1.Row, null,
             React.createElement(reactstrap_1.Col, { xs: "6" },
                 React.createElement("div", null,
-                    "Red Team: ",
+                    React.createElement("p", { className: "text-danger" }, "Red Team: "),
                     renderRedTeamSelection(weekIndex, gameIndex)),
                 React.createElement("br", null)),
             React.createElement(reactstrap_1.Col, { xs: "6" },
                 React.createElement("div", null,
-                    "Blue Team: ",
+                    React.createElement("p", { className: "text-primary" }, "Blue Team: "),
                     renderBlueTeamSelection(weekIndex, gameIndex)),
                 React.createElement("br", null)))); }))));
         return (gameList);
@@ -545,7 +545,8 @@ var CreateGames = function (props) {
         games && canCreateGames == false && (renderGamesListContainer(currentWeek)),
         React.createElement(reactstrap_1.Row, null,
             React.createElement(reactstrap_1.Col, { sm: "12", md: { size: 6, offset: 3 } },
-                React.createElement(reactstrap_1.Button, { color: "primary", size: "lg", block: true, disabled: !canSubmitGames, onClick: submitGames }, "Finalize Games"))),
+                React.createElement(reactstrap_1.Button, { color: "primary", size: "lg", block: true, disabled: !canSubmitGames, onClick: submitGames }, "Finalize Games"),
+                React.createElement("br", null))),
         React.createElement(reactstrap_1.Row, null,
             React.createElement(reactstrap_1.Col, { sm: "12", md: { size: 6, offset: 3 } },
                 React.createElement(reactstrap_1.Button, { color: "secondary", size: "lg", block: true, disabled: !completedGames, onClick: redirect }, "Finish")))));

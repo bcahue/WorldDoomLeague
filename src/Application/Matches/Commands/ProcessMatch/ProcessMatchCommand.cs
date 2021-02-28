@@ -276,6 +276,17 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
                                 team = LogFileEnums.Teams.Red;
                             }
                         }
+                        else
+                        {
+                            if (flagCapEvent.Team == LogFileEnums.Teams.Red)
+                            {
+                                team = LogFileEnums.Teams.Red;
+                            }
+                            else
+                            {
+                                team = LogFileEnums.Teams.Blue;
+                            }
+                        }
 
                         if (team == LogFileEnums.Teams.Blue)
                         {

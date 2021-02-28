@@ -85,7 +85,9 @@ function AdminMenu(props) {
                         )}
                         {showEditGames && (
                             <DropdownItem>
-                                Record New Game Wizard
+                                <NavItem>
+                                    <NavLink tag={Link} className="text-dark" to="/admin/processgamewizard">Process Game Wizard</NavLink>
+                                </NavItem>
                             </DropdownItem>
                         )}
                         {showEditGames && (

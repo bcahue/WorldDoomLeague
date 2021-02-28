@@ -617,6 +617,9 @@ export class MapsClient extends ApiClientBase implements IMapsClient {
 
 export interface IMatchesClient {
     get(matchId: number): Promise<MatchSummaryVm>;
+    getPlayerLineup(matchId: number): Promise<PlayerLineupVm>;
+    getUnplayedGames(seasonId: number): Promise<UnplayedGamesVm>;
+    getGameMaps(matchId: number): Promise<GameMapsVm>;
     create(command: CreateMatchCommand): Promise<number>;
     createRegularSeason(command: CreateMatchesCommand): Promise<number>;
     process(command: ProcessMatchCommand): Promise<number>;
@@ -670,6 +673,123 @@ export class MatchesClient extends ApiClientBase implements IMatchesClient {
             });
         }
         return Promise.resolve<MatchSummaryVm>(<any>null);
+    }
+
+    getPlayerLineup(matchId: number): Promise<PlayerLineupVm> {
+        let url_ = this.baseUrl + "/api/Matches/{matchId}/lineup";
+        if (matchId === undefined || matchId === null)
+            throw new Error("The parameter 'matchId' must be defined.");
+        url_ = url_.replace("{matchId}", encodeURIComponent("" + matchId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetPlayerLineup(_response);
+        });
+    }
+
+    protected processGetPlayerLineup(response: Response): Promise<PlayerLineupVm> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PlayerLineupVm.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PlayerLineupVm>(<any>null);
+    }
+
+    getUnplayedGames(seasonId: number): Promise<UnplayedGamesVm> {
+        let url_ = this.baseUrl + "/api/Matches/{seasonId}/unplayed";
+        if (seasonId === undefined || seasonId === null)
+            throw new Error("The parameter 'seasonId' must be defined.");
+        url_ = url_.replace("{seasonId}", encodeURIComponent("" + seasonId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetUnplayedGames(_response);
+        });
+    }
+
+    protected processGetUnplayedGames(response: Response): Promise<UnplayedGamesVm> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UnplayedGamesVm.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UnplayedGamesVm>(<any>null);
+    }
+
+    getGameMaps(matchId: number): Promise<GameMapsVm> {
+        let url_ = this.baseUrl + "/api/Matches/{matchId}/maps";
+        if (matchId === undefined || matchId === null)
+            throw new Error("The parameter 'matchId' must be defined.");
+        url_ = url_.replace("{matchId}", encodeURIComponent("" + matchId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetGameMaps(_response);
+        });
+    }
+
+    protected processGetGameMaps(response: Response): Promise<GameMapsVm> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GameMapsVm.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GameMapsVm>(<any>null);
     }
 
     create(command: CreateMatchCommand): Promise<number> {
@@ -4903,6 +5023,342 @@ export interface IDemoDto {
     playerName?: string | undefined;
     demoLost?: boolean;
     demoFilePath?: string | undefined;
+}
+
+export class PlayerLineupVm implements IPlayerLineupVm {
+    gamePlayerLineup?: PlayerLineupDto | undefined;
+
+    constructor(data?: IPlayerLineupVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.gamePlayerLineup = _data["gamePlayerLineup"] ? PlayerLineupDto.fromJS(_data["gamePlayerLineup"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): PlayerLineupVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new PlayerLineupVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["gamePlayerLineup"] = this.gamePlayerLineup ? this.gamePlayerLineup.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IPlayerLineupVm {
+    gamePlayerLineup?: PlayerLineupDto | undefined;
+}
+
+export class PlayerLineupDto implements IPlayerLineupDto {
+    id?: number;
+    redTeamName?: string | undefined;
+    blueTeamName?: string | undefined;
+    redTeamPlayers?: TeamPlayersDto[] | undefined;
+    blueTeamPlayers?: TeamPlayersDto[] | undefined;
+
+    constructor(data?: IPlayerLineupDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.redTeamName = _data["redTeamName"];
+            this.blueTeamName = _data["blueTeamName"];
+            if (Array.isArray(_data["redTeamPlayers"])) {
+                this.redTeamPlayers = [] as any;
+                for (let item of _data["redTeamPlayers"])
+                    this.redTeamPlayers!.push(TeamPlayersDto.fromJS(item));
+            }
+            if (Array.isArray(_data["blueTeamPlayers"])) {
+                this.blueTeamPlayers = [] as any;
+                for (let item of _data["blueTeamPlayers"])
+                    this.blueTeamPlayers!.push(TeamPlayersDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PlayerLineupDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PlayerLineupDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["redTeamName"] = this.redTeamName;
+        data["blueTeamName"] = this.blueTeamName;
+        if (Array.isArray(this.redTeamPlayers)) {
+            data["redTeamPlayers"] = [];
+            for (let item of this.redTeamPlayers)
+                data["redTeamPlayers"].push(item.toJSON());
+        }
+        if (Array.isArray(this.blueTeamPlayers)) {
+            data["blueTeamPlayers"] = [];
+            for (let item of this.blueTeamPlayers)
+                data["blueTeamPlayers"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPlayerLineupDto {
+    id?: number;
+    redTeamName?: string | undefined;
+    blueTeamName?: string | undefined;
+    redTeamPlayers?: TeamPlayersDto[] | undefined;
+    blueTeamPlayers?: TeamPlayersDto[] | undefined;
+}
+
+export class TeamPlayersDto implements ITeamPlayersDto {
+    id?: number;
+    playerName?: string | undefined;
+
+    constructor(data?: ITeamPlayersDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.playerName = _data["playerName"];
+        }
+    }
+
+    static fromJS(data: any): TeamPlayersDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TeamPlayersDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["playerName"] = this.playerName;
+        return data; 
+    }
+}
+
+export interface ITeamPlayersDto {
+    id?: number;
+    playerName?: string | undefined;
+}
+
+export class UnplayedGamesVm implements IUnplayedGamesVm {
+    unplayedGameList?: UnplayedGamesDto[] | undefined;
+
+    constructor(data?: IUnplayedGamesVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["unplayedGameList"])) {
+                this.unplayedGameList = [] as any;
+                for (let item of _data["unplayedGameList"])
+                    this.unplayedGameList!.push(UnplayedGamesDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): UnplayedGamesVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new UnplayedGamesVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.unplayedGameList)) {
+            data["unplayedGameList"] = [];
+            for (let item of this.unplayedGameList)
+                data["unplayedGameList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IUnplayedGamesVm {
+    unplayedGameList?: UnplayedGamesDto[] | undefined;
+}
+
+export class UnplayedGamesDto implements IUnplayedGamesDto {
+    id?: number;
+    redTeam?: number;
+    redTeamName?: string | undefined;
+    blueTeam?: number;
+    blueTeamName?: string | undefined;
+    weekNumber?: number;
+
+    constructor(data?: IUnplayedGamesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.redTeam = _data["redTeam"];
+            this.redTeamName = _data["redTeamName"];
+            this.blueTeam = _data["blueTeam"];
+            this.blueTeamName = _data["blueTeamName"];
+            this.weekNumber = _data["weekNumber"];
+        }
+    }
+
+    static fromJS(data: any): UnplayedGamesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UnplayedGamesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["redTeam"] = this.redTeam;
+        data["redTeamName"] = this.redTeamName;
+        data["blueTeam"] = this.blueTeam;
+        data["blueTeamName"] = this.blueTeamName;
+        data["weekNumber"] = this.weekNumber;
+        return data; 
+    }
+}
+
+export interface IUnplayedGamesDto {
+    id?: number;
+    redTeam?: number;
+    redTeamName?: string | undefined;
+    blueTeam?: number;
+    blueTeamName?: string | undefined;
+    weekNumber?: number;
+}
+
+export class GameMapsVm implements IGameMapsVm {
+    gameMaps?: GameMapsDto[] | undefined;
+
+    constructor(data?: IGameMapsVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["gameMaps"])) {
+                this.gameMaps = [] as any;
+                for (let item of _data["gameMaps"])
+                    this.gameMaps!.push(GameMapsDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): GameMapsVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new GameMapsVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.gameMaps)) {
+            data["gameMaps"] = [];
+            for (let item of this.gameMaps)
+                data["gameMaps"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IGameMapsVm {
+    gameMaps?: GameMapsDto[] | undefined;
+}
+
+export class GameMapsDto implements IGameMapsDto {
+    id?: number;
+    mapName?: string | undefined;
+    mapPack?: string | undefined;
+    mapNumber?: number;
+
+    constructor(data?: IGameMapsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.mapName = _data["mapName"];
+            this.mapPack = _data["mapPack"];
+            this.mapNumber = _data["mapNumber"];
+        }
+    }
+
+    static fromJS(data: any): GameMapsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GameMapsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["mapName"] = this.mapName;
+        data["mapPack"] = this.mapPack;
+        data["mapNumber"] = this.mapNumber;
+        return data; 
+    }
+}
+
+export interface IGameMapsDto {
+    id?: number;
+    mapName?: string | undefined;
+    mapPack?: string | undefined;
+    mapNumber?: number;
 }
 
 export class CreateMatchCommand implements ICreateMatchCommand {

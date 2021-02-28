@@ -473,11 +473,11 @@ const CreateGames = props => {
                 {games[weekIndex] && canCreateGames == false && (games[weekIndex].gameList.map((game, gameIndex) => (
                     <Row>
                         <Col xs="6">
-                            <div>Red Team: {renderRedTeamSelection(weekIndex, gameIndex)}</div>
+                            <div><p className="text-danger">Red Team: </p>{renderRedTeamSelection(weekIndex, gameIndex)}</div>
                             <br />
                         </Col>
                         <Col xs="6">
-                            <div>Blue Team: {renderBlueTeamSelection(weekIndex, gameIndex)}</div>
+                            <div><p className="text-primary">Blue Team: </p>{renderBlueTeamSelection(weekIndex, gameIndex)}</div>
                             <br />
                         </Col>
                     </Row>
@@ -527,6 +527,7 @@ const CreateGames = props => {
             <Row>
                 <Col sm="12" md={{ size: 6, offset: 3 }}>
                     <Button color="primary" size="lg" block disabled={!canSubmitGames} onClick={submitGames}>Finalize Games</Button>
+                    <br />
                 </Col>
             </Row>
         <Row>

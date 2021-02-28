@@ -9,7 +9,7 @@ using WorldDoomLeague.Application.ConfigModels;
 
 namespace WorldDoomLeague.Application.Files.Queries.GetRoundJsonFiles
 {
-    [Authorize(Roles = "Administrator,StatsRunner")]
+    //[Authorize(Roles = "Administrator,StatsRunner")]
     public class GetRoundJsonFilesQuery : IRequest<IEnumerable<string>>
     {
     }

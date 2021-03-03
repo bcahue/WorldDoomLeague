@@ -28,6 +28,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasIndex(e => e.FkIdSeason)
                 .HasDatabaseName("fk_stats_Teams_Season_idx");
 
+            builder.HasIndex(e => e.FkIdHomefieldMap)
+                .HasDatabaseName("fk_stats_Teams_Homefield_Map_idx");
+
             builder.HasIndex(e => e.IdTeam)
                 .HasDatabaseName("id_team_UNIQUE")
                 .IsUnique();
@@ -70,6 +73,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasCharSet("utf8mb4")
                 .HasCollation("utf8mb4_unicode_ci");
 
+            builder.Property(e => e.FkIdHomefieldMap)
+                .HasColumnName("fk_id_homefield_map")
+                .HasColumnType("int(10) unsigned");
+
             builder.HasOne(d => d.FkIdPlayerCaptainNavigation)
                 .WithMany(p => p.TeamsFkIdPlayerCaptainNavigation)
                 .HasForeignKey(d => d.FkIdPlayerCaptain)
@@ -99,6 +106,12 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasForeignKey(d => d.FkIdSeason)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_stats_Teams_Seasons");
+
+            builder.HasOne(d => d.FkIdHomefieldMapNavigation)
+                .WithMany(p => p.HomefieldMaps)
+                .HasForeignKey(d => d.FkIdHomefieldMap)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_stats_Teams_Homefield_Map");
         }
     }
 }

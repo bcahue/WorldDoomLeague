@@ -33,7 +33,8 @@ namespace WorldDoomLeague.Application.Matches.Commands.CreateMatch
                 FkIdWeek = request.Week,
                 FkIdTeamRed = request.RedTeam,
                 FkIdTeamBlue = request.BlueTeam,
-                GameDatetime = request.GameDateTime
+                GameDatetime = request.GameDateTime,
+                DoubleForfeit = 0
             };
 
             _context.Games.Add(entity);

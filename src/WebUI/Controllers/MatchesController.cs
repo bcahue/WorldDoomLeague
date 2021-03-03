@@ -1,10 +1,13 @@
 ﻿using WorldDoomLeague.Application.Matches.Queries.GetMatchSummaryByMatchId;
-using WorldDoomLeague.Application.Matches.Commands.CreateMatch;
-using WorldDoomLeague.Application.Matches.Commands.CreateMatches;
-using WorldDoomLeague.Application.Matches.Commands.ProcessMatch;
 using WorldDoomLeague.Application.Matches.Queries.GetUnplayedGames;
+using WorldDoomLeague.Application.Matches.Queries.GetPlayedGames;
 using WorldDoomLeague.Application.Matches.Queries.GetPlayerLineup;
 using WorldDoomLeague.Application.Matches.Queries.GetGameMaps;
+using WorldDoomLeague.Application.Matches.Commands.CreateMatch;
+using WorldDoomLeague.Application.Matches.Commands.UndoMatch;
+using WorldDoomLeague.Application.Matches.Commands.CreateMatches;
+using WorldDoomLeague.Application.Matches.Commands.ProcessMatch;
+using WorldDoomLeague.Application.Matches.Commands.ForfeitMatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -30,6 +33,12 @@ namespace WorldDoomLeague.WebUI.Controllers
             return await Mediator.Send(new GetUnplayedGamesQuery(seasonId));
         }
 
+        [HttpGet("played")]
+        public async Task<PlayedGamesVm> GetPlayedGames()
+        {
+            return await Mediator.Send(new GetPlayedGamesQuery());
+        }
+
         [HttpGet("{matchId}/maps")]
         public async Task<GameMapsVm> GetGameMaps(uint matchId)
         {
@@ -50,6 +59,18 @@ namespace WorldDoomLeague.WebUI.Controllers
 
         [HttpPost("process")]
         public async Task<ActionResult<uint>> Process(ProcessMatchCommand command)
+        {
+            return await Mediator.Send(command);
+        }
+
+        [HttpPost("undo")]
+        public async Task<ActionResult<bool>> Undo(UndoMatchCommand command)
+        {
+            return await Mediator.Send(command);
+        }
+
+        [HttpPost("forfeit")]
+        public async Task<ActionResult<bool>> Forfeit(ForfeitMatchCommand command)
         {
             return await Mediator.Send(command);
         }

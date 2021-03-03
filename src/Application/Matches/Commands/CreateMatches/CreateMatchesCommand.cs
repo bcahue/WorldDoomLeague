@@ -49,7 +49,8 @@ namespace WorldDoomLeague.Application.Matches.Commands.CreateMatches
                         FkIdTeamRed = game.RedTeam,
                         FkIdTeamBlue = game.BlueTeam,
                         GameDatetime = game.GameDateTime,
-                        GameType = "n"
+                        GameType = "n",
+                        DoubleForfeit = 0
                     };
 
                     games.Add(newgame);

@@ -17,6 +17,8 @@ namespace WorldDoomLeague.Domain.Entities
             StatsKillData = new HashSet<StatsKillData>();
             StatsPickupData = new HashSet<StatsPickupData>();
             StatsRounds = new HashSet<StatsRounds>();
+            PlayerRoundOpponents = new HashSet<PlayerRoundOpponent>();
+            PlayerRoundTeammates = new HashSet<PlayerRoundTeammate>();
         }
 
         public uint IdRound { get; set; }
@@ -44,5 +46,7 @@ namespace WorldDoomLeague.Domain.Entities
         public virtual ICollection<StatsKillData> StatsKillData { get; set; }
         public virtual ICollection<StatsPickupData> StatsPickupData { get; set; }
         public virtual ICollection<StatsRounds> StatsRounds { get; set; }
+        public virtual ICollection<PlayerRoundOpponent> PlayerRoundOpponents { get; set; }
+        public virtual ICollection<PlayerRoundTeammate> PlayerRoundTeammates { get; set; }
     }
 }

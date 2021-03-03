@@ -18,7 +18,7 @@ namespace WorldDoomLeague.Domain.Entities
         public int TotalAssists { get; set; }
         public int TotalCaptures { get; set; }
         public int? DamageOutputBetweenTouchCaptureMax { get; set; }
-        public int? DamageOutputBetweenTouchCaptureAverage { get; set; }
+        public double? DamageOutputBetweenTouchCaptureAverage { get; set; }
         public int? DamageOutputBetweenTouchCaptureMin { get; set; }
         public int? CaptureTicsMin { get; set; }
         public int? CaptureTicsMax { get; set; }

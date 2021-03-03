@@ -58,6 +58,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence
         public virtual DbSet<WadFiles> WadFiles { get; set; }
         public virtual DbSet<ImageFiles> ImageFiles { get; set; }
         public virtual DbSet<MapImages> MapImages { get; set; }
+        public virtual DbSet<PlayerRoundOpponent> PlayerRoundOpponents { get; set; }
+        public virtual DbSet<PlayerRoundTeammate> PlayerRoundTeammates { get; set; }
+        public virtual DbSet<PlayerGameOpponent> PlayerGameOpponents { get; set; }
+        public virtual DbSet<PlayerGameTeammate> PlayerGameTeammates { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

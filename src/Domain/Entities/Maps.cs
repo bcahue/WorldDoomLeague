@@ -14,6 +14,7 @@ namespace WorldDoomLeague.Domain.Entities
             GameMaps = new HashSet<GameMaps>();
             WeekMaps = new HashSet<WeekMaps>();
             MapImages = new HashSet<MapImages>();
+            HomefieldMaps = new HashSet<Teams>();
         }
 
         public uint IdMap { get; set; }
@@ -28,5 +29,6 @@ namespace WorldDoomLeague.Domain.Entities
         public virtual ICollection<GameMaps> GameMaps { get; set; }
         public virtual ICollection<WeekMaps> WeekMaps { get; set; }
         public virtual ICollection<MapImages> MapImages { get; set; }
+        public virtual ICollection<Teams> HomefieldMaps { get; set; }
     }
 }

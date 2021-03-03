@@ -54,7 +54,7 @@ namespace WorldDoomLeague.Domain.Game
             }
 
             var r = RoundResults.SelectMany(s => s.RedRoundPlayerIds).Distinct().ToList();
-            var b = RoundResults.SelectMany(s => s.RedRoundPlayerIds).Distinct().ToList();
+            var b = RoundResults.SelectMany(s => s.BlueRoundPlayerIds).Distinct().ToList();
 
             RedTeamPlayerGameIds = new List<uint>(r);
             BlueTeamPlayerGameIds = new List<uint>(b);

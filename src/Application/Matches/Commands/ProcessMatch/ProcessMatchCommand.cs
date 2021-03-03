@@ -51,14 +51,13 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
 
             using (var transaction = _context.Database.BeginTransaction())
             {
-                var game = await _context.Games.Where(w => w.IdGame == request.MatchId).FirstOrDefaultAsync();
-
                 // Loop thru each round, replace player names with player ids, and determine round winners.
                 for (var i = 0; i < request.GameRounds.Count; i++)
                 {
                     IDictionary<string, uint> redPlayerIdLookup = new Dictionary<string, uint>();
                     IDictionary<string, uint> bluePlayerIdLookup = new Dictionary<string, uint>();
 
+                    // Flip teams should only flip the stats on the round objects.
                     for (var j = 0; j < rounds[i].RedTeamStats.TeamPlayers.Count; j++)
                     {
                         if (request.FlipTeams)
@@ -94,10 +93,10 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
 
                     var round = new Domain.Entities.Rounds
                     {
-                        FkIdGame = game.IdGame,
+                        FkIdGame = match.IdGame,
                         FkIdMap = request.GameRounds[i].Map,
-                        FkIdSeason = game.FkIdSeason,
-                        FkIdWeek = game.FkIdWeek,
+                        FkIdSeason = match.FkIdSeason,
+                        FkIdWeek = match.FkIdWeek,
                         RoundNumber = (uint)i + 1,
                         RoundParseVersion = (ushort)rounds[i].MetaData.ParserVersion,
                         RoundDatetime = rounds[i].MetaData.Date.UtcDateTime,
@@ -117,12 +116,12 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
                         var statsroundEntity = GameHelper.CreateStatRound(playerStats,
                             request.MatchId,
                             request.GameRounds[i].Map,
-                            game.FkIdSeason,
-                            game.FkIdWeek,
-                            request.FlipTeams ? game.FkIdTeamBlue : game.FkIdTeamRed,
+                            match.FkIdSeason,
+                            match.FkIdWeek,
+                            match.FkIdTeamRed,
                             redPlayerIdLookup[player],
                             round.IdRound,
-                            request.FlipTeams ? LogFileEnums.Teams.Blue : LogFileEnums.Teams.Red);
+                            LogFileEnums.Teams.Red);
 
                         _context.StatsRounds.Add(statsroundEntity);
 
@@ -154,14 +153,16 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
 
                         _context.StatsPickupData.AddRange(pickups);
 
+                        await _context.SaveChangesAsync(cancellationToken);
+
                         var roundplayer = new RoundPlayers
                         {
-                            FkIdGame = game.IdGame,
+                            FkIdGame = match.IdGame,
                             FkIdMap = round.FkIdMap,
                             FkIdRound = round.IdRound,
                             FkIdSeason = round.FkIdSeason,
                             FkIdWeek = round.FkIdWeek,
-                            FkIdTeam = request.FlipTeams ? game.FkIdTeamBlue : game.FkIdTeamRed,
+                            FkIdTeam = match.FkIdTeamRed,
                             FkIdPlayer = redPlayerIdLookup[player]
                         };
 
@@ -169,19 +170,66 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
 
                         var roundRecord = new PlayerRoundRecord
                         {
-                            FkIdGame = game.IdGame,
+                            FkIdGame = match.IdGame,
                             FkIdMap = round.FkIdMap,
                             FkIdRound = round.IdRound,
                             FkIdSeason = round.FkIdSeason,
                             FkIdWeek = round.FkIdWeek,
-                            FkIdTeam = request.FlipTeams ? game.FkIdTeamBlue : game.FkIdTeamRed,
+                            FkIdTeam = match.FkIdTeamRed,
                             FkIdPlayer = redPlayerIdLookup[player],
                             FkIdStatsRound = statsroundEntity.IdStatsRound,
                             Win = winner.RoundResult == LogFileEnums.GameResult.RedWin ? (uint)1 : (uint)0,
                             Tie = winner.RoundResult == LogFileEnums.GameResult.TieGame ? (uint)1 : (uint)0,
                             Loss = winner.RoundResult == LogFileEnums.GameResult.BlueWin ? (uint)1 : (uint)0,
-                            AsCaptain = WasPlayerCaptain(redPlayerIdLookup[player], request.FlipTeams ? game.FkIdTeamBlue : game.FkIdTeamRed, cancellationToken).Result
+                            AsCaptain = WasPlayerCaptain(redPlayerIdLookup[player], match.FkIdTeamRed, cancellationToken).Result
                         };
+
+                        _context.PlayerRoundRecords.Add(roundRecord);
+
+                        await _context.SaveChangesAsync(cancellationToken);
+
+                        List<PlayerRoundTeammate> teammateList = new List<PlayerRoundTeammate>();
+                        List<PlayerRoundOpponent> opponentList = new List<PlayerRoundOpponent>();
+
+                        foreach (var teammate in redPlayerIdLookup)
+                        {
+                            if (teammate.Value != redPlayerIdLookup[player])
+                            {
+                                var roundTeammate = new PlayerRoundTeammate
+                                {
+                                    FkIdGame = match.IdGame,
+                                    FkIdRound = round.IdRound,
+                                    FkIdWeek = round.FkIdWeek,
+                                    FkIdSeason = round.FkIdSeason,
+                                    FkIdTeam = match.FkIdTeamRed,
+                                    FkIdPlayer = redPlayerIdLookup[player],
+                                    FkIdTeammate = teammate.Value,
+                                    FkIdPlayerRoundRecord = roundRecord.RoundRecordID
+                                };
+
+                                teammateList.Add(roundTeammate);
+                            }
+                        }
+
+                        foreach (var opponent in bluePlayerIdLookup)
+                        {
+                            var roundOpponent = new PlayerRoundOpponent
+                            {
+                                FkIdGame = match.IdGame,
+                                FkIdRound = round.IdRound,
+                                FkIdWeek = round.FkIdWeek,
+                                FkIdSeason = round.FkIdSeason,
+                                FkIdTeam = match.FkIdTeamRed,
+                                FkIdPlayer = redPlayerIdLookup[player],
+                                FkIdOpponent = opponent.Value,
+                                FkIdPlayerRoundRecord = roundRecord.RoundRecordID
+                            };
+
+                            opponentList.Add(roundOpponent);
+                        }
+
+                        _context.PlayerRoundTeammates.AddRange(teammateList);
+                        _context.PlayerRoundOpponents.AddRange(opponentList);
                     }
 
                     foreach (var player in rounds[i].BlueTeamStats.TeamPlayers)
@@ -191,12 +239,12 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
                         var statsroundEntity = GameHelper.CreateStatRound(playerStats,
                             request.MatchId,
                             request.GameRounds[i].Map,
-                            game.FkIdSeason,
-                            game.FkIdWeek,
-                            request.FlipTeams ? game.FkIdTeamRed : game.FkIdTeamBlue,
+                            match.FkIdSeason,
+                            match.FkIdWeek,
+                            match.FkIdTeamBlue,
                             bluePlayerIdLookup[player],
                             round.IdRound,
-                            request.FlipTeams ? LogFileEnums.Teams.Red : LogFileEnums.Teams.Blue);
+                            LogFileEnums.Teams.Blue);
 
                         _context.StatsRounds.Add(statsroundEntity);
 
@@ -228,14 +276,16 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
 
                         _context.StatsPickupData.AddRange(pickups);
 
+                        await _context.SaveChangesAsync(cancellationToken);
+
                         var roundplayer = new RoundPlayers
                         {
-                            FkIdGame = game.IdGame,
+                            FkIdGame = match.IdGame,
                             FkIdMap = round.FkIdMap,
                             FkIdRound = round.IdRound,
                             FkIdSeason = round.FkIdSeason,
                             FkIdWeek = round.FkIdWeek,
-                            FkIdTeam = request.FlipTeams ? game.FkIdTeamRed : game.FkIdTeamBlue,
+                            FkIdTeam = match.FkIdTeamBlue,
                             FkIdPlayer = bluePlayerIdLookup[player]
                         };
 
@@ -243,23 +293,72 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
 
                         var roundRecord = new PlayerRoundRecord
                         {
-                            FkIdGame = game.IdGame,
+                            FkIdGame = match.IdGame,
                             FkIdMap = round.FkIdMap,
                             FkIdRound = round.IdRound,
                             FkIdSeason = round.FkIdSeason,
                             FkIdWeek = round.FkIdWeek,
-                            FkIdTeam = request.FlipTeams ? game.FkIdTeamRed : game.FkIdTeamBlue,
+                            FkIdTeam = match.FkIdTeamBlue,
                             FkIdPlayer = bluePlayerIdLookup[player],
                             FkIdStatsRound = statsroundEntity.IdStatsRound,
-                            Win = winner.RoundResult == LogFileEnums.GameResult.RedWin ? (uint)1 : (uint)0,
+                            Win = winner.RoundResult == LogFileEnums.GameResult.BlueWin ? (uint)1 : (uint)0,
                             Tie = winner.RoundResult == LogFileEnums.GameResult.TieGame ? (uint)1 : (uint)0,
-                            Loss = winner.RoundResult == LogFileEnums.GameResult.BlueWin ? (uint)1 : (uint)0,
-                            AsCaptain = WasPlayerCaptain(bluePlayerIdLookup[player], request.FlipTeams ? game.FkIdTeamRed : game.FkIdTeamBlue, cancellationToken).Result
+                            Loss = winner.RoundResult == LogFileEnums.GameResult.RedWin ? (uint)1 : (uint)0,
+                            AsCaptain = WasPlayerCaptain(bluePlayerIdLookup[player], match.FkIdTeamBlue, cancellationToken).Result
                         };
+
+                        _context.PlayerRoundRecords.Add(roundRecord);
+
+                        await _context.SaveChangesAsync(cancellationToken);
+
+                        List<PlayerRoundTeammate> teammateList = new List<PlayerRoundTeammate>();
+                        List<PlayerRoundOpponent> opponentList = new List<PlayerRoundOpponent>();
+
+                        foreach (var teammate in bluePlayerIdLookup)
+                        {
+                            if (teammate.Value != bluePlayerIdLookup[player])
+                            {
+                                var roundTeammate = new PlayerRoundTeammate
+                                {
+                                    FkIdGame = match.IdGame,
+                                    FkIdRound = round.IdRound,
+                                    FkIdWeek = round.FkIdWeek,
+                                    FkIdSeason = round.FkIdSeason,
+                                    FkIdTeam = match.FkIdTeamBlue,
+                                    FkIdPlayer = bluePlayerIdLookup[player],
+                                    FkIdTeammate = teammate.Value,
+                                    FkIdPlayerRoundRecord = roundRecord.RoundRecordID
+                                };
+
+                                teammateList.Add(roundTeammate);
+                            }
+                        }
+
+                        foreach (var opponent in redPlayerIdLookup)
+                        {
+                            var roundOpponent = new PlayerRoundOpponent
+                            {
+                                FkIdGame = match.IdGame,
+                                FkIdRound = round.IdRound,
+                                FkIdWeek = round.FkIdWeek,
+                                FkIdSeason = round.FkIdSeason,
+                                FkIdTeam = match.FkIdTeamBlue,
+                                FkIdPlayer = bluePlayerIdLookup[player],
+                                FkIdOpponent = opponent.Value,
+                                FkIdPlayerRoundRecord = roundRecord.RoundRecordID
+                            };
+
+                            opponentList.Add(roundOpponent);
+                        }
+
+                        _context.PlayerRoundTeammates.AddRange(teammateList);
+                        _context.PlayerRoundOpponents.AddRange(opponentList);
                     }
 
                     // Flag assists and captures.
                     // Improved to include touch times, so flag capture length can be recorded.
+                    uint capturePosition = 1;
+
                     foreach (var flagCapEvent in rounds[i].FlagAssistTable.FlagTouchCaptures)
                     {
                         IDictionary<string, uint> captureIdList;
@@ -301,7 +400,6 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
                             throw new InvalidOperationException();
                         }
 
-                        uint capturePosition = 1;
                         KeyValuePair<string, uint> lastAssister = new KeyValuePair<string, uint>();
                         List<RoundFlagTouchCaptures> flagAssistsAndCaptures = new List<RoundFlagTouchCaptures>();
 
@@ -311,30 +409,30 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
 
                             var flagAssist = new RoundFlagTouchCaptures
                             {
-                                FkIdGame = game.IdGame,
+                                FkIdGame = match.IdGame,
                                 FkIdPlayer = lastAssister.Value,
                                 FkIdRound = round.IdRound,
-                                FkIdTeam = team == LogFileEnums.Teams.Red ? game.FkIdTeamRed : game.FkIdTeamBlue,
+                                FkIdTeam = team == LogFileEnums.Teams.Red ? match.FkIdTeamRed : match.FkIdTeamBlue,
                                 CaptureNumber = capturePosition,
                                 Gametic = (uint)assist.FlagTouchTimeTics,
                                 Team = team == LogFileEnums.Teams.Red ? "r" : "b"
                             };
-
-                            capturePosition++;
 
                             flagAssistsAndCaptures.Add(flagAssist);
                         }
 
                         var capture = new RoundFlagTouchCaptures
                         {
-                            FkIdGame = game.IdGame,
+                            FkIdGame = match.IdGame,
                             FkIdPlayer = lastAssister.Value,
                             FkIdRound = round.IdRound,
-                            FkIdTeam = team == LogFileEnums.Teams.Red ? game.FkIdTeamRed : game.FkIdTeamBlue,
+                            FkIdTeam = team == LogFileEnums.Teams.Red ? match.FkIdTeamRed : match.FkIdTeamBlue,
                             CaptureNumber = capturePosition,
                             Gametic = (uint)flagCapEvent.TimeCapturedTics,
                             Team = team == LogFileEnums.Teams.Red ? "r" : "b"
                         };
+
+                        capturePosition++;
 
                         flagAssistsAndCaptures.Add(capture);
 
@@ -348,11 +446,14 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
                 GameRecordKeeper gameWinner = new GameRecordKeeper(roundResults);
 
                 // Create player game records and gameplayers
-                var totalRoundPlayers = await _context.RoundPlayers.Where(w => w.FkIdGame == game.IdGame).ToListAsync(cancellationToken);
+                var totalRoundPlayers = await _context.RoundPlayers.Where(w => w.FkIdGame == match.IdGame).ToListAsync(cancellationToken);
                 var gamePlayers = totalRoundPlayers.GroupBy(g => g.FkIdPlayer).Select(s => s.First()).ToList();
                 var gamePlayerList = new List<GamePlayers>();
                 var playerGameRecordList = new List<PlayerGameRecord>();
 
+                // Create player game opponents and teammates.
+
+                // Generate GamePlayers and PlayerGameRecords.
                 foreach (var player in gamePlayers)
                 {
                     var gamePlayer = new GamePlayers
@@ -364,6 +465,47 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
                         FkIdPlayer = player.FkIdPlayer
                     };
 
+                    uint win = 0;
+                    uint tie = 0;
+                    uint loss = 0;
+
+                    if (gameWinner.GameResult == LogFileEnums.GameResult.RedWin)
+                    {
+                        if (gameWinner.RedTeamPlayerGameIds.Any(num => num == player.FkIdPlayer))
+                        {
+                            win = 1;
+                            loss = 0;
+                            tie = 0;
+                        }
+                        else if (gameWinner.BlueTeamPlayerGameIds.Any(num => num == player.FkIdPlayer))
+                        {
+                            win = 0;
+                            loss = 1;
+                            tie = 0;
+                        }
+                    }
+                    else if (gameWinner.GameResult == LogFileEnums.GameResult.BlueWin)
+                    {
+                        if (gameWinner.BlueTeamPlayerGameIds.Any(num => num == player.FkIdPlayer))
+                        {
+                            win = 1;
+                            loss = 0;
+                            tie = 0;
+                        }
+                        else if (gameWinner.RedTeamPlayerGameIds.Any(num => num == player.FkIdPlayer))
+                        {
+                            win = 0;
+                            loss = 1;
+                            tie = 0;
+                        }
+                    }
+                    else if (gameWinner.GameResult == LogFileEnums.GameResult.TieGame)
+                    {
+                        win = 0;
+                        loss = 0;
+                        tie = 1;
+                    }
+
                     var gameRecord = new PlayerGameRecord
                     {
                         FkIdWeek = player.FkIdWeek,
@@ -371,14 +513,51 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
                         FkIdSeason = player.FkIdSeason,
                         FkIdGame = player.FkIdGame,
                         FkIdPlayer = player.FkIdPlayer,
-                        Win = gameWinner.GameResult == LogFileEnums.GameResult.RedWin ? (uint)1 : (uint)0,
-                        Tie = gameWinner.GameResult == LogFileEnums.GameResult.TieGame ? (uint)1 : (uint)0,
-                        Loss = gameWinner.GameResult == LogFileEnums.GameResult.BlueWin ? (uint)1 : (uint)0,
+                        Win = win,
+                        Tie = tie,
+                        Loss = loss,
                         AsCaptain = WasPlayerCaptain(player.FkIdPlayer, player.FkIdTeam, cancellationToken).Result,
                     };
 
+                    List<PlayerGameTeammate> teammateList = new List<PlayerGameTeammate>();
+                    List<PlayerGameOpponent> opponentList = new List<PlayerGameOpponent>();
+
+                    var totalGameTeammates = await _context.PlayerRoundTeammates.Where(w => w.FkIdPlayer == player.FkIdPlayer && w.FkIdGame == match.IdGame).Select(s => s.FkIdTeammate).Distinct().ToListAsync(cancellationToken);
+                    var totalGameOpponents = await _context.PlayerRoundOpponents.Where(w => w.FkIdPlayer == player.FkIdPlayer && w.FkIdGame == match.IdGame).Select(s => s.FkIdOpponent).Distinct().ToListAsync(cancellationToken);
+
+                    foreach (var teammate in totalGameTeammates)
+                    {
+                        teammateList.Add(new PlayerGameTeammate
+                        {
+                            FkIdGame = match.IdGame,
+                            FkIdPlayer = player.FkIdPlayer,
+                            FkIdPlayerGameRecordNavigation = gameRecord,
+                            FkIdSeason = match.FkIdSeason,
+                            FkIdTeam = player.FkIdTeam,
+                            FkIdTeammate = teammate,
+                            FkIdWeek = match.FkIdWeek
+                        });
+                    }
+
+                    foreach (var opponent in totalGameOpponents)
+                    {
+                        opponentList.Add(new PlayerGameOpponent
+                        {
+                            FkIdGame = match.IdGame,
+                            FkIdPlayer = player.FkIdPlayer,
+                            FkIdPlayerGameRecordNavigation = gameRecord,
+                            FkIdSeason = match.FkIdSeason,
+                            FkIdTeam = player.FkIdTeam,
+                            FkIdOpponent = opponent,
+                            FkIdWeek = match.FkIdWeek,
+                        });
+                    }
+
                     gamePlayerList.Add(gamePlayer);
                     playerGameRecordList.Add(gameRecord);
+
+                    _context.PlayerGameOpponents.AddRange(opponentList);
+                    _context.PlayerGameTeammates.AddRange(teammateList);
                 }
 
                 _context.GamePlayers.AddRange(gamePlayerList);
@@ -392,11 +571,11 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
                 var bluePlayers = request.FlipTeams ? rounds.SelectMany(s => s.PlayerStats).Where(w => w.Team == LogFileEnums.Teams.Red) : rounds.SelectMany(s => s.PlayerStats).Where(w => w.Team == LogFileEnums.Teams.Blue);
 
                 var gameTeamStatsRed = GameHelper.CalculateGameTeamStats(
-                    game.IdGame,
-                    game.FkIdSeason,
-                    game.FkIdWeek,
-                    game.FkIdTeamRed,
-                    game.FkIdTeamBlue,
+                    match.IdGame,
+                    match.FkIdSeason,
+                    match.FkIdWeek,
+                    match.FkIdTeamRed,
+                    match.FkIdTeamBlue,
                     (uint)rounds.Count,
                     (uint)rounds.Sum(s => s.MetaData.DurationTics),
                     redTeamStats,
@@ -406,11 +585,11 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
                     gameWinner);
 
                 var gameTeamStatsBlue = GameHelper.CalculateGameTeamStats(
-                    game.IdGame,
-                    game.FkIdSeason,
-                    game.FkIdWeek,
-                    game.FkIdTeamBlue,
-                    game.FkIdTeamRed,
+                    match.IdGame,
+                    match.FkIdSeason,
+                    match.FkIdWeek,
+                    match.FkIdTeamBlue,
+                    match.FkIdTeamRed,
                     (uint)rounds.Count,
                     (uint)rounds.Sum(s => s.MetaData.DurationTics),
                     blueTeamStats,
@@ -422,6 +601,25 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
                 _context.GameTeamStats.Add(gameTeamStatsBlue);
                 _context.GameTeamStats.Add(gameTeamStatsRed);
 
+                uint? winningTeam = null;
+                var winningColor = "t";
+
+                if (gameWinner.GameResult == LogFileEnums.GameResult.RedWin)
+                {
+                    winningTeam = match.FkIdTeamRed;
+                    winningColor = "r";
+                }
+                else if (gameWinner.GameResult == LogFileEnums.GameResult.BlueWin)
+                {
+                    winningTeam = match.FkIdTeamBlue;
+                    winningColor = "b";
+                }
+
+                match.TeamWinnerColor = winningColor;
+                match.FkIdTeamWinner = winningTeam;
+
+                await _context.SaveChangesAsync(cancellationToken);
+
                 _context.Database.CommitTransaction();
                 // This transaction is automatically rolled back (and never committed) on error.
                 //_context.Database.RollbackTransaction();
@@ -430,6 +628,7 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
                 // 1. Create kill/death maps here and send to mongo.
                 // 2. Create game event file and send to mongo.
             }
+
 
             return match.IdGame;
         }

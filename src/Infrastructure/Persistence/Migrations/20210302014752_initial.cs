@@ -365,11 +365,18 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     team_name = table.Column<string>(type: "varchar(64)", nullable: false, collation: "utf8mb4_unicode_ci")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     team_abbreviation = table.Column<string>(type: "varchar(4)", nullable: false, collation: "utf8mb4_unicode_ci")
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    fk_id_homefield_map = table.Column<uint>(type: "int(10) unsigned", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => x.id_team);
+                    table.ForeignKey(
+                        name: "fk_stats_Teams_Homefield_Map",
+                        column: x => x.fk_id_homefield_map,
+                        principalTable: "maps",
+                        principalColumn: "id_map",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "fk_stats_Teams_Players_1",
                         column: x => x.fk_id_player_captain,
@@ -874,6 +881,128 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "playergameopponent",
+                columns: table => new
+                {
+                    id_gameopponent = table.Column<uint>(type: "int(10) unsigned", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    fk_id_player = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_team = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_season = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_week = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_game = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_opponent = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_gamerecord = table.Column<uint>(type: "int(10) unsigned", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PRIMARY", x => x.id_gameopponent);
+                    table.ForeignKey(
+                        name: "Fk_PlayerGameOpponent_Game",
+                        column: x => x.fk_id_game,
+                        principalTable: "games",
+                        principalColumn: "id_game",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerGameOpponent_GameRecord",
+                        column: x => x.fk_id_gamerecord,
+                        principalTable: "playergamerecord",
+                        principalColumn: "id_gamerecord",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerGameOpponent_Opponent",
+                        column: x => x.fk_id_opponent,
+                        principalTable: "players",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerGameOpponent_Player",
+                        column: x => x.fk_id_player,
+                        principalTable: "players",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerGameOpponent_Season",
+                        column: x => x.fk_id_season,
+                        principalTable: "seasons",
+                        principalColumn: "id_season",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerGameOpponent_Team",
+                        column: x => x.fk_id_team,
+                        principalTable: "teams",
+                        principalColumn: "id_team",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerGameOpponent_Week",
+                        column: x => x.fk_id_week,
+                        principalTable: "weeks",
+                        principalColumn: "id_week",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "playergameteammate",
+                columns: table => new
+                {
+                    id_gameteammate = table.Column<uint>(type: "int(10) unsigned", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    fk_id_player = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_team = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_season = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_week = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_game = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_teammate = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_gamerecord = table.Column<uint>(type: "int(10) unsigned", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PRIMARY", x => x.id_gameteammate);
+                    table.ForeignKey(
+                        name: "Fk_PlayerGameTeammate_Game",
+                        column: x => x.fk_id_game,
+                        principalTable: "games",
+                        principalColumn: "id_game",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerGameTeammate_GameRecord",
+                        column: x => x.fk_id_gamerecord,
+                        principalTable: "playergamerecord",
+                        principalColumn: "id_gamerecord",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerGameTeammate_Player",
+                        column: x => x.fk_id_player,
+                        principalTable: "players",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerGameTeammate_Season",
+                        column: x => x.fk_id_season,
+                        principalTable: "seasons",
+                        principalColumn: "id_season",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerGameTeammate_Team",
+                        column: x => x.fk_id_team,
+                        principalTable: "teams",
+                        principalColumn: "id_team",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerGameTeammate_Teammate",
+                        column: x => x.fk_id_teammate,
+                        principalTable: "players",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerGameTeammate_Week",
+                        column: x => x.fk_id_week,
+                        principalTable: "weeks",
+                        principalColumn: "id_week",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "roundplayers",
                 columns: table => new
                 {
@@ -1187,7 +1316,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     total_assists = table.Column<int>(type: "int(11)", nullable: false),
                     total_captures = table.Column<int>(type: "int(11)", nullable: false),
                     damage_output_between_touch_capture_max = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'0'"),
-                    damage_output_between_touch_capture_average = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'0'"),
+                    damage_output_between_touch_capture_average = table.Column<double>(type: "double", nullable: true),
                     damage_output_between_touch_capture_min = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'0'"),
                     capture_tics_min = table.Column<int>(type: "int(11)", nullable: true),
                     capture_tics_max = table.Column<int>(type: "int(11)", nullable: true),
@@ -1365,16 +1494,152 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "playerroundopponent",
+                columns: table => new
+                {
+                    id_roundopponent = table.Column<uint>(type: "int(10) unsigned", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    fk_id_player = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_team = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_season = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_week = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_game = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_round = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_opponent = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_roundrecord = table.Column<uint>(type: "int(10) unsigned", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PRIMARY", x => x.id_roundopponent);
+                    table.ForeignKey(
+                        name: "Fk_PlayerRoundOpponent_Game",
+                        column: x => x.fk_id_game,
+                        principalTable: "games",
+                        principalColumn: "id_game",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerRoundOpponent_Player",
+                        column: x => x.fk_id_player,
+                        principalTable: "players",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerRoundOpponent_Round",
+                        column: x => x.fk_id_round,
+                        principalTable: "rounds",
+                        principalColumn: "id_round",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerRoundOpponent_RoundRecord",
+                        column: x => x.fk_id_roundrecord,
+                        principalTable: "playerroundrecord",
+                        principalColumn: "id_roundrecord",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerRoundOpponent_Season",
+                        column: x => x.fk_id_season,
+                        principalTable: "seasons",
+                        principalColumn: "id_season",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerRoundOpponent_Team",
+                        column: x => x.fk_id_team,
+                        principalTable: "teams",
+                        principalColumn: "id_team",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerRoundOpponent_Teammate",
+                        column: x => x.fk_id_opponent,
+                        principalTable: "players",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerRoundOpponent_Week",
+                        column: x => x.fk_id_week,
+                        principalTable: "weeks",
+                        principalColumn: "id_week",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "playerroundteammate",
+                columns: table => new
+                {
+                    id_roundteammate = table.Column<uint>(type: "int(10) unsigned", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    fk_id_player = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_team = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_season = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_week = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_game = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_round = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_teammate = table.Column<uint>(type: "int(10) unsigned", nullable: false),
+                    fk_id_roundrecord = table.Column<uint>(type: "int(10) unsigned", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PRIMARY", x => x.id_roundteammate);
+                    table.ForeignKey(
+                        name: "Fk_PlayerRoundTeammate_Game",
+                        column: x => x.fk_id_game,
+                        principalTable: "games",
+                        principalColumn: "id_game",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerRoundTeammate_Player",
+                        column: x => x.fk_id_player,
+                        principalTable: "players",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerRoundTeammate_Round",
+                        column: x => x.fk_id_round,
+                        principalTable: "rounds",
+                        principalColumn: "id_round",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerRoundTeammate_RoundRecord",
+                        column: x => x.fk_id_roundrecord,
+                        principalTable: "playerroundrecord",
+                        principalColumn: "id_roundrecord",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerRoundTeammate_Season",
+                        column: x => x.fk_id_season,
+                        principalTable: "seasons",
+                        principalColumn: "id_season",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerRoundTeammate_Team",
+                        column: x => x.fk_id_team,
+                        principalTable: "teams",
+                        principalColumn: "id_team",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerRoundTeammate_Teammate",
+                        column: x => x.fk_id_teammate,
+                        principalTable: "players",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "Fk_PlayerRoundTeammate_Week",
+                        column: x => x.fk_id_week,
+                        principalTable: "weeks",
+                        principalColumn: "id_week",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "e0480187-aab0-427c-aef6-1096a0a73a2c", "10e78324-e203-436a-a106-101316c9e637", "Player", "PLAYER" },
-                    { "356dec2b-0a53-4bd4-a600-b02915aab74f", "a9ef6a45-7f00-45da-ba38-fd04084be34f", "Administrator", "ADMINISTRATOR" },
-                    { "0142a9b3-c205-4e02-9129-3e0584a14838", "a3ad542f-eb8f-4cfb-a715-3b040f545eb3", "DemoAdmin", "DEMOADMIN" },
-                    { "bb5e7953-16b0-4db3-a1a8-95658eb3d7ec", "4f4d0d27-8bbe-4f1a-b661-e119a43f4b91", "NewsEditor", "NEWSEDITOR" },
-                    { "a3ba0f62-651b-44b9-b3c2-c1e241c5720a", "fc7819ef-868d-40a4-ba3a-af37024f37a3", "StatsRunner", "STATSRUNNER" }
+                    { "9938341b-76c2-4569-ab9c-89171c449f84", "54855092-f2ef-4a9d-b9a7-dc5ea33ecc8d", "Player", "PLAYER" },
+                    { "661289ce-ed1d-4cf0-a940-deaec6042d7e", "877eadf7-61ec-4ab4-8717-fb7498264364", "Administrator", "ADMINISTRATOR" },
+                    { "4d5a963d-806b-48b5-aee8-5b48fb2c46d6", "6ab68bb4-d22c-4610-b8d4-d2bdb4a5349d", "DemoAdmin", "DEMOADMIN" },
+                    { "d5ed548e-7e23-409a-9de1-fd31cff7137b", "23654dae-2553-4bb2-a227-067e3736855d", "NewsEditor", "NEWSEDITOR" },
+                    { "1ac3d58a-eb64-46bb-ad11-5a04673ebf96", "ab3bd49f-3da7-4f16-9ee3-9ef2189265dd", "StatsRunner", "STATSRUNNER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -1626,6 +1891,47 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 column: "fk_id_team_sold_to");
 
             migrationBuilder.CreateIndex(
+                name: "fk_PlayerGameOpponent_Game_idx",
+                table: "playergameopponent",
+                column: "fk_id_game");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerGameOpponent_Opponent_idx",
+                table: "playergameopponent",
+                column: "fk_id_opponent");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerGameOpponent_Player_idx",
+                table: "playergameopponent",
+                column: "fk_id_player");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerGameOpponent_PlayerGameRecord_idx",
+                table: "playergameopponent",
+                column: "fk_id_gamerecord");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerGameOpponent_Season_idx",
+                table: "playergameopponent",
+                column: "fk_id_season");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerGameOpponent_Team_idx",
+                table: "playergameopponent",
+                column: "fk_id_team");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerGameOpponent_Week_idx",
+                table: "playergameopponent",
+                column: "fk_id_week");
+
+            migrationBuilder.CreateIndex(
+                name: "id_gameopponent_UNIQUE",
+                table: "playergameopponent",
+                column: "id_gameopponent",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "fk_PlayerGameRecord_Game_idx",
                 table: "playergamerecord",
                 column: "fk_id_game");
@@ -1654,6 +1960,93 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 name: "id_gamerecord_UNIQUE",
                 table: "playergamerecord",
                 column: "id_gamerecord",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerGameTeammate_Game_idx",
+                table: "playergameteammate",
+                column: "fk_id_game");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerGameTeammate_Player_idx",
+                table: "playergameteammate",
+                column: "fk_id_player");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerGameTeammate_PlayerGameRecord_idx",
+                table: "playergameteammate",
+                column: "fk_id_gamerecord");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerGameTeammate_Season_idx",
+                table: "playergameteammate",
+                column: "fk_id_season");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerGameTeammate_Team_idx",
+                table: "playergameteammate",
+                column: "fk_id_team");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerGameTeammate_Teammate_idx",
+                table: "playergameteammate",
+                column: "fk_id_teammate");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerGameTeammate_Week_idx",
+                table: "playergameteammate",
+                column: "fk_id_week");
+
+            migrationBuilder.CreateIndex(
+                name: "id_gameteammate_UNIQUE",
+                table: "playergameteammate",
+                column: "id_gameteammate",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerRoundOpponent_Game_idx",
+                table: "playerroundopponent",
+                column: "fk_id_game");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerRoundOpponent_Opponent_idx",
+                table: "playerroundopponent",
+                column: "fk_id_opponent");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerRoundOpponent_Player_idx",
+                table: "playerroundopponent",
+                column: "fk_id_player");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerRoundOpponent_PlayerRoundRecord_idx",
+                table: "playerroundopponent",
+                column: "fk_id_roundrecord");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerRoundOpponent_Round_idx",
+                table: "playerroundopponent",
+                column: "fk_id_round");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerRoundOpponent_Season_idx",
+                table: "playerroundopponent",
+                column: "fk_id_season");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerRoundOpponent_Team_idx",
+                table: "playerroundopponent",
+                column: "fk_id_team");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerRoundOpponent_Week_idx",
+                table: "playerroundopponent",
+                column: "fk_id_week");
+
+            migrationBuilder.CreateIndex(
+                name: "id_roundopponent_UNIQUE",
+                table: "playerroundopponent",
+                column: "id_roundopponent",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -1701,6 +2094,52 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 name: "id_gameteamstats_UNIQUE",
                 table: "playerroundrecord",
                 column: "id_roundrecord",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerRoundTeammate_Game_idx",
+                table: "playerroundteammate",
+                column: "fk_id_game");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerRoundTeammate_Player_idx",
+                table: "playerroundteammate",
+                column: "fk_id_player");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerRoundTeammate_PlayerRoundRecord_idx",
+                table: "playerroundteammate",
+                column: "fk_id_roundrecord");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerRoundTeammate_Round_idx",
+                table: "playerroundteammate",
+                column: "fk_id_round");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerRoundTeammate_Season_idx",
+                table: "playerroundteammate",
+                column: "fk_id_season");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerRoundTeammate_Team_idx",
+                table: "playerroundteammate",
+                column: "fk_id_team");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerRoundTeammate_Teammate_idx",
+                table: "playerroundteammate",
+                column: "fk_id_teammate");
+
+            migrationBuilder.CreateIndex(
+                name: "fk_PlayerRoundTeammate_Week_idx",
+                table: "playerroundteammate",
+                column: "fk_id_week");
+
+            migrationBuilder.CreateIndex(
+                name: "id_roundteammate_UNIQUE",
+                table: "playerroundteammate",
+                column: "id_roundteammate",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -2034,6 +2473,11 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 column: "fk_id_player_captain");
 
             migrationBuilder.CreateIndex(
+                name: "fk_stats_Teams_Homefield_Map_idx",
+                table: "teams",
+                column: "fk_id_homefield_map");
+
+            migrationBuilder.CreateIndex(
                 name: "fk_stats_Teams_Players_2_idx",
                 table: "teams",
                 column: "fk_id_player_firstpick");
@@ -2135,10 +2579,16 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 name: "playerdraft");
 
             migrationBuilder.DropTable(
-                name: "playergamerecord");
+                name: "playergameopponent");
 
             migrationBuilder.DropTable(
-                name: "playerroundrecord");
+                name: "playergameteammate");
+
+            migrationBuilder.DropTable(
+                name: "playerroundopponent");
+
+            migrationBuilder.DropTable(
+                name: "playerroundteammate");
 
             migrationBuilder.DropTable(
                 name: "playertransactions");
@@ -2183,6 +2633,12 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 name: "image_files");
 
             migrationBuilder.DropTable(
+                name: "playergamerecord");
+
+            migrationBuilder.DropTable(
+                name: "playerroundrecord");
+
+            migrationBuilder.DropTable(
                 name: "statsrounds");
 
             migrationBuilder.DropTable(
@@ -2192,13 +2648,13 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                 name: "games");
 
             migrationBuilder.DropTable(
-                name: "maps");
-
-            migrationBuilder.DropTable(
                 name: "teams");
 
             migrationBuilder.DropTable(
                 name: "weeks");
+
+            migrationBuilder.DropTable(
+                name: "maps");
 
             migrationBuilder.DropTable(
                 name: "players");

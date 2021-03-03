@@ -102,10 +102,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasColumnName("carriers_killed_while_holding_flag")
                 .HasColumnType("int(11)");
 
-            builder.Property(e => e.DamageOutputBetweenTouchCaptureAverage)
-                .HasColumnName("damage_output_between_touch_capture_average")
-                .HasColumnType("int(11)")
-                .HasDefaultValueSql("'0'");
+            builder.Property(e => e.DamageOutputBetweenTouchCaptureAverage).HasColumnName("damage_output_between_touch_capture_average");
 
             builder.Property(e => e.DamageOutputBetweenTouchCaptureMax)
                 .HasColumnName("damage_output_between_touch_capture_max")

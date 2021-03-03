@@ -16,6 +16,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasIndex(e => e.FkIdActivatorPlayer)
                 .HasDatabaseName("fk_statpickup_player_idx");
 
+            builder.HasIndex(e => e.FkIdGame)
+                .HasDatabaseName("fk_statpickup_game_idx");
+
             builder.HasIndex(e => e.FkIdRound)
                 .HasDatabaseName("fk_statpickup_round_idx");
 
@@ -29,6 +32,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.FkIdActivatorPlayer)
                 .HasColumnName("fk_id_activator_player")
+                .HasColumnType("int(10) unsigned");
+
+            builder.Property(e => e.FkIdGame)
+                .HasColumnName("fk_id_game")
                 .HasColumnType("int(10) unsigned");
 
             builder.Property(e => e.FkIdRound)
@@ -54,6 +61,12 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasForeignKey(d => d.FkIdRound)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_statpickup_round");
+
+            builder.HasOne(d => d.FkIdGameNavigation)
+                .WithMany(p => p.StatsPickupData)
+                .HasForeignKey(d => d.FkIdGame)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_statpickup_game");
         }
     }
 }

@@ -5,6 +5,12 @@ namespace WorldDoomLeague.Domain.Entities
 {
     public partial class PlayerRoundRecord
     {
+        public PlayerRoundRecord()
+        {
+            PlayerRoundOpponents = new HashSet<PlayerRoundOpponent>();
+            PlayerRoundTeammates = new HashSet<PlayerRoundTeammate>();
+        }
+
         public uint RoundRecordID { get; set; }
         public uint FkIdPlayer { get; set; }
         public uint FkIdTeam { get; set; }
@@ -27,5 +33,7 @@ namespace WorldDoomLeague.Domain.Entities
         public virtual Games FkIdGameNavigation { get; set; }
         public virtual Rounds FkIdRoundNavigation { get; set; }
         public virtual StatsRounds FkIdStatsRoundNavigation { get; set; }
+        public virtual ICollection<PlayerRoundOpponent> PlayerRoundOpponents { get; set; }
+        public virtual ICollection<PlayerRoundTeammate> PlayerRoundTeammates { get; set; }
     }
 }

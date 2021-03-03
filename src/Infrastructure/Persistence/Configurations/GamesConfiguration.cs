@@ -80,6 +80,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasCharSet("utf8mb4")
                 .HasCollation("utf8mb4_unicode_ci");
 
+            builder.Property(e => e.DoubleForfeit)
+                .HasColumnName("double_forfeit")
+                .HasColumnType("tinyint(1) unsigned");
+
             builder.HasOne(d => d.FkIdSeasonNavigation)
                 .WithMany(p => p.Games)
                 .HasForeignKey(d => d.FkIdSeason)

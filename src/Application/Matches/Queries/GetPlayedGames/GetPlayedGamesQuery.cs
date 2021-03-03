@@ -10,19 +10,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using WorldDoomLeague.Application.Common.Exceptions;
 
-namespace WorldDoomLeague.Application.Matches.Queries.GetUnplayedGames
+namespace WorldDoomLeague.Application.Matches.Queries.GetPlayedGames
 {
-    public class GetUnplayedGamesQuery : IRequest<UnplayedGamesVm>
+    public class GetPlayedGamesQuery : IRequest<PlayedGamesVm>
     {
-        public uint SeasonId { get; set; }
-
-        public GetUnplayedGamesQuery(uint seasonId)
+        public GetPlayedGamesQuery()
         {
-            SeasonId = seasonId;
         }
     }
 
-    public class GetPlayedGamesQueryHandler : IRequestHandler<GetUnplayedGamesQuery, UnplayedGamesVm>
+    public class GetPlayedGamesQueryHandler : IRequestHandler<GetPlayedGamesQuery, PlayedGamesVm>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -33,22 +30,18 @@ namespace WorldDoomLeague.Application.Matches.Queries.GetUnplayedGames
             _mapper = mapper;
         }
 
-        public async Task<UnplayedGamesVm> Handle(GetUnplayedGamesQuery request, CancellationToken cancellationToken)
+        public async Task<PlayedGamesVm> Handle(GetPlayedGamesQuery request, CancellationToken cancellationToken)
         {
-
-            if (await _context.Season.CountAsync(c => c.IdSeason == request.SeasonId) <= 0)
+            return new PlayedGamesVm
             {
-                throw new NotFoundException();
-            }
-
-            return new UnplayedGamesVm
-            {
-                UnplayedGameList = await _context.Games
+                PlayedGameList = await _context.Games
                     .Include(i => i.FkIdTeamBlueNavigation)
                     .Include(i => i.FkIdTeamRedNavigation)
                     .Include(i => i.FkIdWeekNavigation)
-                    .Where(w => w.FkIdTeamWinner == null && w.FkIdTeamForfeit == null && w.FkIdSeason == request.SeasonId)
-                    .ProjectTo<UnplayedGamesDto>(_mapper.ConfigurationProvider)
+                    .Include(i => i.FkIdSeasonNavigation)
+                    .Where(w => (w.FkIdTeamWinner != null || w.FkIdTeamForfeit != null || w.DoubleForfeit == 1) &&
+                    (w.FkIdSeasonNavigation.FkIdTeamWinner == null || w.GameType == "f"))
+                    .ProjectTo<PlayedGamesDto>(_mapper.ConfigurationProvider)
                     .OrderBy(t => t.WeekNumber)
                     .ToListAsync(cancellationToken)
             };

@@ -16,6 +16,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasIndex(e => e.FkIdPlayerAttacker)
                 .HasDatabaseName("fk_stataccuracy_player_attacker_idx");
 
+            builder.HasIndex(e => e.FkIdGame)
+                .HasDatabaseName("fk_stataccuracy_game_idx");
+
             builder.HasIndex(e => e.FkIdRound)
                 .HasDatabaseName("fk_stataccuracy_round_idx");
 
@@ -29,6 +32,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.FkIdPlayerAttacker)
                 .HasColumnName("fk_id_player_attacker")
+                .HasColumnType("int(10) unsigned");
+
+            builder.Property(e => e.FkIdGame)
+                .HasColumnName("fk_id_game")
                 .HasColumnType("int(10) unsigned");
 
             builder.Property(e => e.FkIdRound)
@@ -62,6 +69,12 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasForeignKey(d => d.FkIdRound)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_stataccuracyflagout_round");
+
+            builder.HasOne(d => d.FkIdGameNavigation)
+                .WithMany(p => p.StatsAccuracyWithFlagData)
+                .HasForeignKey(d => d.FkIdGame)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_stataccuracyflagout_game");
         }
     }
 }

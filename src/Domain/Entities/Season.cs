@@ -19,6 +19,10 @@ namespace WorldDoomLeague.Domain.Entities
             StatsRounds = new HashSet<StatsRounds>();
             Teams = new HashSet<Teams>();
             Weeks = new HashSet<Weeks>();
+            PlayerGameOpponents = new HashSet<PlayerGameOpponent>();
+            PlayerGameTeammates = new HashSet<PlayerGameTeammate>();
+            PlayerRoundOpponents = new HashSet<PlayerRoundOpponent>();
+            PlayerRoundTeammates = new HashSet<PlayerRoundTeammate>();
         }
 
         public uint IdSeason { get; set; }
@@ -39,7 +43,11 @@ namespace WorldDoomLeague.Domain.Entities
         public virtual ICollection<Teams> Teams { get; set; }
         public virtual ICollection<Weeks> Weeks { get; set; }
         public virtual ICollection<PlayerGameRecord> PlayerGameRecords { get; set; }
+        public virtual ICollection<PlayerGameOpponent> PlayerGameOpponents { get; set; }
+        public virtual ICollection<PlayerGameTeammate> PlayerGameTeammates { get; set; }
         public virtual ICollection<PlayerRoundRecord> PlayerRoundRecords { get; set; }
+        public virtual ICollection<PlayerRoundOpponent> PlayerRoundOpponents { get; set; }
+        public virtual ICollection<PlayerRoundTeammate> PlayerRoundTeammates { get; set; }
         public virtual ICollection<PlayerTransactions> Transactions { get; set; }
         public virtual ICollection<PlayerDraft> Draft { get; set; }
     }

@@ -19,6 +19,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasIndex(e => e.FkIdPlayerTarget)
                 .HasDatabaseName("fk_statsdamage_player_target_idx");
 
+            builder.HasIndex(e => e.FkIdGame)
+                .HasDatabaseName("fk_statsdamage_round_idx");
+
             builder.HasIndex(e => e.FkIdRound)
                 .HasDatabaseName("fk_statsdamage_round_idx");
 
@@ -50,6 +53,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasColumnName("fk_id_player_target")
                 .HasColumnType("int(10) unsigned");
 
+            builder.Property(e => e.FkIdGame)
+                .HasColumnName("fk_id_game")
+                .HasColumnType("int(10) unsigned");
+
             builder.Property(e => e.FkIdRound)
                 .HasColumnName("fk_id_round")
                 .HasColumnType("int(10) unsigned");
@@ -75,6 +82,12 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasForeignKey(d => d.FkIdRound)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_statsdamage_round");
+
+            builder.HasOne(d => d.FkIdGameNavigation)
+                .WithMany(p => p.StatsDamageData)
+                .HasForeignKey(d => d.FkIdGame)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_statsdamage_game");
         }
     }
 }

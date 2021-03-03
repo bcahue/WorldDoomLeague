@@ -37,6 +37,10 @@ namespace WorldDoomLeague.Application.Common.Interfaces
         DbSet<WadFiles> WadFiles { get; set; }
         DbSet<ImageFiles> ImageFiles { get; set; }
         DbSet<MapImages> MapImages { get; set; }
+        DbSet<PlayerRoundOpponent> PlayerRoundOpponents { get; set; }
+        DbSet<PlayerRoundTeammate> PlayerRoundTeammates { get; set; }
+        DbSet<PlayerGameOpponent> PlayerGameOpponents { get; set; }
+        DbSet<PlayerGameTeammate> PlayerGameTeammates { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 

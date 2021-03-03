@@ -26,6 +26,14 @@ namespace WorldDoomLeague.Domain.Entities
             TeamsFkIdPlayerSecondpickNavigation = new HashSet<Teams>();
             TeamsFkIdPlayerThirdpickNavigation = new HashSet<Teams>();
             PlayerGameRecords = new HashSet<PlayerGameRecord>();
+            PlayerGameOpponentsSelf = new HashSet<PlayerGameOpponent>();
+            PlayerGameOpponents = new HashSet<PlayerGameOpponent>();
+            PlayerGameTeammatesSelf = new HashSet<PlayerGameTeammate>();
+            PlayerGameTeammates = new HashSet<PlayerGameTeammate>();
+            PlayerRoundOpponentsSelf = new HashSet<PlayerRoundOpponent>();
+            PlayerRoundOpponents = new HashSet<PlayerRoundOpponent>();
+            PlayerRoundTeammatesSelf = new HashSet<PlayerRoundTeammate>();
+            PlayerRoundTeammates = new HashSet<PlayerRoundTeammate>();
             PlayerRoundRecords = new HashSet<PlayerRoundRecord>();
             Transactions = new HashSet<PlayerTransactions>();
             DraftNominated = new HashSet<PlayerDraft>();
@@ -57,7 +65,15 @@ namespace WorldDoomLeague.Domain.Entities
         public virtual ICollection<Teams> TeamsFkIdPlayerThirdpickNavigation { get; set; }
         public virtual ICollection<Demos> Demos { get; set; }
         public virtual ICollection<PlayerGameRecord> PlayerGameRecords { get; set; }
+        public virtual ICollection<PlayerGameOpponent> PlayerGameOpponentsSelf { get; set; }
+        public virtual ICollection<PlayerGameOpponent> PlayerGameOpponents { get; set; }
+        public virtual ICollection<PlayerGameTeammate> PlayerGameTeammatesSelf { get; set; }
+        public virtual ICollection<PlayerGameTeammate> PlayerGameTeammates { get; set; }
         public virtual ICollection<PlayerRoundRecord> PlayerRoundRecords { get; set; }
+        public virtual ICollection<PlayerRoundOpponent> PlayerRoundOpponentsSelf { get; set; }
+        public virtual ICollection<PlayerRoundOpponent> PlayerRoundOpponents { get; set; }
+        public virtual ICollection<PlayerRoundTeammate> PlayerRoundTeammatesSelf { get; set; }
+        public virtual ICollection<PlayerRoundTeammate> PlayerRoundTeammates { get; set; }
         public virtual ICollection<PlayerTransactions> Transactions { get; set; }
         public virtual ICollection<PlayerDraft> DraftNominated { get; set; }
         public virtual ICollection<PlayerDraft> DraftNominating { get; set; }

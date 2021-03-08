@@ -53,13 +53,13 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasOne(d => d.FkIdFileNavigation)
                 .WithMany(p => p.Seasons)
                 .HasForeignKey(d => d.FkIdWadFile)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_Seasons_WadFiles");
 
             builder.HasOne(d => d.FkIdEngineNavigation)
                 .WithMany(p => p.Seasons)
                 .HasForeignKey(d => d.FkIdEngine)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_Seasons_Engine");
         }
     }

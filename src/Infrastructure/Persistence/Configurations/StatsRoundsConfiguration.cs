@@ -314,49 +314,49 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasOne(d => d.FkIdGameNavigation)
                 .WithMany(p => p.StatsRounds)
                 .HasForeignKey(d => d.FkIdGame)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_StatsRounds_Games");
 
             builder.HasOne(d => d.FkIdMapNavigation)
                 .WithMany(p => p.StatsRounds)
                 .HasForeignKey(d => d.FkIdMap)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_StatsRounds_Maps");
 
             builder.HasOne(d => d.FkIdPlayerNavigation)
                 .WithMany(p => p.StatsRounds)
                 .HasForeignKey(d => d.FkIdPlayer)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_StatsRounds_Players");
 
             builder.HasOne(d => d.FkIdRoundNavigation)
                 .WithMany(p => p.StatsRounds)
                 .HasForeignKey(d => d.FkIdRound)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_StatsRounds_Rounds");
 
             builder.HasOne(d => d.FkIdSeasonNavigation)
                 .WithMany(p => p.StatsRounds)
                 .HasForeignKey(d => d.FkIdSeason)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_StatsRounds_Seasons");
 
             builder.HasOne(d => d.FkIdWeekNavigation)
                 .WithMany(p => p.StatsRounds)
                 .HasForeignKey(d => d.FkIdWeek)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_StatsRounds_Weeks");
 
             builder.HasOne(d => d.FkIdTeamNavigation)
                 .WithMany(p => p.StatsRounds)
                 .HasForeignKey(d => d.FkIdTeam)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_StatsRounds_Teams");
 
             builder.HasOne(d => d.FkIdPlayerRoundRecordNavigation)
                 .WithOne(p => p.FkIdStatsRoundNavigation)
                 .HasForeignKey<PlayerRoundRecord>(d => d.FkIdStatsRound)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_StatsRounds_PlayerRoundRecord");
         }
     }

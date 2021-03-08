@@ -38,13 +38,13 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasOne(d => d.FkIdWeekNavigation)
                 .WithMany(p => p.WeekMaps)
                 .HasForeignKey(d => d.FkIdWeek)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_WeekMaps_Week");
 
             builder.HasOne(d => d.FkIdMapNavigation)
                 .WithMany(p => p.WeekMaps)
                 .HasForeignKey(d => d.FkIdMap)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_WeekMaps_Maps");
         }
     }

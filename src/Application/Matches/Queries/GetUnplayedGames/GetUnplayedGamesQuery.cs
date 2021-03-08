@@ -47,7 +47,7 @@ namespace WorldDoomLeague.Application.Matches.Queries.GetUnplayedGames
                     .Include(i => i.FkIdTeamBlueNavigation)
                     .Include(i => i.FkIdTeamRedNavigation)
                     .Include(i => i.FkIdWeekNavigation)
-                    .Where(w => w.FkIdTeamWinner == null && w.FkIdTeamForfeit == null && w.FkIdSeason == request.SeasonId)
+                    .Where(w => w.FkIdTeamWinner == null && w.FkIdTeamForfeit == null && w.DoubleForfeit == 0 && w.FkIdSeason == request.SeasonId)
                     .ProjectTo<UnplayedGamesDto>(_mapper.ConfigurationProvider)
                     .OrderBy(t => t.WeekNumber)
                     .ToListAsync(cancellationToken)

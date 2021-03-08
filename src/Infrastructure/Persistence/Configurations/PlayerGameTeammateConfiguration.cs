@@ -73,43 +73,43 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasOne(d => d.FkIdPlayerNavigation)
                 .WithMany(p => p.PlayerGameTeammatesSelf)
                 .HasForeignKey(d => d.FkIdPlayer)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Fk_PlayerGameTeammate_Player");
 
             builder.HasOne(d => d.FkIdGameNavigation)
                 .WithMany(p => p.PlayerGameTeammates)
                 .HasForeignKey(d => d.FkIdGame)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Fk_PlayerGameTeammate_Game");
 
             builder.HasOne(d => d.FkIdSeasonNavigation)
                 .WithMany(p => p.PlayerGameTeammates)
                 .HasForeignKey(d => d.FkIdSeason)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Fk_PlayerGameTeammate_Season");
 
             builder.HasOne(d => d.FkIdTeamNavigation)
                 .WithMany(p => p.PlayerGameTeammates)
                 .HasForeignKey(d => d.FkIdTeam)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Fk_PlayerGameTeammate_Team");
 
             builder.HasOne(d => d.FkIdWeekNavigation)
                 .WithMany(p => p.PlayerGameTeammates)
                 .HasForeignKey(d => d.FkIdWeek)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Fk_PlayerGameTeammate_Week");
 
             builder.HasOne(d => d.FkIdTeammateNavigation)
                 .WithMany(p => p.PlayerGameTeammates)
                 .HasForeignKey(d => d.FkIdTeammate)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Fk_PlayerGameTeammate_Teammate");
 
             builder.HasOne(d => d.FkIdPlayerGameRecordNavigation)
                 .WithMany(p => p.PlayerGameTeammates)
                 .HasForeignKey(d => d.FkIdPlayerGameRecord)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Fk_PlayerGameTeammate_GameRecord");
         }
     }

@@ -148,36 +148,36 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "9938341b-76c2-4569-ab9c-89171c449f84",
-                            ConcurrencyStamp = "54855092-f2ef-4a9d-b9a7-dc5ea33ecc8d",
+                            Id = "9ae8fba9-9585-472c-a113-2e5205bbd676",
+                            ConcurrencyStamp = "97cb1a2c-5fdc-4217-828e-c387fc861712",
                             Name = "Player",
                             NormalizedName = "PLAYER"
                         },
                         new
                         {
-                            Id = "661289ce-ed1d-4cf0-a940-deaec6042d7e",
-                            ConcurrencyStamp = "877eadf7-61ec-4ab4-8717-fb7498264364",
+                            Id = "c534a390-e284-463c-9836-cff35f34df18",
+                            ConcurrencyStamp = "da144751-78d9-44db-abee-919d97b8e72d",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "4d5a963d-806b-48b5-aee8-5b48fb2c46d6",
-                            ConcurrencyStamp = "6ab68bb4-d22c-4610-b8d4-d2bdb4a5349d",
+                            Id = "541b58e9-87af-48fa-a74b-dad5607e0af3",
+                            ConcurrencyStamp = "c560a0a6-a053-4922-b0f0-65ca653aa844",
                             Name = "DemoAdmin",
                             NormalizedName = "DEMOADMIN"
                         },
                         new
                         {
-                            Id = "d5ed548e-7e23-409a-9de1-fd31cff7137b",
-                            ConcurrencyStamp = "23654dae-2553-4bb2-a227-067e3736855d",
+                            Id = "8d1c438e-d744-4e53-94ad-afce3c182994",
+                            ConcurrencyStamp = "4a1313d3-463c-4eb0-9d0c-f47918ba9a3c",
                             Name = "NewsEditor",
                             NormalizedName = "NEWSEDITOR"
                         },
                         new
                         {
-                            Id = "1ac3d58a-eb64-46bb-ad11-5a04673ebf96",
-                            ConcurrencyStamp = "ab3bd49f-3da7-4f16-9ee3-9ef2189265dd",
+                            Id = "e3f1b842-19ff-4c25-b927-5c913bf2c528",
+                            ConcurrencyStamp = "11a10031-6c5e-45c6-aa60-0d2365417a82",
                             Name = "StatsRunner",
                             NormalizedName = "STATSRUNNER"
                         });
@@ -617,6 +617,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnType("int(10) unsigned")
                         .HasColumnName("id_game");
 
+                    b.Property<byte>("DoubleForfeit")
+                        .HasColumnType("tinyint(1) unsigned")
+                        .HasColumnName("double_forfeit");
+
                     b.Property<uint>("FkIdSeason")
                         .HasColumnType("int(10) unsigned")
                         .HasColumnName("fk_id_season");
@@ -675,6 +679,8 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("FkIdTeamRed")
                         .HasDatabaseName("fk_stats_Games_Teams_red_idx");
+
+                    b.HasIndex("FkIdTeamWinner");
 
                     b.HasIndex("FkIdWeek")
                         .HasDatabaseName("fk_stats_Games_Weeks_idx");
@@ -1335,11 +1341,15 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnType("int(10) unsigned")
                         .HasColumnName("fk_id_player");
 
+                    b.Property<uint>("FkIdPlayerTradedFor")
+                        .HasColumnType("int(10) unsigned")
+                        .HasColumnName("fk_id_playertradedfor");
+
                     b.Property<uint>("FkIdSeason")
                         .HasColumnType("int(10) unsigned")
                         .HasColumnName("fk_id_season");
 
-                    b.Property<uint?>("FkIdTeamTradedFrom")
+                    b.Property<uint>("FkIdTeamTradedFrom")
                         .HasColumnType("int(10) unsigned")
                         .HasColumnName("fk_id_team_traded_from");
 
@@ -1352,14 +1362,16 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnName("fk_id_week");
 
                     b.Property<byte>("PlayerPromotedCaptain")
-                        .HasColumnType("tinyint(1) unsigned")
-                        .HasColumnName("player_promoted_captain");
+                        .HasColumnType("tinyint unsigned");
 
                     b.HasKey("TransactionId")
                         .HasName("PRIMARY");
 
                     b.HasIndex("FkIdPlayer")
                         .HasDatabaseName("fk_playertransaction_player_idx");
+
+                    b.HasIndex("FkIdPlayerTradedFor")
+                        .HasDatabaseName("fk_playertransaction_playertradefor_idx");
 
                     b.HasIndex("FkIdSeason")
                         .HasDatabaseName("fk_playertransaction_season_idx");
@@ -1630,6 +1642,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnType("int(10) unsigned")
                         .HasColumnName("id_stats_accuracy_data");
 
+                    b.Property<uint>("FkIdGame")
+                        .HasColumnType("int(10) unsigned")
+                        .HasColumnName("fk_id_game");
+
                     b.Property<uint>("FkIdPlayerAttacker")
                         .HasColumnType("int(10) unsigned")
                         .HasColumnName("fk_id_player_attacker");
@@ -1657,6 +1673,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.HasKey("IdStatsAccuracyData")
                         .HasName("PRIMARY");
 
+                    b.HasIndex("FkIdGame")
+                        .HasDatabaseName("fk_stataccuracy_game_idx");
+
                     b.HasIndex("FkIdPlayerAttacker")
                         .HasDatabaseName("fk_stataccuracy_player_attacker_idx");
 
@@ -1676,6 +1695,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int(10) unsigned")
                         .HasColumnName("id_stats_accuracy_flagout_data");
+
+                    b.Property<uint>("FkIdGame")
+                        .HasColumnType("int(10) unsigned")
+                        .HasColumnName("fk_id_game");
 
                     b.Property<uint>("FkIdPlayerAttacker")
                         .HasColumnType("int(10) unsigned")
@@ -1703,6 +1726,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.HasKey("IdStatsAccuracyFlagoutData")
                         .HasName("PRIMARY");
+
+                    b.HasIndex("FkIdGame")
+                        .HasDatabaseName("fk_stataccuracy_game_idx");
 
                     b.HasIndex("FkIdPlayerAttacker")
                         .HasDatabaseName("fk_stataccuracy_player_attacker_idx");
@@ -1736,6 +1762,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnType("int(10) unsigned")
                         .HasColumnName("damage_health");
 
+                    b.Property<uint>("FkIdGame")
+                        .HasColumnType("int(10) unsigned")
+                        .HasColumnName("fk_id_game");
+
                     b.Property<uint>("FkIdPlayerAttacker")
                         .HasColumnType("int(10) unsigned")
                         .HasColumnName("fk_id_player_attacker");
@@ -1754,6 +1784,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.HasKey("IdStatsDamage")
                         .HasName("PRIMARY");
+
+                    b.HasIndex("FkIdGame")
+                        .HasDatabaseName("fk_statsdamage_game_idx");
 
                     b.HasIndex("FkIdPlayerAttacker")
                         .HasDatabaseName("fk_statsdamage_player_attacker_idx");
@@ -1790,6 +1823,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnType("int(10) unsigned")
                         .HasColumnName("damage_health");
 
+                    b.Property<uint>("FkIdGame")
+                        .HasColumnType("int(10) unsigned")
+                        .HasColumnName("fk_id_game");
+
                     b.Property<uint>("FkIdPlayerAttacker")
                         .HasColumnType("int(10) unsigned")
                         .HasColumnName("fk_id_player_attacker");
@@ -1809,6 +1846,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.HasKey("IdStatsCarrierDamage")
                         .HasName("PRIMARY");
 
+                    b.HasIndex("FkIdGame")
+                        .HasDatabaseName("fk_statsdamage_game_idx");
+
                     b.HasIndex("FkIdPlayerAttacker")
                         .HasDatabaseName("fk_statsdamage_player_attacker_idx");
 
@@ -1822,7 +1862,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .IsUnique()
                         .HasDatabaseName("id_stats_damage_UNIQUE");
 
-                    b.ToTable("statsdamagewithflagdata");
+                    b.ToTable("statsdamagecarrierdata");
                 });
 
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.StatsKillCarrierData", b =>
@@ -1831,6 +1871,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int(10) unsigned")
                         .HasColumnName("id_stats_killcarrier");
+
+                    b.Property<uint>("FkIdGame")
+                        .HasColumnType("int(10) unsigned")
+                        .HasColumnName("fk_id_game");
 
                     b.Property<uint>("FkIdPlayerAttacker")
                         .HasColumnType("int(10) unsigned")
@@ -1855,6 +1899,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.HasKey("IdStatsKillcarrier")
                         .HasName("PRIMARY");
 
+                    b.HasIndex("FkIdGame")
+                        .HasDatabaseName("fk_statsdamage_game_idx");
+
                     b.HasIndex("FkIdPlayerAttacker")
                         .HasDatabaseName("fk_statsdamage_player_attacker_idx");
 
@@ -1878,6 +1925,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnType("int(10) unsigned")
                         .HasColumnName("id_stats_kill");
 
+                    b.Property<uint>("FkIdGame")
+                        .HasColumnType("int(10) unsigned")
+                        .HasColumnName("fk_id_game");
+
                     b.Property<uint>("FkIdPlayerAttacker")
                         .HasColumnType("int(10) unsigned")
                         .HasColumnName("fk_id_player_attacker");
@@ -1900,6 +1951,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.HasKey("IdStatsKill")
                         .HasName("PRIMARY");
+
+                    b.HasIndex("FkIdGame")
+                        .HasDatabaseName("fk_statsdamage_game_idx");
 
                     b.HasIndex("FkIdPlayerAttacker")
                         .HasDatabaseName("fk_statsdamage_player_attacker_idx");
@@ -1928,6 +1982,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .HasColumnType("int(10) unsigned")
                         .HasColumnName("fk_id_activator_player");
 
+                    b.Property<uint>("FkIdGame")
+                        .HasColumnType("int(10) unsigned")
+                        .HasColumnName("fk_id_game");
+
                     b.Property<uint>("FkIdRound")
                         .HasColumnType("int(10) unsigned")
                         .HasColumnName("fk_id_round");
@@ -1945,6 +2003,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("FkIdActivatorPlayer")
                         .HasDatabaseName("fk_statpickup_player_idx");
+
+                    b.HasIndex("FkIdGame")
+                        .HasDatabaseName("fk_statpickup_game_idx");
 
                     b.HasIndex("FkIdRound")
                         .HasDatabaseName("fk_statpickup_round_idx");
@@ -2318,7 +2379,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("TeamAbbreviation")
                         .IsRequired()
-                        .HasColumnType("varchar(4)")
+                        .HasColumnType("varchar(5)")
                         .HasColumnName("team_abbreviation")
                         .UseCollation("utf8mb4_unicode_ci")
                         .HasCharSet("utf8mb4");
@@ -2581,12 +2642,14 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("Demos")
                         .HasForeignKey("FkGameId")
                         .HasConstraintName("fk_demo_game")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkPlayer")
                         .WithMany("Demos")
                         .HasForeignKey("FkPlayerId")
                         .HasConstraintName("fk_demo_player")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkGame");
@@ -2600,12 +2663,14 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("GameMaps")
                         .HasForeignKey("FkIdGame")
                         .HasConstraintName("fk_GameMaps_Games")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Maps", "FkIdMapNavigation")
                         .WithMany("GameMaps")
                         .HasForeignKey("FkIdMap")
                         .HasConstraintName("fk_GameMaps_Maps")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdGameNavigation");
@@ -2619,30 +2684,35 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("GamePlayers")
                         .HasForeignKey("FkIdGame")
                         .HasConstraintName("fk_GamePlayers_Games")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNavigation")
                         .WithMany("GamePlayers")
                         .HasForeignKey("FkIdPlayer")
                         .HasConstraintName("fk_GamePlayers_Players")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
                         .WithMany("GamePlayers")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("fk_GamePlayers_Seasons")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamNavigation")
                         .WithMany("GamePlayers")
                         .HasForeignKey("FkIdTeam")
                         .HasConstraintName("fk_GamePlayers_Teams")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Weeks", "FkIdWeekNavigation")
                         .WithMany("GamePlayers")
                         .HasForeignKey("FkIdWeek")
                         .HasConstraintName("fk_GamePlayers_Weeks")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdGameNavigation");
@@ -2662,30 +2732,35 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("GameTeamStats")
                         .HasForeignKey("FkIdGame")
                         .HasConstraintName("fk_GameTeamStats_Games")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdOpponentTeamNavigation")
                         .WithMany("GameTeamStatsOpponents")
                         .HasForeignKey("FkIdOpponentTeam")
                         .HasConstraintName("fk_GameTeamStats_OpponentTeams")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
                         .WithMany("GameTeamStats")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("fk_GameTeamStats_Seasons")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamNavigation")
                         .WithMany("GameTeamStats")
                         .HasForeignKey("FkIdTeam")
                         .HasConstraintName("fk_GameTeamStats_Teams")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Weeks", "FkIdWeekNavigation")
                         .WithMany("GameTeamStats")
                         .HasForeignKey("FkIdWeek")
                         .HasConstraintName("fk_GameTeamStats_Weeks")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdGameNavigation");
@@ -2705,24 +2780,33 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("Games")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("fk_stats_Games_Seasons")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamBlueNavigation")
                         .WithMany("GamesFkIdTeamBlueNavigation")
                         .HasForeignKey("FkIdTeamBlue")
                         .HasConstraintName("fk_stats_Games_Teams_blue")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamRedNavigation")
                         .WithMany("GamesFkIdTeamRedNavigation")
                         .HasForeignKey("FkIdTeamRed")
                         .HasConstraintName("fk_stats_Games_Teams_red")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamWinnerNavigation")
+                        .WithMany("GamesFkIdTeamWinnerNavigation")
+                        .HasForeignKey("FkIdTeamWinner")
+                        .HasConstraintName("fk_stats_Games_Teams_winner");
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Weeks", "FkIdWeekNavigation")
                         .WithMany("Games")
                         .HasForeignKey("FkIdWeek")
                         .HasConstraintName("fk_stats_Games_Weeks")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdSeasonNavigation");
@@ -2730,6 +2814,8 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.Navigation("FkIdTeamBlueNavigation");
 
                     b.Navigation("FkIdTeamRedNavigation");
+
+                    b.Navigation("FkIdTeamWinnerNavigation");
 
                     b.Navigation("FkIdWeekNavigation");
                 });
@@ -2740,12 +2826,14 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("MapImages")
                         .HasForeignKey("FkIdImageFile")
                         .HasConstraintName("fk_MapImages_Files")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Maps", "FkIdMapNavigation")
                         .WithMany("MapImages")
                         .HasForeignKey("FkIdMap")
                         .HasConstraintName("fk_MapImages_Maps")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdImageFileNavigation");
@@ -2759,30 +2847,35 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("DraftNominated")
                         .HasForeignKey("FkIdPlayerNominated")
                         .HasConstraintName("fk_Draft_Player_nominated")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNominatingNavigation")
                         .WithMany("DraftNominating")
                         .HasForeignKey("FkIdPlayerNominating")
                         .HasConstraintName("fk_Draft_Player_nominating")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerSoldToNavigation")
                         .WithMany("DraftSoldTo")
                         .HasForeignKey("FkIdPlayerSoldTo")
                         .HasConstraintName("fk_Draft_Player_sold_to")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
                         .WithMany("Draft")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("fk_Draft_Season")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamSoldToNavigation")
                         .WithMany("DraftTeamSoldTo")
                         .HasForeignKey("FkIdTeamSoldTo")
                         .HasConstraintName("fk_Draft_Team_sold_to")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdPlayerNominatedNavigation");
@@ -2802,42 +2895,49 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("PlayerGameOpponents")
                         .HasForeignKey("FkIdGame")
                         .HasConstraintName("Fk_PlayerGameOpponent_Game")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdOpponentNavigation")
                         .WithMany("PlayerGameOpponents")
                         .HasForeignKey("FkIdOpponent")
                         .HasConstraintName("Fk_PlayerGameOpponent_Opponent")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNavigation")
                         .WithMany("PlayerGameOpponentsSelf")
                         .HasForeignKey("FkIdPlayer")
                         .HasConstraintName("Fk_PlayerGameOpponent_Player")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.PlayerGameRecord", "FkIdPlayerGameRecordNavigation")
                         .WithMany("PlayerGameOpponents")
                         .HasForeignKey("FkIdPlayerGameRecord")
                         .HasConstraintName("Fk_PlayerGameOpponent_GameRecord")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
                         .WithMany("PlayerGameOpponents")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("Fk_PlayerGameOpponent_Season")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamNavigation")
                         .WithMany("PlayerGameOpponents")
                         .HasForeignKey("FkIdTeam")
                         .HasConstraintName("Fk_PlayerGameOpponent_Team")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Weeks", "FkIdWeekNavigation")
                         .WithMany("PlayerGameOpponents")
                         .HasForeignKey("FkIdWeek")
                         .HasConstraintName("Fk_PlayerGameOpponent_Week")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdGameNavigation");
@@ -2861,30 +2961,35 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("PlayerGameRecords")
                         .HasForeignKey("FkIdGame")
                         .HasConstraintName("Fk_PlayerGameRecord_Game")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNavigation")
                         .WithMany("PlayerGameRecords")
                         .HasForeignKey("FkIdPlayer")
                         .HasConstraintName("Fk_PlayerGameRecord_Players")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
                         .WithMany("PlayerGameRecords")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("Fk_PlayerGameRecord_Season")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamNavigation")
                         .WithMany("PlayerGameRecords")
                         .HasForeignKey("FkIdTeam")
                         .HasConstraintName("Fk_PlayerGameRecord_Team")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Weeks", "FkIdWeekNavigation")
                         .WithMany("PlayerGameRecords")
                         .HasForeignKey("FkIdWeek")
                         .HasConstraintName("Fk_PlayerGameRecord_Week")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdGameNavigation");
@@ -2904,42 +3009,49 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("PlayerGameTeammates")
                         .HasForeignKey("FkIdGame")
                         .HasConstraintName("Fk_PlayerGameTeammate_Game")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNavigation")
                         .WithMany("PlayerGameTeammatesSelf")
                         .HasForeignKey("FkIdPlayer")
                         .HasConstraintName("Fk_PlayerGameTeammate_Player")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.PlayerGameRecord", "FkIdPlayerGameRecordNavigation")
                         .WithMany("PlayerGameTeammates")
                         .HasForeignKey("FkIdPlayerGameRecord")
                         .HasConstraintName("Fk_PlayerGameTeammate_GameRecord")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
                         .WithMany("PlayerGameTeammates")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("Fk_PlayerGameTeammate_Season")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamNavigation")
                         .WithMany("PlayerGameTeammates")
                         .HasForeignKey("FkIdTeam")
                         .HasConstraintName("Fk_PlayerGameTeammate_Team")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdTeammateNavigation")
                         .WithMany("PlayerGameTeammates")
                         .HasForeignKey("FkIdTeammate")
                         .HasConstraintName("Fk_PlayerGameTeammate_Teammate")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Weeks", "FkIdWeekNavigation")
                         .WithMany("PlayerGameTeammates")
                         .HasForeignKey("FkIdWeek")
                         .HasConstraintName("Fk_PlayerGameTeammate_Week")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdGameNavigation");
@@ -2963,48 +3075,56 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("PlayerRoundOpponents")
                         .HasForeignKey("FkIdGame")
                         .HasConstraintName("Fk_PlayerRoundOpponent_Game")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdOpponentNavigation")
                         .WithMany("PlayerRoundOpponents")
                         .HasForeignKey("FkIdOpponent")
                         .HasConstraintName("Fk_PlayerRoundOpponent_Teammate")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNavigation")
                         .WithMany("PlayerRoundOpponentsSelf")
                         .HasForeignKey("FkIdPlayer")
                         .HasConstraintName("Fk_PlayerRoundOpponent_Player")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WorldDoomLeague.Domain.Entities.PlayerRoundRecord", "FkIdPlayeRoundRecordNavigation")
+                    b.HasOne("WorldDoomLeague.Domain.Entities.PlayerRoundRecord", "FkIdPlayerRoundRecordNavigation")
                         .WithMany("PlayerRoundOpponents")
                         .HasForeignKey("FkIdPlayerRoundRecord")
                         .HasConstraintName("Fk_PlayerRoundOpponent_RoundRecord")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Rounds", "FkIdRoundNavigation")
                         .WithMany("PlayerRoundOpponents")
                         .HasForeignKey("FkIdRound")
                         .HasConstraintName("Fk_PlayerRoundOpponent_Round")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
                         .WithMany("PlayerRoundOpponents")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("Fk_PlayerRoundOpponent_Season")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamNavigation")
                         .WithMany("PlayerRoundOpponents")
                         .HasForeignKey("FkIdTeam")
                         .HasConstraintName("Fk_PlayerRoundOpponent_Team")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Weeks", "FkIdWeekNavigation")
                         .WithMany("PlayerRoundOpponents")
                         .HasForeignKey("FkIdWeek")
                         .HasConstraintName("Fk_PlayerRoundOpponent_Week")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdGameNavigation");
@@ -3013,7 +3133,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.Navigation("FkIdPlayerNavigation");
 
-                    b.Navigation("FkIdPlayeRoundRecordNavigation");
+                    b.Navigation("FkIdPlayerRoundRecordNavigation");
 
                     b.Navigation("FkIdRoundNavigation");
 
@@ -3030,48 +3150,56 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("PlayerRoundRecords")
                         .HasForeignKey("FkIdGame")
                         .HasConstraintName("fk_PlayerRound_Game")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Maps", "FkIdMapNavigation")
                         .WithMany("PlayerRoundRecords")
                         .HasForeignKey("FkIdMap")
                         .HasConstraintName("fk_PlayerRound_Map")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNavigation")
                         .WithMany("PlayerRoundRecords")
                         .HasForeignKey("FkIdPlayer")
                         .HasConstraintName("fk_PlayerRound_Player")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Rounds", "FkIdRoundNavigation")
                         .WithMany("PlayerRoundRecords")
                         .HasForeignKey("FkIdRound")
                         .HasConstraintName("fk_PlayerRound_Round")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
                         .WithMany("PlayerRoundRecords")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("fk_PlayerRound_Season")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.StatsRounds", "FkIdStatsRoundNavigation")
                         .WithOne("FkIdPlayerRoundRecordNavigation")
                         .HasForeignKey("WorldDoomLeague.Domain.Entities.PlayerRoundRecord", "FkIdStatsRound")
                         .HasConstraintName("fk_StatsRounds_PlayerRoundRecord")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamNavigation")
                         .WithMany("PlayerRoundRecords")
                         .HasForeignKey("FkIdTeam")
                         .HasConstraintName("fk_PlayerRound_Team")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Weeks", "FkIdWeekNavigation")
                         .WithMany("PlayerRoundRecords")
                         .HasForeignKey("FkIdWeek")
                         .HasConstraintName("fk_PlayerRound_Week")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdGameNavigation");
@@ -3097,55 +3225,63 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("PlayerRoundTeammates")
                         .HasForeignKey("FkIdGame")
                         .HasConstraintName("Fk_PlayerRoundTeammate_Game")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNavigation")
                         .WithMany("PlayerRoundTeammatesSelf")
                         .HasForeignKey("FkIdPlayer")
                         .HasConstraintName("Fk_PlayerRoundTeammate_Player")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WorldDoomLeague.Domain.Entities.PlayerRoundRecord", "FkIdPlayeRoundRecordNavigation")
+                    b.HasOne("WorldDoomLeague.Domain.Entities.PlayerRoundRecord", "FkIdPlayerRoundRecordNavigation")
                         .WithMany("PlayerRoundTeammates")
                         .HasForeignKey("FkIdPlayerRoundRecord")
                         .HasConstraintName("Fk_PlayerRoundTeammate_RoundRecord")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Rounds", "FkIdRoundNavigation")
                         .WithMany("PlayerRoundTeammates")
                         .HasForeignKey("FkIdRound")
                         .HasConstraintName("Fk_PlayerRoundTeammate_Round")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
                         .WithMany("PlayerRoundTeammates")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("Fk_PlayerRoundTeammate_Season")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamNavigation")
                         .WithMany("PlayerRoundTeammates")
                         .HasForeignKey("FkIdTeam")
                         .HasConstraintName("Fk_PlayerRoundTeammate_Team")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdTeammateNavigation")
                         .WithMany("PlayerRoundTeammates")
                         .HasForeignKey("FkIdTeammate")
                         .HasConstraintName("Fk_PlayerRoundTeammate_Teammate")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Weeks", "FkIdWeekNavigation")
                         .WithMany("PlayerRoundTeammates")
                         .HasForeignKey("FkIdWeek")
                         .HasConstraintName("Fk_PlayerRoundTeammate_Week")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdGameNavigation");
 
                     b.Navigation("FkIdPlayerNavigation");
 
-                    b.Navigation("FkIdPlayeRoundRecordNavigation");
+                    b.Navigation("FkIdPlayerRoundRecordNavigation");
 
                     b.Navigation("FkIdRoundNavigation");
 
@@ -3161,21 +3297,31 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.PlayerTransactions", b =>
                 {
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNavigation")
-                        .WithMany("Transactions")
+                        .WithMany("PlayerTradedFrom")
                         .HasForeignKey("FkIdPlayer")
-                        .HasConstraintName("Fk_Transaction_Player")
+                        .HasConstraintName("Fk_Transaction_PlayerTradedFrom")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerTradedForNavigation")
+                        .WithMany("PlayerTradedTo")
+                        .HasForeignKey("FkIdPlayerTradedFor")
+                        .HasConstraintName("Fk_Transaction_PlayerTradedFor")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
                         .WithMany("Transactions")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("Fk_Transaction_Season")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamTradedFromNavigation")
                         .WithMany("TransactionTeamTradedFrom")
                         .HasForeignKey("FkIdTeamTradedFrom")
-                        .HasConstraintName("fk_Transaction_Team_traded_from");
+                        .HasConstraintName("fk_Transaction_Team_traded_from")
+                        .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamTradedToNavigation")
                         .WithMany("TransactionTeamTradedTo")
@@ -3186,9 +3332,12 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("Transactions")
                         .HasForeignKey("FkIdWeek")
                         .HasConstraintName("Fk_Transaction_Week")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdPlayerNavigation");
+
+                    b.Navigation("FkIdPlayerTradedForNavigation");
 
                     b.Navigation("FkIdSeasonNavigation");
 
@@ -3205,42 +3354,49 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("RoundPlayers")
                         .HasForeignKey("FkIdGame")
                         .HasConstraintName("fk_RoundPlayers_Games")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Maps", "FkIdMapNavigation")
                         .WithMany("RoundPlayers")
                         .HasForeignKey("FkIdMap")
                         .HasConstraintName("fk_RoundPlayers_Maps")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNavigation")
                         .WithMany("RoundPlayers")
                         .HasForeignKey("FkIdPlayer")
                         .HasConstraintName("fk_RoundPlayers_Players")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Rounds", "FkIdRoundNavigation")
                         .WithMany("RoundPlayers")
                         .HasForeignKey("FkIdRound")
                         .HasConstraintName("fk_RoundPlayers_Round")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
                         .WithMany("RoundPlayers")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("fk_RoundPlayers_Seasons")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamNavigation")
                         .WithMany("RoundPlayers")
                         .HasForeignKey("FkIdTeam")
                         .HasConstraintName("fk_RoundPlayers_Teams")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Weeks", "FkIdWeekNavigation")
                         .WithMany("RoundPlayers")
                         .HasForeignKey("FkIdWeek")
                         .HasConstraintName("fk_RoundPlayers_Weeks")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdGameNavigation");
@@ -3264,24 +3420,28 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("Rounds")
                         .HasForeignKey("FkIdGame")
                         .HasConstraintName("fk_stats_Rounds_Games")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Maps", "FkIdMapNavigation")
                         .WithMany("Rounds")
                         .HasForeignKey("FkIdMap")
                         .HasConstraintName("fk_stats_Rounds_Maps")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
                         .WithMany("Rounds")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("fk_stats_Rounds_Seasons")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Weeks", "FkIdWeekNavigation")
                         .WithMany("Rounds")
                         .HasForeignKey("FkIdWeek")
                         .HasConstraintName("fk_stats_Rounds_Weeks")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdGameNavigation");
@@ -3299,12 +3459,14 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("Seasons")
                         .HasForeignKey("FkIdEngine")
                         .HasConstraintName("fk_Seasons_Engine")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.WadFiles", "FkIdFileNavigation")
                         .WithMany("Seasons")
                         .HasForeignKey("FkIdWadFile")
                         .HasConstraintName("fk_Seasons_WadFiles")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdEngineNavigation");
@@ -3314,17 +3476,28 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.StatsAccuracyData", b =>
                 {
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Games", "FkIdGameNavigation")
+                        .WithMany("StatsAccuracyData")
+                        .HasForeignKey("FkIdGame")
+                        .HasConstraintName("fk_stats_StatsAccuracyData_Game")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerAttackerNavigation")
                         .WithMany("StatsAccuracyDataFkIdPlayerAttackerNavigation")
                         .HasForeignKey("FkIdPlayerAttacker")
                         .HasConstraintName("fk_stats_StatsAccuracyData_PlayersAttacker")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Rounds", "FkIdRoundNavigation")
                         .WithMany("StatsAccuracyData")
                         .HasForeignKey("FkIdRound")
                         .HasConstraintName("fk_stats_StatsAccuracyData_Rounds")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("FkIdGameNavigation");
 
                     b.Navigation("FkIdPlayerAttackerNavigation");
 
@@ -3333,17 +3506,28 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.StatsAccuracyWithFlagData", b =>
                 {
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Games", "FkIdGameNavigation")
+                        .WithMany("StatsAccuracyWithFlagData")
+                        .HasForeignKey("FkIdGame")
+                        .HasConstraintName("fk_stataccuracyflagout_game")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerAttackerNavigation")
                         .WithMany("StatsAccuracyFlagOutDataFkIdPlayerAttackerNavigation")
                         .HasForeignKey("FkIdPlayerAttacker")
                         .HasConstraintName("fk_stataccuracyflagout_player_attacker")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Rounds", "FkIdRoundNavigation")
                         .WithMany("StatsAccuracyFlagOutData")
                         .HasForeignKey("FkIdRound")
                         .HasConstraintName("fk_stataccuracyflagout_round")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("FkIdGameNavigation");
 
                     b.Navigation("FkIdPlayerAttackerNavigation");
 
@@ -3352,23 +3536,35 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.StatsDamageData", b =>
                 {
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Games", "FkIdGameNavigation")
+                        .WithMany("StatsDamageData")
+                        .HasForeignKey("FkIdGame")
+                        .HasConstraintName("fk_statsdamage_game")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerAttackerNavigation")
                         .WithMany("StatsDamageDataFkIdPlayerAttackerNavigation")
                         .HasForeignKey("FkIdPlayerAttacker")
                         .HasConstraintName("fk_statsdamage_player_attacker")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerTargetNavigation")
                         .WithMany("StatsDamageDataFkIdPlayerTargetNavigation")
                         .HasForeignKey("FkIdPlayerTarget")
                         .HasConstraintName("fk_statsdamage_player_target")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Rounds", "FkIdRoundNavigation")
                         .WithMany("StatsDamageData")
                         .HasForeignKey("FkIdRound")
                         .HasConstraintName("fk_statsdamage_round")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("FkIdGameNavigation");
 
                     b.Navigation("FkIdPlayerAttackerNavigation");
 
@@ -3379,23 +3575,35 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.StatsDamageWithFlagData", b =>
                 {
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Games", "FkIdGameNavigation")
+                        .WithMany("StatsDamageCarrierData")
+                        .HasForeignKey("FkIdGame")
+                        .HasConstraintName("fk_statscarrierdamage_game")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerAttackerNavigation")
                         .WithMany("StatsDamageCarrierDataFkIdPlayerAttackerNavigation")
                         .HasForeignKey("FkIdPlayerAttacker")
                         .HasConstraintName("fk_statscarrierdamage_player_attacker")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerTargetNavigation")
                         .WithMany("StatsDamageCarrierDataFkIdPlayerTargetNavigation")
                         .HasForeignKey("FkIdPlayerTarget")
                         .HasConstraintName("fk_statscarrierdamage_player_target")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Rounds", "FkIdRoundNavigation")
                         .WithMany("StatsDamageCarrierData")
                         .HasForeignKey("FkIdRound")
                         .HasConstraintName("fk_statscarrierdamage_round")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("FkIdGameNavigation");
 
                     b.Navigation("FkIdPlayerAttackerNavigation");
 
@@ -3406,23 +3614,35 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.StatsKillCarrierData", b =>
                 {
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Games", "FkIdGameNavigation")
+                        .WithMany("StatsKillCarrierData")
+                        .HasForeignKey("FkIdGame")
+                        .HasConstraintName("fk_statskillcarrier_game")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerAttackerNavigation")
                         .WithMany("StatsKillCarrierDataFkIdPlayerAttackerNavigation")
                         .HasForeignKey("FkIdPlayerAttacker")
                         .HasConstraintName("fk_statskillcarrierplayer_attacker")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerTargetNavigation")
                         .WithMany("StatsKillCarrierDataFkIdPlayerTargetNavigation")
                         .HasForeignKey("FkIdPlayerTarget")
                         .HasConstraintName("fk_statskillcarrier_player_target")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Rounds", "FkIdRoundNavigation")
                         .WithMany("StatsKillCarrierData")
                         .HasForeignKey("FkIdRound")
                         .HasConstraintName("fk_statskillcarrier_round")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("FkIdGameNavigation");
 
                     b.Navigation("FkIdPlayerAttackerNavigation");
 
@@ -3433,23 +3653,35 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.StatsKillData", b =>
                 {
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Games", "FkIdGameNavigation")
+                        .WithMany("StatsKillData")
+                        .HasForeignKey("FkIdGame")
+                        .HasConstraintName("fk_statskill_game")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerAttackerNavigation")
                         .WithMany("StatsKillDataFkIdPlayerAttackerNavigation")
                         .HasForeignKey("FkIdPlayerAttacker")
                         .HasConstraintName("fk_statskill_player_attacker")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerTargetNavigation")
                         .WithMany("StatsKillDataFkIdPlayerTargetNavigation")
                         .HasForeignKey("FkIdPlayerTarget")
                         .HasConstraintName("fk_statskill_player_target")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Rounds", "FkIdRoundNavigation")
                         .WithMany("StatsKillData")
                         .HasForeignKey("FkIdRound")
                         .HasConstraintName("fk_statskill_round")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("FkIdGameNavigation");
 
                     b.Navigation("FkIdPlayerAttackerNavigation");
 
@@ -3464,15 +3696,26 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("StatsPickupData")
                         .HasForeignKey("FkIdActivatorPlayer")
                         .HasConstraintName("fk_statpickup_player")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WorldDoomLeague.Domain.Entities.Games", "FkIdGameNavigation")
+                        .WithMany("StatsPickupData")
+                        .HasForeignKey("FkIdGame")
+                        .HasConstraintName("fk_statpickup_game")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Rounds", "FkIdRoundNavigation")
                         .WithMany("StatsPickupData")
                         .HasForeignKey("FkIdRound")
                         .HasConstraintName("fk_statpickup_round")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdActivatorPlayerNavigation");
+
+                    b.Navigation("FkIdGameNavigation");
 
                     b.Navigation("FkIdRoundNavigation");
                 });
@@ -3483,42 +3726,49 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("StatsRounds")
                         .HasForeignKey("FkIdGame")
                         .HasConstraintName("fk_StatsRounds_Games")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Maps", "FkIdMapNavigation")
                         .WithMany("StatsRounds")
                         .HasForeignKey("FkIdMap")
                         .HasConstraintName("fk_StatsRounds_Maps")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Player", "FkIdPlayerNavigation")
                         .WithMany("StatsRounds")
                         .HasForeignKey("FkIdPlayer")
                         .HasConstraintName("fk_StatsRounds_Players")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Rounds", "FkIdRoundNavigation")
                         .WithMany("StatsRounds")
                         .HasForeignKey("FkIdRound")
                         .HasConstraintName("fk_StatsRounds_Rounds")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Season", "FkIdSeasonNavigation")
                         .WithMany("StatsRounds")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("fk_StatsRounds_Seasons")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Teams", "FkIdTeamNavigation")
                         .WithMany("StatsRounds")
                         .HasForeignKey("FkIdTeam")
                         .HasConstraintName("fk_StatsRounds_Teams")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Weeks", "FkIdWeekNavigation")
                         .WithMany("StatsRounds")
                         .HasForeignKey("FkIdWeek")
                         .HasConstraintName("fk_StatsRounds_Weeks")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdGameNavigation");
@@ -3567,6 +3817,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("Teams")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("fk_stats_Teams_Seasons")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdHomefieldMapNavigation");
@@ -3588,12 +3839,14 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("WeekMaps")
                         .HasForeignKey("FkIdMap")
                         .HasConstraintName("fk_WeekMaps_Maps")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorldDoomLeague.Domain.Entities.Weeks", "FkIdWeekNavigation")
                         .WithMany("WeekMaps")
                         .HasForeignKey("FkIdWeek")
                         .HasConstraintName("fk_WeekMaps_Week")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdMapNavigation");
@@ -3607,6 +3860,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                         .WithMany("Weeks")
                         .HasForeignKey("FkIdSeason")
                         .HasConstraintName("fk_stats_Weeks_Seasons")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FkIdSeasonNavigation");
@@ -3642,6 +3896,20 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.Navigation("RoundPlayers");
 
                     b.Navigation("Rounds");
+
+                    b.Navigation("StatsAccuracyData");
+
+                    b.Navigation("StatsAccuracyWithFlagData");
+
+                    b.Navigation("StatsDamageCarrierData");
+
+                    b.Navigation("StatsDamageData");
+
+                    b.Navigation("StatsKillCarrierData");
+
+                    b.Navigation("StatsKillData");
+
+                    b.Navigation("StatsPickupData");
 
                     b.Navigation("StatsRounds");
                 });
@@ -3702,6 +3970,10 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
 
                     b.Navigation("PlayerRoundTeammatesSelf");
 
+                    b.Navigation("PlayerTradedFrom");
+
+                    b.Navigation("PlayerTradedTo");
+
                     b.Navigation("RoundPlayers");
 
                     b.Navigation("StatsAccuracyDataFkIdPlayerAttackerNavigation");
@@ -3735,8 +4007,6 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.Navigation("TeamsFkIdPlayerSecondpickNavigation");
 
                     b.Navigation("TeamsFkIdPlayerThirdpickNavigation");
-
-                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("WorldDoomLeague.Domain.Entities.PlayerGameRecord", b =>
@@ -3829,6 +4099,8 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Migrations
                     b.Navigation("GamesFkIdTeamBlueNavigation");
 
                     b.Navigation("GamesFkIdTeamRedNavigation");
+
+                    b.Navigation("GamesFkIdTeamWinnerNavigation");
 
                     b.Navigation("GameTeamStats");
 

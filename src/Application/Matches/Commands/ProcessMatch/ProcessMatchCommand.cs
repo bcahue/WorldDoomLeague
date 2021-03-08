@@ -125,31 +125,31 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
 
                         _context.StatsRounds.Add(statsroundEntity);
 
-                        var accuracyEntities = GameHelper.GetAccuracyEntities(playerStats.AccuracyList, redPlayerIdLookup[player], round.IdRound);
+                        var accuracyEntities = GameHelper.GetAccuracyEntities(playerStats.AccuracyList, redPlayerIdLookup[player], round.IdRound, match.IdGame);
 
                         _context.StatsAccuracyData.AddRange(accuracyEntities);
 
-                        var flagAccuracy = GameHelper.GetAccuracyWithFlagEntities(playerStats.AccuracyWithFlagList, redPlayerIdLookup[player], round.IdRound);
+                        var flagAccuracy = GameHelper.GetAccuracyWithFlagEntities(playerStats.AccuracyWithFlagList, redPlayerIdLookup[player], round.IdRound, match.IdGame);
 
                         _context.StatsAccuracyWithFlagData.AddRange(flagAccuracy);
 
-                        var damage = GameHelper.GetDamageEntities(playerStats.DamageList, redPlayerIdLookup[player], bluePlayerIdLookup, round.IdRound);
+                        var damage = GameHelper.GetDamageEntities(playerStats.DamageList, redPlayerIdLookup[player], bluePlayerIdLookup, round.IdRound, match.IdGame);
 
                         _context.StatsDamageData.AddRange(damage);
 
-                        var damageWithFlag = GameHelper.GetDamageWithFlagEntities(playerStats.DamageWithFlagList, redPlayerIdLookup[player], bluePlayerIdLookup, round.IdRound);
+                        var damageWithFlag = GameHelper.GetDamageWithFlagEntities(playerStats.DamageWithFlagList, redPlayerIdLookup[player], bluePlayerIdLookup, round.IdRound, match.IdGame);
 
                         _context.StatsDamageWithFlagData.AddRange(damageWithFlag);
 
-                        var kills = GameHelper.GetKillsEntities(playerStats.KillsList, redPlayerIdLookup[player], bluePlayerIdLookup, round.IdRound);
+                        var kills = GameHelper.GetKillsEntities(playerStats.KillsList, redPlayerIdLookup[player], bluePlayerIdLookup, round.IdRound, match.IdGame);
 
                         _context.StatsKillData.AddRange(kills);
 
-                        var killsWithFlag = GameHelper.GetKillsWithFlagEntities(playerStats.CarrierKillList, redPlayerIdLookup[player], bluePlayerIdLookup, round.IdRound);
+                        var killsWithFlag = GameHelper.GetFlagCarrierKillsEntities(playerStats.CarrierKillList, redPlayerIdLookup[player], bluePlayerIdLookup, round.IdRound, match.IdGame);
 
                         _context.StatsKillCarrierData.AddRange(killsWithFlag);
 
-                        var pickups = GameHelper.GetPickupsEntities(playerStats.PickupList, redPlayerIdLookup[player], round.IdRound);
+                        var pickups = GameHelper.GetPickupsEntities(playerStats.PickupList, redPlayerIdLookup[player], round.IdRound, match.IdGame);
 
                         _context.StatsPickupData.AddRange(pickups);
 
@@ -163,7 +163,8 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
                             FkIdSeason = round.FkIdSeason,
                             FkIdWeek = round.FkIdWeek,
                             FkIdTeam = match.FkIdTeamRed,
-                            FkIdPlayer = redPlayerIdLookup[player]
+                            FkIdPlayer = redPlayerIdLookup[player],
+                            RoundTicsDuration = (uint)rounds[i].MetaData.DurationTics
                         };
 
                         _context.RoundPlayers.Add(roundplayer);
@@ -248,31 +249,31 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
 
                         _context.StatsRounds.Add(statsroundEntity);
 
-                        var accuracyEntities = GameHelper.GetAccuracyEntities(playerStats.AccuracyList, bluePlayerIdLookup[player], round.IdRound);
+                        var accuracyEntities = GameHelper.GetAccuracyEntities(playerStats.AccuracyList, bluePlayerIdLookup[player], round.IdRound, match.IdGame);
 
                         _context.StatsAccuracyData.AddRange(accuracyEntities);
 
-                        var flagAccuracy = GameHelper.GetAccuracyWithFlagEntities(playerStats.AccuracyWithFlagList, bluePlayerIdLookup[player], round.IdRound);
+                        var flagAccuracy = GameHelper.GetAccuracyWithFlagEntities(playerStats.AccuracyWithFlagList, bluePlayerIdLookup[player], round.IdRound, match.IdGame);
 
                         _context.StatsAccuracyWithFlagData.AddRange(flagAccuracy);
 
-                        var damage = GameHelper.GetDamageEntities(playerStats.DamageList, bluePlayerIdLookup[player], redPlayerIdLookup, round.IdRound);
+                        var damage = GameHelper.GetDamageEntities(playerStats.DamageList, bluePlayerIdLookup[player], redPlayerIdLookup, round.IdRound, match.IdGame);
 
                         _context.StatsDamageData.AddRange(damage);
 
-                        var damageWithFlag = GameHelper.GetDamageWithFlagEntities(playerStats.DamageWithFlagList, bluePlayerIdLookup[player], redPlayerIdLookup, round.IdRound);
+                        var damageWithFlag = GameHelper.GetDamageWithFlagEntities(playerStats.DamageWithFlagList, bluePlayerIdLookup[player], redPlayerIdLookup, round.IdRound, match.IdGame);
 
                         _context.StatsDamageWithFlagData.AddRange(damageWithFlag);
 
-                        var kills = GameHelper.GetKillsEntities(playerStats.KillsList, bluePlayerIdLookup[player], redPlayerIdLookup, round.IdRound);
+                        var kills = GameHelper.GetKillsEntities(playerStats.KillsList, bluePlayerIdLookup[player], redPlayerIdLookup, round.IdRound, match.IdGame);
 
                         _context.StatsKillData.AddRange(kills);
 
-                        var killsWithFlag = GameHelper.GetKillsWithFlagEntities(playerStats.CarrierKillList, bluePlayerIdLookup[player], redPlayerIdLookup, round.IdRound);
+                        var killsWithFlag = GameHelper.GetFlagCarrierKillsEntities(playerStats.CarrierKillList, bluePlayerIdLookup[player], redPlayerIdLookup, round.IdRound, match.IdGame);
 
                         _context.StatsKillCarrierData.AddRange(killsWithFlag);
 
-                        var pickups = GameHelper.GetPickupsEntities(playerStats.PickupList, bluePlayerIdLookup[player], round.IdRound);
+                        var pickups = GameHelper.GetPickupsEntities(playerStats.PickupList, bluePlayerIdLookup[player], round.IdRound, match.IdGame);
 
                         _context.StatsPickupData.AddRange(pickups);
 
@@ -286,7 +287,8 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
                             FkIdSeason = round.FkIdSeason,
                             FkIdWeek = round.FkIdWeek,
                             FkIdTeam = match.FkIdTeamBlue,
-                            FkIdPlayer = bluePlayerIdLookup[player]
+                            FkIdPlayer = bluePlayerIdLookup[player],
+                            RoundTicsDuration = (uint)rounds[i].MetaData.DurationTics
                         };
 
                         _context.RoundPlayers.Add(roundplayer);
@@ -387,11 +389,11 @@ namespace WorldDoomLeague.Application.Matches.Commands.ProcessMatch
                             }
                         }
 
-                        if (team == LogFileEnums.Teams.Blue)
+                        if (flagCapEvent.Team == LogFileEnums.Teams.Blue)
                         {
                             captureIdList = bluePlayerIdLookup;
                         }
-                        else if (team == LogFileEnums.Teams.Red)
+                        else if (flagCapEvent.Team == LogFileEnums.Teams.Red)
                         {
                             captureIdList = redPlayerIdLookup;
                         }

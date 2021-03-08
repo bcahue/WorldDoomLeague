@@ -20,7 +20,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.3" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="5.0.3" />
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.2.2">
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.2.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -84,6 +84,8 @@
       <None Remove="ClientApp\src\ApiClientBase.ts" />
       <None Remove="ClientApp\src\client.extensions.ts" />
       <None Remove="ClientApp\src\components\admin\AdminRoutes.tsx" />
+      <None Remove="ClientApp\src\components\admin\createplayoffgame\CreatePlayoffGame.tsx" />
+      <None Remove="ClientApp\src\components\admin\forfeitgame\ForfeitGame.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\AddPlayers.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\AddTeams.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\CreateGames.tsx" />
@@ -98,6 +100,9 @@
       <None Remove="ClientApp\src\components\admin\newseasonwizard\StepButtons.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\WadList.tsx" />
       <None Remove="ClientApp\src\components\admin\processgamewizard\ProcessGameWizard.tsx" />
+      <None Remove="ClientApp\src\components\admin\schedulegames\schedulegames.tsx" />
+      <None Remove="ClientApp\src\components\admin\selecthomefieldmaps\SelectHomefieldMaps.tsx" />
+      <None Remove="ClientApp\src\components\admin\undogame\UndoGame.tsx" />
       <None Remove="ClientApp\src\components\LeaderboardAllTimeStats.tsx" />
       <None Remove="ClientApp\src\ErrorResponse.tsx" />
       <None Remove="ClientApp\src\reportWebVitals.ts" />
@@ -118,6 +123,9 @@
   </ItemGroup>
 
     <ItemGroup>
+      <TypeScriptCompile Update="ClientApp\src\components\admin\forfeitgame\ForfeitGame.tsx">
+        <SubType>Code</SubType>
+      </TypeScriptCompile>
       <TypeScriptCompile Update="ClientApp\src\components\admin\newseasonwizard\AddPlayers.tsx">
         <SubType>Code</SubType>
       </TypeScriptCompile>
@@ -148,9 +156,19 @@
       <TypeScriptCompile Update="ClientApp\src\components\admin\processgamewizard\ProcessGameWizard.tsx">
         <SubType>Code</SubType>
       </TypeScriptCompile>
+      <TypeScriptCompile Update="ClientApp\src\components\admin\undogame\UndoGame.tsx">
+        <SubType>Code</SubType>
+      </TypeScriptCompile>
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="ClientApp\src\components\admin\editplayers\" />
+      <Folder Include="ClientApp\src\components\admin\editseason\" />
+      <Folder Include="ClientApp\src\components\admin\editteams\" />
+      <Folder Include="ClientApp\src\components\admin\editmap\" />
+      <Folder Include="ClientApp\src\components\admin\deletegames\" />
+      <Folder Include="ClientApp\src\components\admin\tradeplayer\" />
+      <Folder Include="ClientApp\src\components\admin\NewFolder\" />
       <Folder Include="wwwroot\images\" />
     </ItemGroup>
 

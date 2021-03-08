@@ -37,10 +37,11 @@ namespace WorldDoomLeague.Application.Matches.Queries.GetPlayedGames
                 PlayedGameList = await _context.Games
                     .Include(i => i.FkIdTeamBlueNavigation)
                     .Include(i => i.FkIdTeamRedNavigation)
+                    .Include(i => i.FkIdTeamWinnerNavigation)
                     .Include(i => i.FkIdWeekNavigation)
                     .Include(i => i.FkIdSeasonNavigation)
-                    .Where(w => (w.FkIdTeamWinner != null || w.FkIdTeamForfeit != null || w.DoubleForfeit == 1) &&
-                    (w.FkIdSeasonNavigation.FkIdTeamWinner == null || w.GameType == "f"))
+                    .Where(w => (w.FkIdTeamWinner != null || w.FkIdTeamForfeit != null || w.DoubleForfeit == 1) && // get all games not played or forfeited...
+                    (w.FkIdSeasonNavigation.FkIdTeamWinner == null || w.GameType == "f")) // skip games that are complete unless its a finals game.
                     .ProjectTo<PlayedGamesDto>(_mapper.ConfigurationProvider)
                     .OrderBy(t => t.WeekNumber)
                     .ToListAsync(cancellationToken)

@@ -73,31 +73,31 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasOne(d => d.FkIdGameNavigation)
                 .WithMany(p => p.GamePlayers)
                 .HasForeignKey(d => d.FkIdGame)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_GamePlayers_Games");
 
             builder.HasOne(d => d.FkIdPlayerNavigation)
                 .WithMany(p => p.GamePlayers)
                 .HasForeignKey(d => d.FkIdPlayer)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_GamePlayers_Players");
 
             builder.HasOne(d => d.FkIdSeasonNavigation)
                 .WithMany(p => p.GamePlayers)
                 .HasForeignKey(d => d.FkIdSeason)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_GamePlayers_Seasons");
 
             builder.HasOne(d => d.FkIdTeamNavigation)
                 .WithMany(p => p.GamePlayers)
                 .HasForeignKey(d => d.FkIdTeam)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_GamePlayers_Teams");
 
             builder.HasOne(d => d.FkIdWeekNavigation)
                 .WithMany(p => p.GamePlayers)
                 .HasForeignKey(d => d.FkIdWeek)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_GamePlayers_Weeks");
         }
     }

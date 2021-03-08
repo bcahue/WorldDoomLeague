@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System;
 using WorldDoomLeague.Application.Common.Mappings;
 using WorldDoomLeague.Domain.Entities;
 
@@ -18,6 +19,8 @@ namespace WorldDoomLeague.Application.Matches.Queries.GetUnplayedGames
 
         public uint WeekNumber { get; set; }
 
+        public DateTime? ScheduledDate { get; set; }
+
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Domain.Entities.Games, UnplayedGamesDto>()
@@ -26,7 +29,8 @@ namespace WorldDoomLeague.Application.Matches.Queries.GetUnplayedGames
                 .ForMember(d => d.BlueTeam, opt => opt.MapFrom(s => s.FkIdTeamBlue))
                 .ForMember(d => d.RedTeamName, opt => opt.MapFrom(s => s.FkIdTeamRedNavigation.TeamName))
                 .ForMember(d => d.BlueTeamName, opt => opt.MapFrom(s => s.FkIdTeamBlueNavigation.TeamName))
-                .ForMember(d => d.WeekNumber, opt => opt.MapFrom(s => s.FkIdWeekNavigation.WeekNumber));
+                .ForMember(d => d.WeekNumber, opt => opt.MapFrom(s => s.FkIdWeekNavigation.WeekNumber))
+                .ForMember(d => d.ScheduledDate, opt => opt.MapFrom(s => s.GameDatetime));
         }
     }
 }

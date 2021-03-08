@@ -29,8 +29,10 @@ namespace WorldDoomLeague.Application.Matches.Commands.UndoMatch
 
         public async Task<bool> BeMatchPlayed(uint match, CancellationToken cancellationToken)
         {
-            return await _context.Games
-                !.AnyAsync(p => p.IdGame == match && (p.FkIdTeamWinner == null && p.TeamWinnerColor == null && p.TeamForfeitColor == null && p.FkIdTeamForfeit == null && p.DoubleForfeit == 0), cancellationToken);
+            return await _context
+                .Games
+                .CountAsync(p => (p.FkIdTeamWinner != null || p.FkIdTeamForfeit != null || p.DoubleForfeit == 1) &&
+                (p.FkIdSeasonNavigation.FkIdTeamWinner == null || p.GameType == "f"), cancellationToken) > 0;
         }
     }
 }

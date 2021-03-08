@@ -60,25 +60,25 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasOne(d => d.FkIdPlayerAttackerNavigation)
                 .WithMany(p => p.StatsKillCarrierDataFkIdPlayerAttackerNavigation)
                 .HasForeignKey(d => d.FkIdPlayerAttacker)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_statskillcarrierplayer_attacker");
 
             builder.HasOne(d => d.FkIdPlayerTargetNavigation)
                 .WithMany(p => p.StatsKillCarrierDataFkIdPlayerTargetNavigation)
                 .HasForeignKey(d => d.FkIdPlayerTarget)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_statskillcarrier_player_target");
 
             builder.HasOne(d => d.FkIdRoundNavigation)
                 .WithMany(p => p.StatsKillCarrierData)
                 .HasForeignKey(d => d.FkIdRound)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_statskillcarrier_round");
 
             builder.HasOne(d => d.FkIdGameNavigation)
                 .WithMany(p => p.StatsKillCarrierData)
                 .HasForeignKey(d => d.FkIdGame)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_statskillcarrier_game");
         }
     }

@@ -619,10 +619,14 @@ export interface IMatchesClient {
     get(matchId: number): Promise<MatchSummaryVm>;
     getPlayerLineup(matchId: number): Promise<PlayerLineupVm>;
     getUnplayedGames(seasonId: number): Promise<UnplayedGamesVm>;
+    getPlayedGames(): Promise<PlayedGamesVm>;
     getGameMaps(matchId: number): Promise<GameMapsVm>;
     create(command: CreateMatchCommand): Promise<number>;
     createRegularSeason(command: CreateMatchesCommand): Promise<number>;
     process(command: ProcessMatchCommand): Promise<number>;
+    undo(command: UndoMatchCommand): Promise<boolean>;
+    forfeit(command: ForfeitMatchCommand): Promise<boolean>;
+    schedule(command: ScheduleMatchCommand): Promise<boolean>;
 }
 
 export class MatchesClient extends ApiClientBase implements IMatchesClient {
@@ -751,6 +755,42 @@ export class MatchesClient extends ApiClientBase implements IMatchesClient {
             });
         }
         return Promise.resolve<UnplayedGamesVm>(<any>null);
+    }
+
+    getPlayedGames(): Promise<PlayedGamesVm> {
+        let url_ = this.baseUrl + "/api/Matches/played";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetPlayedGames(_response);
+        });
+    }
+
+    protected processGetPlayedGames(response: Response): Promise<PlayedGamesVm> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PlayedGamesVm.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PlayedGamesVm>(<any>null);
     }
 
     getGameMaps(matchId: number): Promise<GameMapsVm> {
@@ -910,6 +950,126 @@ export class MatchesClient extends ApiClientBase implements IMatchesClient {
             });
         }
         return Promise.resolve<number>(<any>null);
+    }
+
+    undo(command: UndoMatchCommand): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/Matches/undo";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processUndo(_response);
+        });
+    }
+
+    protected processUndo(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(<any>null);
+    }
+
+    forfeit(command: ForfeitMatchCommand): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/Matches/forfeit";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processForfeit(_response);
+        });
+    }
+
+    protected processForfeit(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(<any>null);
+    }
+
+    schedule(command: ScheduleMatchCommand): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/Matches/schedule";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processSchedule(_response);
+        });
+    }
+
+    protected processSchedule(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(<any>null);
     }
 }
 
@@ -1148,6 +1308,7 @@ export interface ISeasonsClient {
     createWeeks(command: CreateSeasonWeeksCommand): Promise<number>;
     getCurrentSeasonsStandings(): Promise<SeasonListVm>;
     getSeasonStandingsById(seasonId: number): Promise<SeasonStandingsVm>;
+    getUnfinishedSeasons(): Promise<UnfinishedSeasonsVm>;
     getSeasonPlayers(seasonId: number): Promise<SeasonPlayersVm>;
 }
 
@@ -1433,6 +1594,42 @@ export class SeasonsClient extends ApiClientBase implements ISeasonsClient {
         return Promise.resolve<SeasonStandingsVm>(<any>null);
     }
 
+    getUnfinishedSeasons(): Promise<UnfinishedSeasonsVm> {
+        let url_ = this.baseUrl + "/api/Seasons/unfinished";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetUnfinishedSeasons(_response);
+        });
+    }
+
+    protected processGetUnfinishedSeasons(response: Response): Promise<UnfinishedSeasonsVm> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UnfinishedSeasonsVm.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UnfinishedSeasonsVm>(<any>null);
+    }
+
     getSeasonPlayers(seasonId: number): Promise<SeasonPlayersVm> {
         let url_ = this.baseUrl + "/api/Seasons/{seasonId}/players";
         if (seasonId === undefined || seasonId === null)
@@ -1478,6 +1675,7 @@ export interface ITeamsClient {
     getTeamsBySeasonId(seasonId: number): Promise<TeamsVm>;
     create(command: CreateTeamCommand): Promise<number>;
     createTeams(command: CreateTeamsCommand): Promise<number>;
+    assignHomeField(command: AssignTeamHomefieldCommand): Promise<number>;
 }
 
 export class TeamsClient extends ApiClientBase implements ITeamsClient {
@@ -1648,10 +1846,51 @@ export class TeamsClient extends ApiClientBase implements ITeamsClient {
         }
         return Promise.resolve<number>(<any>null);
     }
+
+    assignHomeField(command: AssignTeamHomefieldCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Teams/assignhomefield";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processAssignHomeField(_response);
+        });
+    }
+
+    protected processAssignHomeField(response: Response): Promise<number> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(<any>null);
+    }
 }
 
 export interface IWeeksClient {
     getRegularSeasonWeeks(seasonId: number): Promise<RegularSeasonWeeksVm>;
+    getPlayoffWeeks(seasonId: number): Promise<PlayoffWeeksVm>;
 }
 
 export class WeeksClient extends ApiClientBase implements IWeeksClient {
@@ -1702,6 +1941,45 @@ export class WeeksClient extends ApiClientBase implements IWeeksClient {
             });
         }
         return Promise.resolve<RegularSeasonWeeksVm>(<any>null);
+    }
+
+    getPlayoffWeeks(seasonId: number): Promise<PlayoffWeeksVm> {
+        let url_ = this.baseUrl + "/api/Weeks/{seasonId}/Playoffs";
+        if (seasonId === undefined || seasonId === null)
+            throw new Error("The parameter 'seasonId' must be defined.");
+        url_ = url_.replace("{seasonId}", encodeURIComponent("" + seasonId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetPlayoffWeeks(_response);
+        });
+    }
+
+    protected processGetPlayoffWeeks(response: Response): Promise<PlayoffWeeksVm> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PlayoffWeeksVm.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PlayoffWeeksVm>(<any>null);
     }
 }
 
@@ -5220,6 +5498,7 @@ export class UnplayedGamesDto implements IUnplayedGamesDto {
     blueTeam?: number;
     blueTeamName?: string | undefined;
     weekNumber?: number;
+    scheduledDate?: Date | undefined;
 
     constructor(data?: IUnplayedGamesDto) {
         if (data) {
@@ -5238,6 +5517,7 @@ export class UnplayedGamesDto implements IUnplayedGamesDto {
             this.blueTeam = _data["blueTeam"];
             this.blueTeamName = _data["blueTeamName"];
             this.weekNumber = _data["weekNumber"];
+            this.scheduledDate = _data["scheduledDate"] ? new Date(_data["scheduledDate"].toString()) : <any>undefined;
         }
     }
 
@@ -5256,6 +5536,7 @@ export class UnplayedGamesDto implements IUnplayedGamesDto {
         data["blueTeam"] = this.blueTeam;
         data["blueTeamName"] = this.blueTeamName;
         data["weekNumber"] = this.weekNumber;
+        data["scheduledDate"] = this.scheduledDate ? this.scheduledDate.toISOString() : <any>undefined;
         return data; 
     }
 }
@@ -5267,6 +5548,111 @@ export interface IUnplayedGamesDto {
     blueTeam?: number;
     blueTeamName?: string | undefined;
     weekNumber?: number;
+    scheduledDate?: Date | undefined;
+}
+
+export class PlayedGamesVm implements IPlayedGamesVm {
+    playedGameList?: PlayedGamesDto[] | undefined;
+
+    constructor(data?: IPlayedGamesVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["playedGameList"])) {
+                this.playedGameList = [] as any;
+                for (let item of _data["playedGameList"])
+                    this.playedGameList!.push(PlayedGamesDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PlayedGamesVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new PlayedGamesVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.playedGameList)) {
+            data["playedGameList"] = [];
+            for (let item of this.playedGameList)
+                data["playedGameList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPlayedGamesVm {
+    playedGameList?: PlayedGamesDto[] | undefined;
+}
+
+export class PlayedGamesDto implements IPlayedGamesDto {
+    id?: number;
+    redTeamName?: string | undefined;
+    blueTeamName?: string | undefined;
+    weekNumber?: number;
+    season?: string | undefined;
+    winningTeam?: string | undefined;
+    forfeit?: boolean;
+
+    constructor(data?: IPlayedGamesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.redTeamName = _data["redTeamName"];
+            this.blueTeamName = _data["blueTeamName"];
+            this.weekNumber = _data["weekNumber"];
+            this.season = _data["season"];
+            this.winningTeam = _data["winningTeam"];
+            this.forfeit = _data["forfeit"];
+        }
+    }
+
+    static fromJS(data: any): PlayedGamesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PlayedGamesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["redTeamName"] = this.redTeamName;
+        data["blueTeamName"] = this.blueTeamName;
+        data["weekNumber"] = this.weekNumber;
+        data["season"] = this.season;
+        data["winningTeam"] = this.winningTeam;
+        data["forfeit"] = this.forfeit;
+        return data; 
+    }
+}
+
+export interface IPlayedGamesDto {
+    id?: number;
+    redTeamName?: string | undefined;
+    blueTeamName?: string | undefined;
+    weekNumber?: number;
+    season?: string | undefined;
+    winningTeam?: string | undefined;
+    forfeit?: boolean;
 }
 
 export class GameMapsVm implements IGameMapsVm {
@@ -5367,6 +5753,7 @@ export class CreateMatchCommand implements ICreateMatchCommand {
     redTeam?: number;
     blueTeam?: number;
     gameDateTime?: Date | undefined;
+    gameMapIds?: number[] | undefined;
 
     constructor(data?: ICreateMatchCommand) {
         if (data) {
@@ -5384,6 +5771,11 @@ export class CreateMatchCommand implements ICreateMatchCommand {
             this.redTeam = _data["redTeam"];
             this.blueTeam = _data["blueTeam"];
             this.gameDateTime = _data["gameDateTime"] ? new Date(_data["gameDateTime"].toString()) : <any>undefined;
+            if (Array.isArray(_data["gameMapIds"])) {
+                this.gameMapIds = [] as any;
+                for (let item of _data["gameMapIds"])
+                    this.gameMapIds!.push(item);
+            }
         }
     }
 
@@ -5401,6 +5793,11 @@ export class CreateMatchCommand implements ICreateMatchCommand {
         data["redTeam"] = this.redTeam;
         data["blueTeam"] = this.blueTeam;
         data["gameDateTime"] = this.gameDateTime ? this.gameDateTime.toISOString() : <any>undefined;
+        if (Array.isArray(this.gameMapIds)) {
+            data["gameMapIds"] = [];
+            for (let item of this.gameMapIds)
+                data["gameMapIds"].push(item);
+        }
         return data; 
     }
 }
@@ -5411,6 +5808,7 @@ export interface ICreateMatchCommand {
     redTeam?: number;
     blueTeam?: number;
     gameDateTime?: Date | undefined;
+    gameMapIds?: number[] | undefined;
 }
 
 export class CreateMatchesCommand implements ICreateMatchesCommand {
@@ -5671,6 +6069,126 @@ export interface IRoundObject {
     blueTeamPlayerIds?: number[] | undefined;
     map?: number;
     roundFileName?: string | undefined;
+}
+
+export class UndoMatchCommand implements IUndoMatchCommand {
+    match?: number;
+
+    constructor(data?: IUndoMatchCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.match = _data["match"];
+        }
+    }
+
+    static fromJS(data: any): UndoMatchCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UndoMatchCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["match"] = this.match;
+        return data; 
+    }
+}
+
+export interface IUndoMatchCommand {
+    match?: number;
+}
+
+export class ForfeitMatchCommand implements IForfeitMatchCommand {
+    match?: number;
+    redTeamForfeits?: boolean;
+    blueTeamForfeits?: boolean;
+
+    constructor(data?: IForfeitMatchCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.match = _data["match"];
+            this.redTeamForfeits = _data["redTeamForfeits"];
+            this.blueTeamForfeits = _data["blueTeamForfeits"];
+        }
+    }
+
+    static fromJS(data: any): ForfeitMatchCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ForfeitMatchCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["match"] = this.match;
+        data["redTeamForfeits"] = this.redTeamForfeits;
+        data["blueTeamForfeits"] = this.blueTeamForfeits;
+        return data; 
+    }
+}
+
+export interface IForfeitMatchCommand {
+    match?: number;
+    redTeamForfeits?: boolean;
+    blueTeamForfeits?: boolean;
+}
+
+export class ScheduleMatchCommand implements IScheduleMatchCommand {
+    match?: number;
+    gameDateTime?: Date;
+
+    constructor(data?: IScheduleMatchCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.match = _data["match"];
+            this.gameDateTime = _data["gameDateTime"] ? new Date(_data["gameDateTime"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ScheduleMatchCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ScheduleMatchCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["match"] = this.match;
+        data["gameDateTime"] = this.gameDateTime ? this.gameDateTime.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IScheduleMatchCommand {
+    match?: number;
+    gameDateTime?: Date;
 }
 
 export class PlayersVm implements IPlayersVm {
@@ -7097,6 +7615,102 @@ export interface ISeasonStandingsDto {
     damage?: number;
 }
 
+export class UnfinishedSeasonsVm implements IUnfinishedSeasonsVm {
+    seasonList?: UnfinishedSeasonDto[] | undefined;
+
+    constructor(data?: IUnfinishedSeasonsVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["seasonList"])) {
+                this.seasonList = [] as any;
+                for (let item of _data["seasonList"])
+                    this.seasonList!.push(UnfinishedSeasonDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): UnfinishedSeasonsVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new UnfinishedSeasonsVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.seasonList)) {
+            data["seasonList"] = [];
+            for (let item of this.seasonList)
+                data["seasonList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IUnfinishedSeasonsVm {
+    seasonList?: UnfinishedSeasonDto[] | undefined;
+}
+
+export class UnfinishedSeasonDto implements IUnfinishedSeasonDto {
+    id?: number;
+    seasonName?: string | undefined;
+    dateStart?: Date;
+    engine?: string | undefined;
+    wadPlayed?: string | undefined;
+
+    constructor(data?: IUnfinishedSeasonDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.seasonName = _data["seasonName"];
+            this.dateStart = _data["dateStart"] ? new Date(_data["dateStart"].toString()) : <any>undefined;
+            this.engine = _data["engine"];
+            this.wadPlayed = _data["wadPlayed"];
+        }
+    }
+
+    static fromJS(data: any): UnfinishedSeasonDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UnfinishedSeasonDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["seasonName"] = this.seasonName;
+        data["dateStart"] = this.dateStart ? this.dateStart.toISOString() : <any>undefined;
+        data["engine"] = this.engine;
+        data["wadPlayed"] = this.wadPlayed;
+        return data; 
+    }
+}
+
+export interface IUnfinishedSeasonDto {
+    id?: number;
+    seasonName?: string | undefined;
+    dateStart?: Date;
+    engine?: string | undefined;
+    wadPlayed?: string | undefined;
+}
+
 export class SeasonPlayersVm implements ISeasonPlayersVm {
     seasonStandings?: SeasonPlayersDto[] | undefined;
 
@@ -7809,6 +8423,8 @@ export class TeamsDto implements ITeamsDto {
     id?: number;
     teamName?: string | undefined;
     teamAbbreviation?: string | undefined;
+    homeFieldMapName?: string | undefined;
+    homeFieldMapId?: number | undefined;
 
     constructor(data?: ITeamsDto) {
         if (data) {
@@ -7824,6 +8440,8 @@ export class TeamsDto implements ITeamsDto {
             this.id = _data["id"];
             this.teamName = _data["teamName"];
             this.teamAbbreviation = _data["teamAbbreviation"];
+            this.homeFieldMapName = _data["homeFieldMapName"];
+            this.homeFieldMapId = _data["homeFieldMapId"];
         }
     }
 
@@ -7839,6 +8457,8 @@ export class TeamsDto implements ITeamsDto {
         data["id"] = this.id;
         data["teamName"] = this.teamName;
         data["teamAbbreviation"] = this.teamAbbreviation;
+        data["homeFieldMapName"] = this.homeFieldMapName;
+        data["homeFieldMapId"] = this.homeFieldMapId;
         return data; 
     }
 }
@@ -7847,6 +8467,8 @@ export interface ITeamsDto {
     id?: number;
     teamName?: string | undefined;
     teamAbbreviation?: string | undefined;
+    homeFieldMapName?: string | undefined;
+    homeFieldMapId?: number | undefined;
 }
 
 export class CreateTeamCommand implements ICreateTeamCommand {
@@ -7989,6 +8611,46 @@ export interface ITeamsRequest {
     teamCaptain?: number;
 }
 
+export class AssignTeamHomefieldCommand implements IAssignTeamHomefieldCommand {
+    teamId?: number;
+    mapId?: number;
+
+    constructor(data?: IAssignTeamHomefieldCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.teamId = _data["teamId"];
+            this.mapId = _data["mapId"];
+        }
+    }
+
+    static fromJS(data: any): AssignTeamHomefieldCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new AssignTeamHomefieldCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["teamId"] = this.teamId;
+        data["mapId"] = this.mapId;
+        return data; 
+    }
+}
+
+export interface IAssignTeamHomefieldCommand {
+    teamId?: number;
+    mapId?: number;
+}
+
 export class RegularSeasonWeeksVm implements IRegularSeasonWeeksVm {
     weekList?: RegularSeasonWeeksDto[] | undefined;
 
@@ -8074,6 +8736,98 @@ export class RegularSeasonWeeksDto implements IRegularSeasonWeeksDto {
 export interface IRegularSeasonWeeksDto {
     id?: number;
     weekNumber?: number;
+    weekStartDate?: Date;
+}
+
+export class PlayoffWeeksVm implements IPlayoffWeeksVm {
+    weekList?: PlayoffWeeksDto[] | undefined;
+
+    constructor(data?: IPlayoffWeeksVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["weekList"])) {
+                this.weekList = [] as any;
+                for (let item of _data["weekList"])
+                    this.weekList!.push(PlayoffWeeksDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PlayoffWeeksVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new PlayoffWeeksVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.weekList)) {
+            data["weekList"] = [];
+            for (let item of this.weekList)
+                data["weekList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPlayoffWeeksVm {
+    weekList?: PlayoffWeeksDto[] | undefined;
+}
+
+export class PlayoffWeeksDto implements IPlayoffWeeksDto {
+    id?: number;
+    weekNumber?: number;
+    weekType?: string | undefined;
+    weekStartDate?: Date;
+
+    constructor(data?: IPlayoffWeeksDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.weekNumber = _data["weekNumber"];
+            this.weekType = _data["weekType"];
+            this.weekStartDate = _data["weekStartDate"] ? new Date(_data["weekStartDate"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): PlayoffWeeksDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PlayoffWeeksDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["weekNumber"] = this.weekNumber;
+        data["weekType"] = this.weekType;
+        data["weekStartDate"] = this.weekStartDate ? this.weekStartDate.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IPlayoffWeeksDto {
+    id?: number;
+    weekNumber?: number;
+    weekType?: string | undefined;
     weekStartDate?: Date;
 }
 

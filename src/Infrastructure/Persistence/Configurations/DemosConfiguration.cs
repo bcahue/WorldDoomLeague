@@ -46,13 +46,13 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasOne(d => d.FkGame)
                 .WithMany(p => p.Demos)
                 .HasForeignKey(d => d.FkGameId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_demo_game");
 
             builder.HasOne(d => d.FkPlayer)
                 .WithMany(p => p.Demos)
                 .HasForeignKey(d => d.FkPlayerId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_demo_player");
         }
     }

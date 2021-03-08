@@ -140,7 +140,7 @@ namespace WorldDoomLeague.Domain.Game
             };
         }
 
-        public static IEnumerable<StatsAccuracyData> GetAccuracyEntities (IList<AccuracyAggregate> accuracyAggregates, uint attackerId, uint roundId)
+        public static IEnumerable<StatsAccuracyData> GetAccuracyEntities (IList<AccuracyAggregate> accuracyAggregates, uint attackerId, uint roundId, uint gameId)
         {
             foreach (var ev in accuracyAggregates)
             {
@@ -151,14 +151,15 @@ namespace WorldDoomLeague.Domain.Game
                     HitMissRatio = ev.HitMissRatio,
                     WeaponType = (byte)ev.Weapon,
                     PinpointPercent = ev.PinpointPercentage,
-                    SpritePercent = ev.SpritePercentage
+                    SpritePercent = ev.SpritePercentage,
+                    FkIdGame = gameId
                 };
 
                 yield return accuracy;
             }
         }
 
-        public static IEnumerable<StatsAccuracyWithFlagData> GetAccuracyWithFlagEntities(IList<AccuracyAggregate> accuracyAggregates, uint attackerId, uint roundId)
+        public static IEnumerable<StatsAccuracyWithFlagData> GetAccuracyWithFlagEntities(IList<AccuracyAggregate> accuracyAggregates, uint attackerId, uint roundId, uint gameId)
         {
             foreach (var ev in accuracyAggregates)
             {
@@ -169,14 +170,15 @@ namespace WorldDoomLeague.Domain.Game
                     HitMissRatio = ev.HitMissRatio,
                     WeaponType = (byte)ev.Weapon,
                     PinpointPercent = ev.PinpointPercentage,
-                    SpritePercent = ev.SpritePercentage
+                    SpritePercent = ev.SpritePercentage,
+                    FkIdGame = gameId
                 };
 
                 yield return accuracyWithFlag;
             }
         }
 
-        public static IEnumerable<StatsDamageData> GetDamageEntities(IList<DamageAggregate> damageAggregates, uint attackerId, IDictionary<string, uint> targetPairs, uint roundId)
+        public static IEnumerable<StatsDamageData> GetDamageEntities(IList<DamageAggregate> damageAggregates, uint attackerId, IDictionary<string, uint> targetPairs, uint roundId, uint gameId)
         {
             foreach (var ev in damageAggregates)
             {
@@ -188,14 +190,15 @@ namespace WorldDoomLeague.Domain.Game
                     DamageBlueArmor = (uint)ev.TotalDamageBlueArmor,
                     DamageGreenArmor = (uint)ev.TotalDamageGreenArmor,
                     DamageHealth = (uint)ev.TotalDamage,
-                    WeaponType = (byte)ev.Weapon
+                    WeaponType = (byte)ev.Weapon,
+                    FkIdGame = gameId
                 };
 
                 yield return damage;
             }
         }
 
-        public static IEnumerable<StatsDamageWithFlagData> GetDamageWithFlagEntities(IList<DamageAggregate> damageAggregates, uint attackerId, IDictionary<string, uint> targetPairs, uint roundId)
+        public static IEnumerable<StatsDamageWithFlagData> GetDamageWithFlagEntities(IList<DamageAggregate> damageAggregates, uint attackerId, IDictionary<string, uint> targetPairs, uint roundId, uint gameId)
         {
             foreach (var ev in damageAggregates)
             {
@@ -207,14 +210,15 @@ namespace WorldDoomLeague.Domain.Game
                     DamageBlueArmor = (uint)ev.TotalDamageBlueArmor,
                     DamageGreenArmor = (uint)ev.TotalDamageGreenArmor,
                     DamageHealth = (uint)ev.TotalDamage,
-                    WeaponType = (byte)ev.Weapon
+                    WeaponType = (byte)ev.Weapon,
+                    FkIdGame = gameId
                 };
 
                 yield return damageWithFlag;
             }
         }
 
-        public static IEnumerable<StatsKillData> GetKillsEntities(IList<KillAggregate> killAggregates, uint attackerId, IDictionary<string, uint> targetPairs, uint roundId)
+        public static IEnumerable<StatsKillData> GetKillsEntities(IList<KillAggregate> killAggregates, uint attackerId, IDictionary<string, uint> targetPairs, uint roundId, uint gameId)
         {
             foreach (var ev in killAggregates)
             {
@@ -224,14 +228,15 @@ namespace WorldDoomLeague.Domain.Game
                     FkIdPlayerTarget = targetPairs[ev.TargetName],
                     FkIdRound = roundId,
                     WeaponType = (byte)ev.Weapon,
-                    TotalKills = (byte)ev.TotalKills
+                    TotalKills = (byte)ev.TotalKills,
+                    FkIdGame = gameId
                 };
 
                 yield return kills;
             }
         }
 
-        public static IEnumerable<StatsKillCarrierData> GetKillsWithFlagEntities(IList<KillAggregate> killAggregates, uint attackerId, IDictionary<string, uint> targetPairs, uint roundId)
+        public static IEnumerable<StatsKillCarrierData> GetFlagCarrierKillsEntities(IList<KillAggregate> killAggregates, uint attackerId, IDictionary<string, uint> targetPairs, uint roundId, uint gameId)
         {
             foreach (var ev in killAggregates)
             {
@@ -241,14 +246,15 @@ namespace WorldDoomLeague.Domain.Game
                     FkIdPlayerTarget = targetPairs[ev.TargetName],
                     FkIdRound = roundId,
                     WeaponType = (byte)ev.Weapon,
-                    TotalKills = (byte)ev.TotalKills
+                    TotalKills = (byte)ev.TotalKills,
+                    FkIdGame = gameId
                 };
 
                 yield return killsWithFlag;
             }
         }
 
-        public static IEnumerable<StatsPickupData> GetPickupsEntities(IList<PickupAggregate> pickupAggregates, uint activatorId, uint roundId)
+        public static IEnumerable<StatsPickupData> GetPickupsEntities(IList<PickupAggregate> pickupAggregates, uint activatorId, uint roundId, uint gameId)
         {
             foreach (var ev in pickupAggregates)
             {
@@ -257,8 +263,8 @@ namespace WorldDoomLeague.Domain.Game
                     FkIdRound = roundId,
                     FkIdActivatorPlayer = activatorId,
                     PickupType = (byte)ev.PickupType,
-                    PickupAmount = (uint)ev.TotalPickups
-
+                    PickupAmount = (uint)ev.TotalPickups,
+                    FkIdGame = gameId
                 };
 
                 yield return pickups;

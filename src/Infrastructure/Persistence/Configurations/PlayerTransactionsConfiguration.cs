@@ -32,6 +32,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasIndex(e => e.FkIdPlayer)
                 .HasDatabaseName("fk_playertransaction_player_idx");
 
+            builder.HasIndex(e => e.FkIdPlayerTradedFor)
+                .HasDatabaseName("fk_playertransaction_playertradefor_idx");
+
             builder.Property(e => e.TransactionId)
                 .HasColumnName("transaction_id")
                 .HasColumnType("int(10) unsigned");
@@ -56,9 +59,9 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
                 .HasColumnName("fk_id_player")
                 .HasColumnType("int(10) unsigned");
 
-            builder.Property(e => e.PlayerPromotedCaptain)
-                .HasColumnName("player_promoted_captain")
-                .HasColumnType("tinyint(1) unsigned");
+            builder.Property(e => e.FkIdPlayerTradedFor)
+                .HasColumnName("fk_id_playertradedfor")
+                .HasColumnType("int(10) unsigned");
 
             builder.HasOne(d => d.FkIdTeamTradedFromNavigation)
                 .WithMany(p => p.TransactionTeamTradedFrom)
@@ -75,20 +78,26 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasOne(d => d.FkIdSeasonNavigation)
                 .WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.FkIdSeason)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Fk_Transaction_Season");
 
             builder.HasOne(d => d.FkIdWeekNavigation)
                 .WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.FkIdWeek)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Fk_Transaction_Week");
 
             builder.HasOne(d => d.FkIdPlayerNavigation)
-                .WithMany(p => p.Transactions)
+                .WithMany(p => p.PlayerTradedFrom)
                 .HasForeignKey(d => d.FkIdPlayer)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("Fk_Transaction_Player");
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("Fk_Transaction_PlayerTradedFrom");
+
+            builder.HasOne(d => d.FkIdPlayerTradedForNavigation)
+                .WithMany(p => p.PlayerTradedTo)
+                .HasForeignKey(d => d.FkIdPlayerTradedFor)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("Fk_Transaction_PlayerTradedFor");
         }
     }
 }

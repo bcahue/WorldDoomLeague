@@ -60,25 +60,25 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasOne(d => d.FkIdPlayerAttackerNavigation)
                 .WithMany(p => p.StatsKillDataFkIdPlayerAttackerNavigation)
                 .HasForeignKey(d => d.FkIdPlayerAttacker)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_statskill_player_attacker");
 
             builder.HasOne(d => d.FkIdPlayerTargetNavigation)
                 .WithMany(p => p.StatsKillDataFkIdPlayerTargetNavigation)
                 .HasForeignKey(d => d.FkIdPlayerTarget)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_statskill_player_target");
 
             builder.HasOne(d => d.FkIdRoundNavigation)
                 .WithMany(p => p.StatsKillData)
                 .HasForeignKey(d => d.FkIdRound)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_statskill_round");
 
             builder.HasOne(d => d.FkIdGameNavigation)
                 .WithMany(p => p.StatsKillData)
                 .HasForeignKey(d => d.FkIdGame)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_statskill_game");
         }
     }

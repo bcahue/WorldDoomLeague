@@ -8,6 +8,7 @@ using WorldDoomLeague.Application.Matches.Commands.UndoMatch;
 using WorldDoomLeague.Application.Matches.Commands.CreateMatches;
 using WorldDoomLeague.Application.Matches.Commands.ProcessMatch;
 using WorldDoomLeague.Application.Matches.Commands.ForfeitMatch;
+using WorldDoomLeague.Application.Matches.Commands.ScheduleMatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -71,6 +72,12 @@ namespace WorldDoomLeague.WebUI.Controllers
 
         [HttpPost("forfeit")]
         public async Task<ActionResult<bool>> Forfeit(ForfeitMatchCommand command)
+        {
+            return await Mediator.Send(command);
+        }
+
+        [HttpPost("schedule")]
+        public async Task<ActionResult<bool>> Schedule(ScheduleMatchCommand command)
         {
             return await Mediator.Send(command);
         }

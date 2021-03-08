@@ -533,6 +533,26 @@
         }
       }
     },
+    "/api/Matches/played": {
+      "get": {
+        "tags": [
+          "Matches"
+        ],
+        "operationId": "Matches_GetPlayedGames",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayedGamesVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Matches/{matchId}/maps": {
       "get": {
         "tags": [
@@ -653,6 +673,102 @@
               "application/json": {
                 "schema": {
                   "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Matches/undo": {
+      "post": {
+        "tags": [
+          "Matches"
+        ],
+        "operationId": "Matches_Undo",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UndoMatchCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Matches/forfeit": {
+      "post": {
+        "tags": [
+          "Matches"
+        ],
+        "operationId": "Matches_Forfeit",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForfeitMatchCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Matches/schedule": {
+      "post": {
+        "tags": [
+          "Matches"
+        ],
+        "operationId": "Matches_Schedule",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScheduleMatchCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
                 }
               }
             }
@@ -1028,6 +1144,26 @@
         }
       }
     },
+    "/api/Seasons/unfinished": {
+      "get": {
+        "tags": [
+          "Seasons"
+        ],
+        "operationId": "Seasons_GetUnfinishedSeasons",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnfinishedSeasonsVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Seasons/{seasonId}/players": {
       "get": {
         "tags": [
@@ -1185,6 +1321,38 @@
         }
       }
     },
+    "/api/Teams/assignhomefield": {
+      "post": {
+        "tags": [
+          "Teams"
+        ],
+        "operationId": "Teams_AssignHomeField",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignTeamHomefieldCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Weeks/{seasonId}/RegularSeason": {
       "get": {
         "tags": [
@@ -1209,6 +1377,37 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/RegularSeasonWeeksVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Weeks/{seasonId}/Playoffs": {
+      "get": {
+        "tags": [
+          "Weeks"
+        ],
+        "operationId": "Weeks_GetPlayoffWeeks",
+        "parameters": [
+          {
+            "name": "seasonId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayoffWeeksVm"
                 }
               }
             }
@@ -3351,6 +3550,56 @@
           },
           "weekNumber": {
             "type": "integer"
+          },
+          "scheduledDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "PlayedGamesVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "playedGameList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/PlayedGamesDto"
+            }
+          }
+        }
+      },
+      "PlayedGamesDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "redTeamName": {
+            "type": "string",
+            "nullable": true
+          },
+          "blueTeamName": {
+            "type": "string",
+            "nullable": true
+          },
+          "weekNumber": {
+            "type": "integer"
+          },
+          "season": {
+            "type": "string",
+            "nullable": true
+          },
+          "winningTeam": {
+            "type": "string",
+            "nullable": true
+          },
+          "forfeit": {
+            "type": "boolean"
           }
         }
       },
@@ -3407,6 +3656,13 @@
             "type": "string",
             "format": "date-time",
             "nullable": true
+          },
+          "gameMapIds": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "integer"
+            }
           }
         }
       },
@@ -3505,6 +3761,43 @@
           "roundFileName": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "UndoMatchCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "match": {
+            "type": "integer"
+          }
+        }
+      },
+      "ForfeitMatchCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "match": {
+            "type": "integer"
+          },
+          "redTeamForfeits": {
+            "type": "boolean"
+          },
+          "blueTeamForfeits": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ScheduleMatchCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "match": {
+            "type": "integer"
+          },
+          "gameDateTime": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
@@ -4214,6 +4507,45 @@
           }
         }
       },
+      "UnfinishedSeasonsVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "seasonList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/UnfinishedSeasonDto"
+            }
+          }
+        }
+      },
+      "UnfinishedSeasonDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "seasonName": {
+            "type": "string",
+            "nullable": true
+          },
+          "dateStart": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "engine": {
+            "type": "string",
+            "nullable": true
+          },
+          "wadPlayed": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "SeasonPlayersVm": {
         "type": "object",
         "additionalProperties": false,
@@ -4712,6 +5044,14 @@
           "teamAbbreviation": {
             "type": "string",
             "nullable": true
+          },
+          "homeFieldMapName": {
+            "type": "string",
+            "nullable": true
+          },
+          "homeFieldMapId": {
+            "type": "integer",
+            "nullable": true
           }
         }
       },
@@ -4768,6 +5108,18 @@
           }
         }
       },
+      "AssignTeamHomefieldCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "teamId": {
+            "type": "integer"
+          },
+          "mapId": {
+            "type": "integer"
+          }
+        }
+      },
       "RegularSeasonWeeksVm": {
         "type": "object",
         "additionalProperties": false,
@@ -4791,6 +5143,40 @@
           },
           "weekNumber": {
             "type": "integer"
+          },
+          "weekStartDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PlayoffWeeksVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "weekList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/PlayoffWeeksDto"
+            }
+          }
+        }
+      },
+      "PlayoffWeeksDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "weekNumber": {
+            "type": "integer"
+          },
+          "weekType": {
+            "type": "string",
+            "nullable": true
           },
           "weekStartDate": {
             "type": "string",

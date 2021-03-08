@@ -18,7 +18,7 @@ namespace WorldDoomLeague.Application.Matches.Commands.ForfeitMatch
             RuleFor(v => v.Match)
                 .NotEmpty().WithMessage("Match is required.")
                 .MustAsync(BeValidMatch).WithMessage("The specified match does not exist.")
-                .MustAsync(BeMatchPlayed).WithMessage("The specified match has been played or forfeited.");
+                .MustAsync(BeMatchNotPlayed).WithMessage("The specified match has been played or forfeited.");
         }
 
         public async Task<bool> BeValidMatch(uint match, CancellationToken cancellationToken)
@@ -27,7 +27,7 @@ namespace WorldDoomLeague.Application.Matches.Commands.ForfeitMatch
                 .AnyAsync(p => p.IdGame == match, cancellationToken);
         }
 
-        public async Task<bool> BeMatchPlayed(uint match, CancellationToken cancellationToken)
+        public async Task<bool> BeMatchNotPlayed(uint match, CancellationToken cancellationToken)
         {
             return await _context.Games
                 .AnyAsync(p => p.IdGame == match && (p.FkIdTeamWinner == null && p.TeamWinnerColor == null && p.TeamForfeitColor == null && p.FkIdTeamForfeit == null && p.DoubleForfeit == 0), cancellationToken);

@@ -44,6 +44,7 @@ namespace WorldDoomLeague.Domain.Entities
         public virtual Season FkIdSeasonNavigation { get; set; }
         public virtual Teams FkIdTeamBlueNavigation { get; set; }
         public virtual Teams FkIdTeamRedNavigation { get; set; }
+        public virtual Teams FkIdTeamWinnerNavigation { get; set; }
         public virtual Weeks FkIdWeekNavigation { get; set; }
         public virtual ICollection<GamePlayers> GamePlayers { get; set; }
         public virtual ICollection<RoundPlayers> RoundPlayers { get; set; }

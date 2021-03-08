@@ -22,7 +22,7 @@ namespace WorldDoomLeague.Application.Teams.Commands.CreateTeam
 
             RuleFor(v => v.TeamAbbreviation)
                 .NotEmpty().WithMessage("TeamAbbreviation is required.")
-                .MaximumLength(4).WithMessage("TeamAbbreviation must not exceed 4 characters.")
+                .MaximumLength(5).WithMessage("TeamAbbreviation must not exceed 5 characters.")
                 .MustAsync(BeUniqueTeamAbbreviation).WithMessage("The specified team abbreviation already exists in this specified season.");
 
             RuleFor(v => v.TeamSeason)

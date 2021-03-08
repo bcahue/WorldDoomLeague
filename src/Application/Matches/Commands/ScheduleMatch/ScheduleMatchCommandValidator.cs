@@ -19,6 +19,9 @@ namespace WorldDoomLeague.Application.Matches.Commands.ScheduleMatch
                 .NotEmpty().WithMessage("Match is required.")
                 .MustAsync(BeValidMatch).WithMessage("The specified match does not exist.")
                 .MustAsync(BeMatchNotPlayed).WithMessage("The specified match has already been played.");
+
+            RuleFor(v => v.GameDateTime)
+                .NotEmpty().WithMessage("GameDateTime is required.");
         }
 
         public async Task<bool> BeValidMatch(uint match, CancellationToken cancellationToken)
@@ -30,7 +33,7 @@ namespace WorldDoomLeague.Application.Matches.Commands.ScheduleMatch
         public async Task<bool> BeMatchNotPlayed(uint match, CancellationToken cancellationToken)
         {
             return await _context.Games
-                !.AnyAsync(p => p.IdGame == match && new[] { "r", "b", "t" }.Any(p.TeamWinnerColor.Contains));
+                .AnyAsync(p => p.IdGame == match && (p.FkIdTeamWinner == null && p.TeamWinnerColor == null && p.TeamForfeitColor == null && p.FkIdTeamForfeit == null && p.DoubleForfeit == 0), cancellationToken);
         }
     }
 }

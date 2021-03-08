@@ -1,10 +1,11 @@
-﻿using WorldDoomLeague.Application.Teams.Queries.GetTeamSummaryByTeamId;
+﻿using WorldDoomLeague.Application.Teams.Commands.AssignTeamHomefield;
 using WorldDoomLeague.Application.Teams.Commands.CreateTeam;
+using WorldDoomLeague.Application.Teams.Commands.CreateTeams;
 using WorldDoomLeague.Application.Teams.Queries.GetTeamsBySeasonId;
+using WorldDoomLeague.Application.Teams.Queries.GetTeamSummaryByTeamId;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using WorldDoomLeague.Application.Teams.Commands.CreateTeams;
 
 namespace WorldDoomLeague.WebUI.Controllers
 {
@@ -30,6 +31,11 @@ namespace WorldDoomLeague.WebUI.Controllers
 
         [HttpPost("teams")]
         public async Task<ActionResult<uint>> CreateTeams(CreateTeamsCommand command)
+        {
+            return await Mediator.Send(command);
+        }
+        [HttpPost("assignhomefield")]
+        public async Task<ActionResult<uint>> AssignHomeField(AssignTeamHomefieldCommand command)
         {
             return await Mediator.Send(command);
         }

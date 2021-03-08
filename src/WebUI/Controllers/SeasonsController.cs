@@ -3,6 +3,7 @@ using WorldDoomLeague.Application.Seasons.Queries;
 using WorldDoomLeague.Application.Seasons.Queries.GetSeasonSummaryById;
 using WorldDoomLeague.Application.Seasons.Queries.GetSeasonStandingsById;
 using WorldDoomLeague.Application.Seasons.Queries.GetSeasonPlayersBySeasonId;
+using WorldDoomLeague.Application.Seasons.Queries.GetUnfinishedSeasons;
 using WorldDoomLeague.Application.Seasons.Commands.CreateSeason;
 using WorldDoomLeague.Application.Seasons.Commands.UpdateSeason;
 using WorldDoomLeague.Application.Weeks.Commands.CreateSeasonWeeks;
@@ -62,6 +63,12 @@ namespace WorldDoomLeague.WebUI.Controllers
         public async Task<SeasonStandingsVm> GetSeasonStandingsById(uint seasonId)
         {
             return await Mediator.Send(new GetSeasonStandingsBySeasonIdQuery(seasonId));
+        }
+
+        [HttpGet("unfinished")]
+        public async Task<UnfinishedSeasonsVm> GetUnfinishedSeasons()
+        {
+            return await Mediator.Send(new GetUnfinishedSeasonsQuery());
         }
 
         [HttpGet("{seasonId}/players")]

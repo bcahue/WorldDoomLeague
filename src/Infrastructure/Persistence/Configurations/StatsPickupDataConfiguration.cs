@@ -53,19 +53,19 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasOne(d => d.FkIdActivatorPlayerNavigation)
                 .WithMany(p => p.StatsPickupData)
                 .HasForeignKey(d => d.FkIdActivatorPlayer)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_statpickup_player");
 
             builder.HasOne(d => d.FkIdRoundNavigation)
                 .WithMany(p => p.StatsPickupData)
                 .HasForeignKey(d => d.FkIdRound)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_statpickup_round");
 
             builder.HasOne(d => d.FkIdGameNavigation)
                 .WithMany(p => p.StatsPickupData)
                 .HasForeignKey(d => d.FkIdGame)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_statpickup_game");
         }
     }

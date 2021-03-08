@@ -35,7 +35,7 @@ namespace WorldDoomLeague.Application.Teams.Commands.CreateTeams
 
                 team.RuleFor(v => v.TeamAbbreviation)
                     .NotEmpty().WithMessage("TeamAbbreviation is required.")
-                    .MaximumLength(4).WithMessage("TeamAbbreviation must not exceed 4 characters.");
+                    .MaximumLength(5).WithMessage("TeamAbbreviation must not exceed 5 characters.");
 
                 team.RuleFor(v => v.TeamCaptain)
                     .NotEmpty().WithMessage("TeamCaptain is required.");

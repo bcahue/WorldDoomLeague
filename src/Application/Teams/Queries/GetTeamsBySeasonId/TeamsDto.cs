@@ -12,10 +12,16 @@ namespace WorldDoomLeague.Application.Teams.Queries.GetTeamsBySeasonId
 
         public string TeamAbbreviation { get; set; }
 
+        public string HomeFieldMapName { get; set; }
+
+        public uint? HomeFieldMapId { get; set; }
+
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Domain.Entities.Teams, TeamsDto>()
-                .ForMember(d => d.Id, opt => opt.MapFrom(s => (int)s.IdTeam));
+                .ForMember(d => d.Id, opt => opt.MapFrom(s => (int)s.IdTeam))
+                .ForMember(d => d.HomeFieldMapName, opt => opt.MapFrom(s => s.FkIdHomefieldMapNavigation.MapName))
+                .ForMember(d => d.HomeFieldMapId, opt => opt.MapFrom(s => s.FkIdHomefieldMap));
         }
     }
 }

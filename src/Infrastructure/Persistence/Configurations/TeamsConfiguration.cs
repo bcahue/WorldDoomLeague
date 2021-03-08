@@ -62,7 +62,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.Property(e => e.TeamAbbreviation)
                 .IsRequired()
                 .HasColumnName("team_abbreviation")
-                .HasColumnType("varchar(4)")
+                .HasColumnType("varchar(5)")
                 .HasCharSet("utf8mb4")
                 .HasCollation("utf8mb4_unicode_ci");
 
@@ -104,7 +104,7 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasOne(d => d.FkIdSeasonNavigation)
                 .WithMany(p => p.Teams)
                 .HasForeignKey(d => d.FkIdSeason)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_stats_Teams_Seasons");
 
             builder.HasOne(d => d.FkIdHomefieldMapNavigation)

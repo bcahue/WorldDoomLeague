@@ -35,7 +35,8 @@ namespace WorldDoomLeague.Domain.Entities
             PlayerRoundTeammatesSelf = new HashSet<PlayerRoundTeammate>();
             PlayerRoundTeammates = new HashSet<PlayerRoundTeammate>();
             PlayerRoundRecords = new HashSet<PlayerRoundRecord>();
-            Transactions = new HashSet<PlayerTransactions>();
+            PlayerTradedFrom = new HashSet<PlayerTransactions>();
+            PlayerTradedTo = new HashSet<PlayerTransactions>();
             DraftNominated = new HashSet<PlayerDraft>();
             DraftNominating = new HashSet<PlayerDraft>();
             DraftSoldTo = new HashSet<PlayerDraft>();
@@ -74,7 +75,8 @@ namespace WorldDoomLeague.Domain.Entities
         public virtual ICollection<PlayerRoundOpponent> PlayerRoundOpponents { get; set; }
         public virtual ICollection<PlayerRoundTeammate> PlayerRoundTeammatesSelf { get; set; }
         public virtual ICollection<PlayerRoundTeammate> PlayerRoundTeammates { get; set; }
-        public virtual ICollection<PlayerTransactions> Transactions { get; set; }
+        public virtual ICollection<PlayerTransactions> PlayerTradedFrom { get; set; }
+        public virtual ICollection<PlayerTransactions> PlayerTradedTo { get; set; }
         public virtual ICollection<PlayerDraft> DraftNominated { get; set; }
         public virtual ICollection<PlayerDraft> DraftNominating { get; set; }
         public virtual ICollection<PlayerDraft> DraftSoldTo { get; set; }

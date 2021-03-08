@@ -72,25 +72,25 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasOne(d => d.FkIdGameNavigation)
                 .WithMany(p => p.Rounds)
                 .HasForeignKey(d => d.FkIdGame)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_stats_Rounds_Games");
 
             builder.HasOne(d => d.FkIdMapNavigation)
                 .WithMany(p => p.Rounds)
                 .HasForeignKey(d => d.FkIdMap)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_stats_Rounds_Maps");
 
             builder.HasOne(d => d.FkIdSeasonNavigation)
                 .WithMany(p => p.Rounds)
                 .HasForeignKey(d => d.FkIdSeason)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_stats_Rounds_Seasons");
 
             builder.HasOne(d => d.FkIdWeekNavigation)
                 .WithMany(p => p.Rounds)
                 .HasForeignKey(d => d.FkIdWeek)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_stats_Rounds_Weeks");
         }
     }

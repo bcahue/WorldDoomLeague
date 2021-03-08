@@ -18,6 +18,7 @@ namespace WorldDoomLeague.Domain.Entities
             StatsRounds = new HashSet<StatsRounds>();
             GamesFkIdTeamBlueNavigation = new HashSet<Games>();
             GamesFkIdTeamRedNavigation = new HashSet<Games>();
+            GamesFkIdTeamWinnerNavigation = new HashSet<Games>();
             PlayerGameOpponents = new HashSet<PlayerGameOpponent>();
             PlayerGameTeammates = new HashSet<PlayerGameTeammate>();
             PlayerRoundOpponents = new HashSet<PlayerRoundOpponent>();
@@ -47,6 +48,7 @@ namespace WorldDoomLeague.Domain.Entities
         public virtual ICollection<StatsRounds> StatsRounds { get; set; }
         public virtual ICollection<Games> GamesFkIdTeamBlueNavigation { get; set; }
         public virtual ICollection<Games> GamesFkIdTeamRedNavigation { get; set; }
+        public virtual ICollection<Games> GamesFkIdTeamWinnerNavigation { get; set; }
         public virtual ICollection<PlayerGameRecord> PlayerGameRecords { get; set; }
         public virtual ICollection<PlayerRoundRecord> PlayerRoundRecords { get; set; }
         public virtual ICollection<PlayerRoundOpponent> PlayerRoundOpponents { get; set; }

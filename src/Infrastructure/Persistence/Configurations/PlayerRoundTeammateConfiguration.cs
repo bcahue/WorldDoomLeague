@@ -80,50 +80,50 @@ namespace WorldDoomLeague.Infrastructure.Persistence.Configurations
             builder.HasOne(d => d.FkIdPlayerNavigation)
                 .WithMany(p => p.PlayerRoundTeammatesSelf)
                 .HasForeignKey(d => d.FkIdPlayer)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Fk_PlayerRoundTeammate_Player");
 
             builder.HasOne(d => d.FkIdGameNavigation)
                 .WithMany(p => p.PlayerRoundTeammates)
                 .HasForeignKey(d => d.FkIdGame)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Fk_PlayerRoundTeammate_Game");
 
             builder.HasOne(d => d.FkIdSeasonNavigation)
                 .WithMany(p => p.PlayerRoundTeammates)
                 .HasForeignKey(d => d.FkIdSeason)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Fk_PlayerRoundTeammate_Season");
 
             builder.HasOne(d => d.FkIdTeamNavigation)
                 .WithMany(p => p.PlayerRoundTeammates)
                 .HasForeignKey(d => d.FkIdTeam)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Fk_PlayerRoundTeammate_Team");
 
             builder.HasOne(d => d.FkIdWeekNavigation)
                 .WithMany(p => p.PlayerRoundTeammates)
                 .HasForeignKey(d => d.FkIdWeek)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Fk_PlayerRoundTeammate_Week");
 
             builder.HasOne(d => d.FkIdTeammateNavigation)
                 .WithMany(p => p.PlayerRoundTeammates)
                 .HasForeignKey(d => d.FkIdTeammate)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Fk_PlayerRoundTeammate_Teammate");
 
 
             builder.HasOne(d => d.FkIdRoundNavigation)
                 .WithMany(p => p.PlayerRoundTeammates)
                 .HasForeignKey(d => d.FkIdRound)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Fk_PlayerRoundTeammate_Round");
 
             builder.HasOne(d => d.FkIdPlayerRoundRecordNavigation)
                 .WithMany(p => p.PlayerRoundTeammates)
                 .HasForeignKey(d => d.FkIdPlayerRoundRecord)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Fk_PlayerRoundTeammate_RoundRecord");
         }
     }

@@ -174,9 +174,9 @@ const AddTeams = props => {
                             <CardBody>
                                 <CardTitle tag="h5">Team</CardTitle>
                                 <Label for="teamName">Team Name</Label>
-                                <Input type="text" value={team.teamName} placeholder="Super Chargers" disabled={(createdTeams === amountTeams)} onChange={e => handleTeamNameChange(index, e.target.value)} />
+                                <Input type="text" value={team.teamName} placeholder="Super Chargers" maxLength={64} disabled={(createdTeams === amountTeams)} onChange={e => handleTeamNameChange(index, e.target.value)} />
                                 <Label for="teamName">Team Abbreviation</Label>
-                                <Input type="text" value={team.teamAbbreviation} placeholder="SUC" disabled={(createdTeams === amountTeams)} onChange={e => handleTeamAbvChange(index, e.target.value)} />
+                                <Input type="text" value={team.teamAbbreviation} placeholder="SUC" maxLength={5} disabled={(createdTeams === amountTeams)} onChange={e => handleTeamAbvChange(index, e.target.value)} />
                                 <Label for="teamName">Team Captain</Label>
                                 {renderPlayerDropdown(index)}
                             </CardBody>

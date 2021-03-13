@@ -9,6 +9,7 @@ import AuthorizeRoute from './components/api-authorization/AuthorizeRoute';
 import AdminRoutes from './components/admin/AdminRoutes';
 import Roles from './components/api-authorization/Roles';
 import './custom.css';
+import UpcomingMatches from './components/matches/UpcomingMatches';
 
 // Create browser history to use in the Redux store
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href') as string;
@@ -21,6 +22,7 @@ export default () => (
             <ApiAuthorizationRoutes />
             <AdminRoutes />
             <Route exact path='/' component={Home} />
+            <Route exact path='/matches' component={UpcomingMatches} />
             <Route path='/leaderboard-all-time' component={FetchLeaderboardAllTimeStats} />
         </Layout>
     </Router>

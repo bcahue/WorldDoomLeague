@@ -7,11 +7,11 @@ using System.Linq;
 
 namespace WorldDoomLeague.Application.PlayerTransaction.Commands.TradePlayerToTeam
 {
-    public class CreatePlayerTransactionCommandValidator : AbstractValidator<TradePlayerToTeamCommand>
+    public class TradePlayerToTeamCommandValidator : AbstractValidator<TradePlayerToTeamCommand>
     {
         private readonly IApplicationDbContext _context;
 
-        public CreatePlayerTransactionCommandValidator(IApplicationDbContext context)
+        public TradePlayerToTeamCommandValidator(IApplicationDbContext context)
         {
             _context = context;
 

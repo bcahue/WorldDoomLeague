@@ -37,16 +37,14 @@ namespace WorldDoomLeague.WebUI.Controllers
         }
 
         [HttpPut("{playerId}")]
-        public async Task<ActionResult> Update(uint playerId, UpdatePlayerCommand command)
+        public async Task<ActionResult<uint>> Update(uint playerId, UpdatePlayerCommand command)
         {
             if (playerId != command.PlayerId)
             {
                 return BadRequest();
             }
 
-            await Mediator.Send(command);
-
-            return NoContent();
+            return await Mediator.Send(command);
         }
     }
 }

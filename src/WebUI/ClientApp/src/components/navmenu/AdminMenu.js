@@ -122,7 +122,7 @@ function AdminMenu(props) {
                         React.createElement(reactstrap_1.NavLink, { tag: react_router_dom_1.Link, className: "text-dark", to: "/admin/createplayoffgames" }, "Create Playoff Game"))),
                 React.createElement(reactstrap_1.DropdownItem, null,
                     React.createElement(reactstrap_1.NavItem, null,
-                        React.createElement(reactstrap_1.NavLink, { tag: react_router_dom_1.Link, className: "text-dark", to: "/admin/deletegame" }, "Delete Game"))))),
+                        React.createElement(reactstrap_1.NavLink, { tag: react_router_dom_1.Link, className: "text-dark", to: "/admin/deleteplayoffgame" }, "Delete Playoff Game"))))),
             showAdmin && (React.createElement("div", null,
                 React.createElement(reactstrap_1.DropdownItem, { divider: true }),
                 React.createElement(reactstrap_1.DropdownItem, { header: true }, "Manage Rosters"),

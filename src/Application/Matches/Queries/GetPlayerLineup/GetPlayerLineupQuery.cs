@@ -69,18 +69,18 @@ namespace WorldDoomLeague.Application.Matches.Queries.GetPlayerLineup
             dto.RedTeamName = lineup.FkIdTeamRedNavigation.TeamName;
             dto.BlueTeamName = lineup.FkIdTeamBlueNavigation.TeamName;
 
-            List<TeamPlayersDto> redPlayers = new List<TeamPlayersDto>();
-            List<TeamPlayersDto> bluePlayers = new List<TeamPlayersDto>();
+            List<TeamLineupPlayersDto> redPlayers = new List<TeamLineupPlayersDto>();
+            List<TeamLineupPlayersDto> bluePlayers = new List<TeamLineupPlayersDto>();
 
-            redPlayers.Add(new TeamPlayersDto { Id = (int)lineup.FkIdTeamRedNavigation.FkIdPlayerCaptainNavigation.Id, PlayerName = lineup.FkIdTeamRedNavigation.FkIdPlayerCaptainNavigation.PlayerName });
-            redPlayers.Add(new TeamPlayersDto { Id = (int)lineup.FkIdTeamRedNavigation.FkIdPlayerFirstpickNavigation.Id, PlayerName = lineup.FkIdTeamRedNavigation.FkIdPlayerFirstpickNavigation.PlayerName });
-            redPlayers.Add(new TeamPlayersDto { Id = (int)lineup.FkIdTeamRedNavigation.FkIdPlayerSecondpickNavigation.Id, PlayerName = lineup.FkIdTeamRedNavigation.FkIdPlayerSecondpickNavigation.PlayerName });
-            redPlayers.Add(new TeamPlayersDto { Id = (int)lineup.FkIdTeamRedNavigation.FkIdPlayerThirdpickNavigation.Id, PlayerName = lineup.FkIdTeamRedNavigation.FkIdPlayerThirdpickNavigation.PlayerName });
+            redPlayers.Add(new TeamLineupPlayersDto { Id = (int)lineup.FkIdTeamRedNavigation.FkIdPlayerCaptainNavigation.Id, PlayerName = lineup.FkIdTeamRedNavigation.FkIdPlayerCaptainNavigation.PlayerName });
+            redPlayers.Add(new TeamLineupPlayersDto { Id = (int)lineup.FkIdTeamRedNavigation.FkIdPlayerFirstpickNavigation.Id, PlayerName = lineup.FkIdTeamRedNavigation.FkIdPlayerFirstpickNavigation.PlayerName });
+            redPlayers.Add(new TeamLineupPlayersDto { Id = (int)lineup.FkIdTeamRedNavigation.FkIdPlayerSecondpickNavigation.Id, PlayerName = lineup.FkIdTeamRedNavigation.FkIdPlayerSecondpickNavigation.PlayerName });
+            redPlayers.Add(new TeamLineupPlayersDto { Id = (int)lineup.FkIdTeamRedNavigation.FkIdPlayerThirdpickNavigation.Id, PlayerName = lineup.FkIdTeamRedNavigation.FkIdPlayerThirdpickNavigation.PlayerName });
 
-            bluePlayers.Add(new TeamPlayersDto { Id = (int)lineup.FkIdTeamBlueNavigation.FkIdPlayerCaptainNavigation.Id, PlayerName = lineup.FkIdTeamBlueNavigation.FkIdPlayerCaptainNavigation.PlayerName });
-            bluePlayers.Add(new TeamPlayersDto { Id = (int)lineup.FkIdTeamBlueNavigation.FkIdPlayerFirstpickNavigation.Id, PlayerName = lineup.FkIdTeamBlueNavigation.FkIdPlayerFirstpickNavigation.PlayerName });
-            bluePlayers.Add(new TeamPlayersDto { Id = (int)lineup.FkIdTeamBlueNavigation.FkIdPlayerSecondpickNavigation.Id, PlayerName = lineup.FkIdTeamBlueNavigation.FkIdPlayerSecondpickNavigation.PlayerName });
-            bluePlayers.Add(new TeamPlayersDto { Id = (int)lineup.FkIdTeamBlueNavigation.FkIdPlayerThirdpickNavigation.Id, PlayerName = lineup.FkIdTeamBlueNavigation.FkIdPlayerThirdpickNavigation.PlayerName });
+            bluePlayers.Add(new TeamLineupPlayersDto { Id = (int)lineup.FkIdTeamBlueNavigation.FkIdPlayerCaptainNavigation.Id, PlayerName = lineup.FkIdTeamBlueNavigation.FkIdPlayerCaptainNavigation.PlayerName });
+            bluePlayers.Add(new TeamLineupPlayersDto { Id = (int)lineup.FkIdTeamBlueNavigation.FkIdPlayerFirstpickNavigation.Id, PlayerName = lineup.FkIdTeamBlueNavigation.FkIdPlayerFirstpickNavigation.PlayerName });
+            bluePlayers.Add(new TeamLineupPlayersDto { Id = (int)lineup.FkIdTeamBlueNavigation.FkIdPlayerSecondpickNavigation.Id, PlayerName = lineup.FkIdTeamBlueNavigation.FkIdPlayerSecondpickNavigation.PlayerName });
+            bluePlayers.Add(new TeamLineupPlayersDto { Id = (int)lineup.FkIdTeamBlueNavigation.FkIdPlayerThirdpickNavigation.Id, PlayerName = lineup.FkIdTeamBlueNavigation.FkIdPlayerThirdpickNavigation.PlayerName });
 
             dto.RedTeamPlayers = redPlayers;
             dto.BlueTeamPlayers = bluePlayers;

@@ -24,13 +24,13 @@ namespace WorldDoomLeague.Application.PlayerTransaction.Commands.PromotePlayerTo
                 .NotEmpty().WithMessage("Week is required.")
                 .MustAsync(BeValidWeek).WithMessage("The specified week isn't in the database.");
 
-            RuleFor(v => v.TradedPlayer)
-                .NotEmpty().WithMessage("TradedPlayer is required.")
+            RuleFor(v => v.PlayerPromotedCaptain)
+                .NotEmpty().WithMessage("PlayerPromotedCaptain is required.")
                 .MustAsync(BeValidPlayer).WithMessage("The specified player isn't in the database.")
                 .MustAsync(BePlayerOnTeamTradedFrom).WithMessage("The specified player isn't in the team that is specified to trade from.")
                 .MustAsync(BeNotACaptainAlready).WithMessage("The specified player is already a captain.");
 
-            RuleFor(v => v.TeamTradedFrom)
+            RuleFor(v => v.Team)
                 .NotEmpty().WithMessage("TeamTradedFrom is required.")
                 .MustAsync(BeValidTeam).WithMessage("TeamTradedFrom isn't a valid team from the specified season.");
         }
@@ -73,7 +73,7 @@ namespace WorldDoomLeague.Application.PlayerTransaction.Commands.PromotePlayerTo
         public async Task<bool> BeNotACaptainAlready(PromotePlayerToCaptainCommand request, uint playerid, CancellationToken cancellationToken)
         {
             var team = await _context.Teams
-                .Where(w => w.IdTeam == request.TeamTradedFrom && w.FkIdSeason == request.Season)
+                .Where(w => w.IdTeam == request.Team && w.FkIdSeason == request.Season)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (team.FkIdPlayerCaptain == playerid)
@@ -89,7 +89,7 @@ namespace WorldDoomLeague.Application.PlayerTransaction.Commands.PromotePlayerTo
         public async Task<bool> BePlayerOnTeamTradedFrom(PromotePlayerToCaptainCommand request, uint playerId, CancellationToken cancellationToken)
         {
             var team = await _context.Teams
-                .Where(w => w.IdTeam == request.TeamTradedFrom)
+                .Where(w => w.IdTeam == request.Team)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (team.FkIdPlayerCaptain == playerId)

@@ -13,8 +13,8 @@ namespace WorldDoomLeague.Application.PlayerTransaction.Commands.PromotePlayerTo
     {
         public uint Season { get; set; }
         public uint Week { get; set; }
-        public uint TradedPlayer { get; set; }
-        public uint TeamTradedFrom { get; set; }
+        public uint PlayerPromotedCaptain { get; set; }
+        public uint Team { get; set; }
     }
 
     public class PromotePlayerToCaptainCommandHandler : IRequestHandler<PromotePlayerToCaptainCommand, bool>
@@ -28,36 +28,36 @@ namespace WorldDoomLeague.Application.PlayerTransaction.Commands.PromotePlayerTo
 
         public async Task<bool> Handle(PromotePlayerToCaptainCommand request, CancellationToken cancellationToken)
         {
-            var tradedFromTeam = await _context.Teams.Where(w => w.IdTeam == request.TeamTradedFrom).FirstOrDefaultAsync();
+            var tradedFromTeam = await _context.Teams.Where(w => w.IdTeam == request.Team).FirstOrDefaultAsync();
 
             byte tradedPlayerCaptain = 1;
 
             uint? oldCaptainId = tradedFromTeam.FkIdPlayerCaptain;
 
-            if (tradedFromTeam.FkIdPlayerFirstpick == request.TradedPlayer)
+            if (tradedFromTeam.FkIdPlayerFirstpick == request.PlayerPromotedCaptain)
             {
                 tradedFromTeam.FkIdPlayerFirstpick = oldCaptainId;
 
             }
-            else if (tradedFromTeam.FkIdPlayerSecondpick == request.TradedPlayer)
+            else if (tradedFromTeam.FkIdPlayerSecondpick == request.PlayerPromotedCaptain)
             {
                 tradedFromTeam.FkIdPlayerSecondpick = oldCaptainId;
             }
-            else if (tradedFromTeam.FkIdPlayerThirdpick == request.TradedPlayer)
+            else if (tradedFromTeam.FkIdPlayerThirdpick == request.PlayerPromotedCaptain)
             {
                 tradedFromTeam.FkIdPlayerThirdpick = oldCaptainId;
             }
 
-            tradedFromTeam.FkIdPlayerCaptain = request.TradedPlayer;
+            tradedFromTeam.FkIdPlayerCaptain = request.PlayerPromotedCaptain;
 
             var tradedEntity = new PlayerTransactions
             {
-                FkIdPlayer = request.TradedPlayer,
-                FkIdPlayerTradedFor = request.TradedPlayer,
+                FkIdPlayer = (uint)oldCaptainId,
+                FkIdPlayerTradedFor = request.PlayerPromotedCaptain,
                 FkIdSeason = request.Season,
                 FkIdWeek = request.Week,
-                FkIdTeamTradedFrom = request.TeamTradedFrom,
-                FkIdTeamTradedTo = request.TeamTradedFrom,
+                FkIdTeamTradedFrom = request.PlayerPromotedCaptain,
+                FkIdTeamTradedTo = request.PlayerPromotedCaptain,
                 PlayerPromotedCaptain = tradedPlayerCaptain
             };
 

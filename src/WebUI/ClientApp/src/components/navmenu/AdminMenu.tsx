@@ -119,7 +119,7 @@ function AdminMenu(props) {
                                 </DropdownItem>
                                 <DropdownItem>
                                     <NavItem>
-                                        <NavLink tag={Link} className="text-dark" to="/admin/deletegame">Delete Game</NavLink>
+                                        <NavLink tag={Link} className="text-dark" to="/admin/deleteplayoffgame">Delete Playoff Game</NavLink>
                                     </NavItem>
                                 </DropdownItem>
                             </div>

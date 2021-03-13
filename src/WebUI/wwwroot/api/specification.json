@@ -533,6 +533,37 @@
         }
       }
     },
+    "/api/Matches/{seasonId}/unplayedplayoff": {
+      "get": {
+        "tags": [
+          "Matches"
+        ],
+        "operationId": "Matches_GetUnplayedPlayoffGames",
+        "parameters": [
+          {
+            "name": "seasonId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnplayedPlayoffGamesVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Matches/played": {
       "get": {
         "tags": [
@@ -546,6 +577,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PlayedGamesVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Matches/upcoming": {
+      "get": {
+        "tags": [
+          "Matches"
+        ],
+        "operationId": "Matches_GetUpcomingGames",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpcomingMatchesVm"
                 }
               }
             }
@@ -776,6 +827,38 @@
         }
       }
     },
+    "/api/Matches/deleteplayoffgame": {
+      "post": {
+        "tags": [
+          "Matches"
+        ],
+        "operationId": "Matches_DeletePlayoffMatch",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeletePlayoffMatchCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Players": {
       "get": {
         "tags": [
@@ -890,10 +973,137 @@
           "200": {
             "description": "",
             "content": {
-              "application/octet-stream": {
+              "application/json": {
                 "schema": {
-                  "type": "string",
-                  "format": "binary"
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/PlayerTransactions/TradePlayerToTeam": {
+      "post": {
+        "tags": [
+          "PlayerTransactions"
+        ],
+        "operationId": "PlayerTransactions_TradePlayerToTeam",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TradePlayerToTeamCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/PlayerTransactions/TradePlayerToFreeAgency": {
+      "post": {
+        "tags": [
+          "PlayerTransactions"
+        ],
+        "operationId": "PlayerTransactions_TradePlayerToFreeAgency",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TradePlayerToFreeAgencyCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/PlayerTransactions/PromotePlayerToCaptain": {
+      "post": {
+        "tags": [
+          "PlayerTransactions"
+        ],
+        "operationId": "PlayerTransactions_PromotePlayerToCaptain",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PromotePlayerToCaptainCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/PlayerTransactions/ReverseLastTrade": {
+      "post": {
+        "tags": [
+          "PlayerTransactions"
+        ],
+        "operationId": "PlayerTransactions_ReverseLastTrade",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReverseLastTradeCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
                 }
               }
             }
@@ -1195,6 +1405,37 @@
         }
       }
     },
+    "/api/Seasons/{seasonId}/freeagency": {
+      "get": {
+        "tags": [
+          "Seasons"
+        ],
+        "operationId": "Seasons_GetFreeAgencyForSeason",
+        "parameters": [
+          {
+            "name": "seasonId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FreeAgencyPlayersVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Teams/{teamId}/summary": {
       "get": {
         "tags": [
@@ -1250,6 +1491,68 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TeamsVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Teams/{teamId}/players": {
+      "get": {
+        "tags": [
+          "Teams"
+        ],
+        "operationId": "Teams_GetTeamPlayers",
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamPlayersVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Teams/{teamId}/noncaptainplayers": {
+      "get": {
+        "tags": [
+          "Teams"
+        ],
+        "operationId": "Teams_GetNonCaptainPlayers",
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NonCaptainTeamPlayersVm"
                 }
               }
             }
@@ -1338,6 +1641,49 @@
           },
           "required": true,
           "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Teams/{teamId}": {
+      "put": {
+        "tags": [
+          "Teams"
+        ],
+        "operationId": "Teams_Update",
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTeamCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
         },
         "responses": {
           "200": {
@@ -3487,19 +3833,19 @@
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/TeamPlayersDto"
+              "$ref": "#/components/schemas/TeamLineupPlayersDto"
             }
           },
           "blueTeamPlayers": {
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/TeamPlayersDto"
+              "$ref": "#/components/schemas/TeamLineupPlayersDto"
             }
           }
         }
       },
-      "TeamPlayersDto": {
+      "TeamLineupPlayersDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -3527,6 +3873,51 @@
         }
       },
       "UnplayedGamesDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "redTeam": {
+            "type": "integer"
+          },
+          "redTeamName": {
+            "type": "string",
+            "nullable": true
+          },
+          "blueTeam": {
+            "type": "integer"
+          },
+          "blueTeamName": {
+            "type": "string",
+            "nullable": true
+          },
+          "weekNumber": {
+            "type": "integer"
+          },
+          "scheduledDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "UnplayedPlayoffGamesVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "unplayedPlayoffGameList": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/UnplayedPlayoffGamesDto"
+            }
+          }
+        }
+      },
+      "UnplayedPlayoffGamesDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -3600,6 +3991,112 @@
           },
           "forfeit": {
             "type": "boolean"
+          }
+        }
+      },
+      "UpcomingMatchesVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "upcomingMatches": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/UpcomingMatchesDto"
+            }
+          }
+        }
+      },
+      "UpcomingMatchesDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "redTeam": {
+            "type": "integer"
+          },
+          "seasonName": {
+            "type": "string",
+            "nullable": true
+          },
+          "redTeamName": {
+            "type": "string",
+            "nullable": true
+          },
+          "redTeamRecord": {
+            "type": "string",
+            "nullable": true
+          },
+          "blueTeam": {
+            "type": "integer"
+          },
+          "blueTeamName": {
+            "type": "string",
+            "nullable": true
+          },
+          "blueTeamRecord": {
+            "type": "string",
+            "nullable": true
+          },
+          "gameType": {
+            "type": "string",
+            "nullable": true
+          },
+          "scheduledTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "maps": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/UpcomingMapsDto"
+            }
+          }
+        }
+      },
+      "UpcomingMapsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "mapName": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapPack": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapImages": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/UpcomingImagesDto"
+            }
+          }
+        }
+      },
+      "UpcomingImagesDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "imagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageCaption": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -3798,6 +4295,15 @@
           "gameDateTime": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "DeletePlayoffMatchCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "match": {
+            "type": "integer"
           }
         }
       },
@@ -4132,6 +4638,78 @@
           "playerAlias": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "TradePlayerToTeamCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "season": {
+            "type": "integer"
+          },
+          "week": {
+            "type": "integer"
+          },
+          "tradedPlayer": {
+            "type": "integer"
+          },
+          "tradedPlayerFor": {
+            "type": "integer"
+          },
+          "teamTradedFrom": {
+            "type": "integer"
+          },
+          "teamTradedTo": {
+            "type": "integer"
+          }
+        }
+      },
+      "TradePlayerToFreeAgencyCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "season": {
+            "type": "integer"
+          },
+          "week": {
+            "type": "integer"
+          },
+          "tradedPlayer": {
+            "type": "integer"
+          },
+          "tradedPlayerFor": {
+            "type": "integer"
+          },
+          "teamTradedFrom": {
+            "type": "integer"
+          }
+        }
+      },
+      "PromotePlayerToCaptainCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "season": {
+            "type": "integer"
+          },
+          "week": {
+            "type": "integer"
+          },
+          "playerPromotedCaptain": {
+            "type": "integer"
+          },
+          "team": {
+            "type": "integer"
+          }
+        }
+      },
+      "ReverseLastTradeCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "season": {
+            "type": "integer"
           }
         }
       },
@@ -4612,6 +5190,32 @@
           }
         }
       },
+      "FreeAgencyPlayersVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "freeAgency": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/FreeAgencyPlayersDto"
+            }
+          }
+        }
+      },
+      "FreeAgencyPlayersDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "playerId": {
+            "type": "integer"
+          },
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "TeamSummaryVm": {
         "type": "object",
         "additionalProperties": false,
@@ -5055,6 +5659,104 @@
           }
         }
       },
+      "TeamPlayersVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "teamPlayers": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TeamPlayersDto"
+              }
+            ]
+          }
+        }
+      },
+      "TeamPlayersDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "teamName": {
+            "type": "string",
+            "nullable": true
+          },
+          "teamPlayers": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/PlayersDto"
+            }
+          }
+        }
+      },
+      "PlayersDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "NonCaptainTeamPlayersVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "teamPlayers": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/NonCaptainTeamPlayersDto"
+              }
+            ]
+          }
+        }
+      },
+      "NonCaptainTeamPlayersDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "teamName": {
+            "type": "string",
+            "nullable": true
+          },
+          "teamPlayers": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/NonCaptainPlayersDto"
+            }
+          }
+        }
+      },
+      "NonCaptainPlayersDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "CreateTeamCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -5116,6 +5818,23 @@
             "type": "integer"
           },
           "mapId": {
+            "type": "integer"
+          }
+        }
+      },
+      "UpdateTeamCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "teamName": {
+            "type": "string",
+            "nullable": true
+          },
+          "teamAbbreviation": {
+            "type": "string",
+            "nullable": true
+          },
+          "teamId": {
             "type": "integer"
           }
         }

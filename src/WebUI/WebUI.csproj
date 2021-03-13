@@ -85,6 +85,9 @@
       <None Remove="ClientApp\src\client.extensions.ts" />
       <None Remove="ClientApp\src\components\admin\AdminRoutes.tsx" />
       <None Remove="ClientApp\src\components\admin\createplayoffgame\CreatePlayoffGame.tsx" />
+      <None Remove="ClientApp\src\components\admin\deleteplayoffgame\DeletePlayoffGame.tsx" />
+      <None Remove="ClientApp\src\components\admin\editplayers\EditPlayers.tsx" />
+      <None Remove="ClientApp\src\components\admin\editteams\EditTeams.tsx" />
       <None Remove="ClientApp\src\components\admin\forfeitgame\ForfeitGame.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\AddPlayers.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\AddTeams.tsx" />
@@ -100,8 +103,12 @@
       <None Remove="ClientApp\src\components\admin\newseasonwizard\StepButtons.tsx" />
       <None Remove="ClientApp\src\components\admin\newseasonwizard\WadList.tsx" />
       <None Remove="ClientApp\src\components\admin\processgamewizard\ProcessGameWizard.tsx" />
+      <None Remove="ClientApp\src\components\admin\promoteplayertocaptain\PromotePlayerToCaptain.tsx" />
+      <None Remove="ClientApp\src\components\admin\reverselasttrade\ReverseLastTrade.tsx" />
       <None Remove="ClientApp\src\components\admin\schedulegames\schedulegames.tsx" />
       <None Remove="ClientApp\src\components\admin\selecthomefieldmaps\SelectHomefieldMaps.tsx" />
+      <None Remove="ClientApp\src\components\admin\tradeplayertofreeagency\TradePlayerToFreeAgency.tsx" />
+      <None Remove="ClientApp\src\components\admin\tradeplayertoteam\TradePlayerToTeam.tsx" />
       <None Remove="ClientApp\src\components\admin\undogame\UndoGame.tsx" />
       <None Remove="ClientApp\src\components\LeaderboardAllTimeStats.tsx" />
       <None Remove="ClientApp\src\ErrorResponse.tsx" />
@@ -115,6 +122,7 @@
       <TypeScriptCompile Remove="ClientApp\src\components\home\TeamResults.tsx" />
       <TypeScriptCompile Remove="ClientApp\src\components\home\TwitchIntegration.tsx" />
       <TypeScriptCompile Remove="ClientApp\src\components\home\UpcomingMatches.tsx" />
+      <TypeScriptCompile Remove="ClientApp\src\components\matches\UpcomingMatches.tsx" />
     </ItemGroup>
 
     <ItemGroup>
@@ -123,6 +131,15 @@
   </ItemGroup>
 
     <ItemGroup>
+      <TypeScriptCompile Update="ClientApp\src\components\admin\deleteplayoffgame\DeletePlayoffGame.tsx">
+        <SubType>Code</SubType>
+      </TypeScriptCompile>
+      <TypeScriptCompile Update="ClientApp\src\components\admin\editplayers\EditPlayers.tsx">
+        <SubType>Code</SubType>
+      </TypeScriptCompile>
+      <TypeScriptCompile Update="ClientApp\src\components\admin\editteams\EditTeams.tsx">
+        <SubType>Code</SubType>
+      </TypeScriptCompile>
       <TypeScriptCompile Update="ClientApp\src\components\admin\forfeitgame\ForfeitGame.tsx">
         <SubType>Code</SubType>
       </TypeScriptCompile>
@@ -156,19 +173,26 @@
       <TypeScriptCompile Update="ClientApp\src\components\admin\processgamewizard\ProcessGameWizard.tsx">
         <SubType>Code</SubType>
       </TypeScriptCompile>
+      <TypeScriptCompile Update="ClientApp\src\components\admin\promoteplayertocaptain\PromotePlayerToCaptain.tsx">
+        <SubType>Code</SubType>
+      </TypeScriptCompile>
+      <TypeScriptCompile Update="ClientApp\src\components\admin\reverselasttrade\ReverseLastTrade.tsx">
+        <SubType>Code</SubType>
+      </TypeScriptCompile>
+      <TypeScriptCompile Update="ClientApp\src\components\admin\tradeplayertofreeagency\TradePlayerToFreeAgency.tsx">
+        <SubType>Code</SubType>
+      </TypeScriptCompile>
+      <TypeScriptCompile Update="ClientApp\src\components\admin\tradeplayertoteam\TradePlayerToTeam.tsx">
+        <SubType>Code</SubType>
+      </TypeScriptCompile>
       <TypeScriptCompile Update="ClientApp\src\components\admin\undogame\UndoGame.tsx">
         <SubType>Code</SubType>
       </TypeScriptCompile>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="ClientApp\src\components\admin\editplayers\" />
       <Folder Include="ClientApp\src\components\admin\editseason\" />
-      <Folder Include="ClientApp\src\components\admin\editteams\" />
       <Folder Include="ClientApp\src\components\admin\editmap\" />
-      <Folder Include="ClientApp\src\components\admin\deletegames\" />
-      <Folder Include="ClientApp\src\components\admin\tradeplayer\" />
-      <Folder Include="ClientApp\src\components\admin\NewFolder\" />
       <Folder Include="wwwroot\images\" />
     </ItemGroup>
 

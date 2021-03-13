@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace WorldDoomLeague.Application.Players.Commands.UpdatePlayer
 {
-    public partial class UpdatePlayerCommand : IRequest
+    public partial class UpdatePlayerCommand : IRequest<uint>
     {
         public uint PlayerId { get; set; }
         public string PlayerName { get; set; }
         public string PlayerAlias { get; set; }
     }
 
-    public class UpdatePlayerCommandHandler : IRequestHandler<UpdatePlayerCommand>
+    public class UpdatePlayerCommandHandler : IRequestHandler<UpdatePlayerCommand, uint>
     {
         private readonly IApplicationDbContext _context;
 
@@ -23,7 +23,7 @@ namespace WorldDoomLeague.Application.Players.Commands.UpdatePlayer
             _context = context;
         }
 
-        public async Task<Unit> Handle(UpdatePlayerCommand request, CancellationToken cancellationToken)
+        public async Task<uint> Handle(UpdatePlayerCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Player.FindAsync(request.PlayerId);
 
@@ -37,7 +37,7 @@ namespace WorldDoomLeague.Application.Players.Commands.UpdatePlayer
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Unit.Value;
+            return entity.Id;
         }
     }
 }

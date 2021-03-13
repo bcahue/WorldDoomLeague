@@ -619,7 +619,9 @@ export interface IMatchesClient {
     get(matchId: number): Promise<MatchSummaryVm>;
     getPlayerLineup(matchId: number): Promise<PlayerLineupVm>;
     getUnplayedGames(seasonId: number): Promise<UnplayedGamesVm>;
+    getUnplayedPlayoffGames(seasonId: number): Promise<UnplayedPlayoffGamesVm>;
     getPlayedGames(): Promise<PlayedGamesVm>;
+    getUpcomingGames(): Promise<UpcomingMatchesVm>;
     getGameMaps(matchId: number): Promise<GameMapsVm>;
     create(command: CreateMatchCommand): Promise<number>;
     createRegularSeason(command: CreateMatchesCommand): Promise<number>;
@@ -627,6 +629,7 @@ export interface IMatchesClient {
     undo(command: UndoMatchCommand): Promise<boolean>;
     forfeit(command: ForfeitMatchCommand): Promise<boolean>;
     schedule(command: ScheduleMatchCommand): Promise<boolean>;
+    deletePlayoffMatch(command: DeletePlayoffMatchCommand): Promise<boolean>;
 }
 
 export class MatchesClient extends ApiClientBase implements IMatchesClient {
@@ -757,6 +760,45 @@ export class MatchesClient extends ApiClientBase implements IMatchesClient {
         return Promise.resolve<UnplayedGamesVm>(<any>null);
     }
 
+    getUnplayedPlayoffGames(seasonId: number): Promise<UnplayedPlayoffGamesVm> {
+        let url_ = this.baseUrl + "/api/Matches/{seasonId}/unplayedplayoff";
+        if (seasonId === undefined || seasonId === null)
+            throw new Error("The parameter 'seasonId' must be defined.");
+        url_ = url_.replace("{seasonId}", encodeURIComponent("" + seasonId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetUnplayedPlayoffGames(_response);
+        });
+    }
+
+    protected processGetUnplayedPlayoffGames(response: Response): Promise<UnplayedPlayoffGamesVm> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UnplayedPlayoffGamesVm.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UnplayedPlayoffGamesVm>(<any>null);
+    }
+
     getPlayedGames(): Promise<PlayedGamesVm> {
         let url_ = this.baseUrl + "/api/Matches/played";
         url_ = url_.replace(/[?&]$/, "");
@@ -791,6 +833,42 @@ export class MatchesClient extends ApiClientBase implements IMatchesClient {
             });
         }
         return Promise.resolve<PlayedGamesVm>(<any>null);
+    }
+
+    getUpcomingGames(): Promise<UpcomingMatchesVm> {
+        let url_ = this.baseUrl + "/api/Matches/upcoming";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetUpcomingGames(_response);
+        });
+    }
+
+    protected processGetUpcomingGames(response: Response): Promise<UpcomingMatchesVm> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UpcomingMatchesVm.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UpcomingMatchesVm>(<any>null);
     }
 
     getGameMaps(matchId: number): Promise<GameMapsVm> {
@@ -1071,13 +1149,53 @@ export class MatchesClient extends ApiClientBase implements IMatchesClient {
         }
         return Promise.resolve<boolean>(<any>null);
     }
+
+    deletePlayoffMatch(command: DeletePlayoffMatchCommand): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/Matches/deleteplayoffgame";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processDeletePlayoffMatch(_response);
+        });
+    }
+
+    protected processDeletePlayoffMatch(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(<any>null);
+    }
 }
 
 export interface IPlayersClient {
     get(): Promise<PlayersVm>;
     create(command: CreatePlayerCommand): Promise<number>;
     getPlayerSummaryById(playerId: number): Promise<PlayerSummaryVm>;
-    update(playerId: number, command: UpdatePlayerCommand): Promise<FileResponse>;
+    update(playerId: number, command: UpdatePlayerCommand): Promise<number>;
 }
 
 export class PlayersClient extends ApiClientBase implements IPlayersClient {
@@ -1206,7 +1324,7 @@ export class PlayersClient extends ApiClientBase implements IPlayersClient {
         return Promise.resolve<PlayerSummaryVm>(<any>null);
     }
 
-    update(playerId: number, command: UpdatePlayerCommand): Promise<FileResponse> {
+    update(playerId: number, command: UpdatePlayerCommand): Promise<number> {
         let url_ = this.baseUrl + "/api/Players/{playerId}";
         if (playerId === undefined || playerId === null)
             throw new Error("The parameter 'playerId' must be defined.");
@@ -1220,7 +1338,7 @@ export class PlayersClient extends ApiClientBase implements IPlayersClient {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                "Accept": "application/octet-stream"
+                "Accept": "application/json"
             }
         };
 
@@ -1231,20 +1349,201 @@ export class PlayersClient extends ApiClientBase implements IPlayersClient {
         });
     }
 
-    protected processUpdate(response: Response): Promise<FileResponse> {
+    protected processUpdate(response: Response): Promise<number> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
-            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<FileResponse>(<any>null);
+        return Promise.resolve<number>(<any>null);
+    }
+}
+
+export interface IPlayerTransactionsClient {
+    tradePlayerToTeam(command: TradePlayerToTeamCommand): Promise<boolean>;
+    tradePlayerToFreeAgency(command: TradePlayerToFreeAgencyCommand): Promise<boolean>;
+    promotePlayerToCaptain(command: PromotePlayerToCaptainCommand): Promise<boolean>;
+    reverseLastTrade(command: ReverseLastTradeCommand): Promise<boolean>;
+}
+
+export class PlayerTransactionsClient extends ApiClientBase implements IPlayerTransactionsClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    tradePlayerToTeam(command: TradePlayerToTeamCommand): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/PlayerTransactions/TradePlayerToTeam";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processTradePlayerToTeam(_response);
+        });
+    }
+
+    protected processTradePlayerToTeam(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(<any>null);
+    }
+
+    tradePlayerToFreeAgency(command: TradePlayerToFreeAgencyCommand): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/PlayerTransactions/TradePlayerToFreeAgency";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processTradePlayerToFreeAgency(_response);
+        });
+    }
+
+    protected processTradePlayerToFreeAgency(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(<any>null);
+    }
+
+    promotePlayerToCaptain(command: PromotePlayerToCaptainCommand): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/PlayerTransactions/PromotePlayerToCaptain";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processPromotePlayerToCaptain(_response);
+        });
+    }
+
+    protected processPromotePlayerToCaptain(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(<any>null);
+    }
+
+    reverseLastTrade(command: ReverseLastTradeCommand): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/PlayerTransactions/ReverseLastTrade";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processReverseLastTrade(_response);
+        });
+    }
+
+    protected processReverseLastTrade(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(<any>null);
     }
 }
 
@@ -1310,6 +1609,7 @@ export interface ISeasonsClient {
     getSeasonStandingsById(seasonId: number): Promise<SeasonStandingsVm>;
     getUnfinishedSeasons(): Promise<UnfinishedSeasonsVm>;
     getSeasonPlayers(seasonId: number): Promise<SeasonPlayersVm>;
+    getFreeAgencyForSeason(seasonId: number): Promise<FreeAgencyPlayersVm>;
 }
 
 export class SeasonsClient extends ApiClientBase implements ISeasonsClient {
@@ -1668,14 +1968,56 @@ export class SeasonsClient extends ApiClientBase implements ISeasonsClient {
         }
         return Promise.resolve<SeasonPlayersVm>(<any>null);
     }
+
+    getFreeAgencyForSeason(seasonId: number): Promise<FreeAgencyPlayersVm> {
+        let url_ = this.baseUrl + "/api/Seasons/{seasonId}/freeagency";
+        if (seasonId === undefined || seasonId === null)
+            throw new Error("The parameter 'seasonId' must be defined.");
+        url_ = url_.replace("{seasonId}", encodeURIComponent("" + seasonId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetFreeAgencyForSeason(_response);
+        });
+    }
+
+    protected processGetFreeAgencyForSeason(response: Response): Promise<FreeAgencyPlayersVm> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = FreeAgencyPlayersVm.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FreeAgencyPlayersVm>(<any>null);
+    }
 }
 
 export interface ITeamsClient {
     getTeamSummaryById(teamId: number): Promise<TeamSummaryVm>;
     getTeamsBySeasonId(seasonId: number): Promise<TeamsVm>;
+    getTeamPlayers(teamId: number): Promise<TeamPlayersVm>;
+    getNonCaptainPlayers(teamId: number): Promise<NonCaptainTeamPlayersVm>;
     create(command: CreateTeamCommand): Promise<number>;
     createTeams(command: CreateTeamsCommand): Promise<number>;
     assignHomeField(command: AssignTeamHomefieldCommand): Promise<number>;
+    update(teamId: number, command: UpdateTeamCommand): Promise<number>;
 }
 
 export class TeamsClient extends ApiClientBase implements ITeamsClient {
@@ -1765,6 +2107,84 @@ export class TeamsClient extends ApiClientBase implements ITeamsClient {
             });
         }
         return Promise.resolve<TeamsVm>(<any>null);
+    }
+
+    getTeamPlayers(teamId: number): Promise<TeamPlayersVm> {
+        let url_ = this.baseUrl + "/api/Teams/{teamId}/players";
+        if (teamId === undefined || teamId === null)
+            throw new Error("The parameter 'teamId' must be defined.");
+        url_ = url_.replace("{teamId}", encodeURIComponent("" + teamId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetTeamPlayers(_response);
+        });
+    }
+
+    protected processGetTeamPlayers(response: Response): Promise<TeamPlayersVm> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TeamPlayersVm.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<TeamPlayersVm>(<any>null);
+    }
+
+    getNonCaptainPlayers(teamId: number): Promise<NonCaptainTeamPlayersVm> {
+        let url_ = this.baseUrl + "/api/Teams/{teamId}/noncaptainplayers";
+        if (teamId === undefined || teamId === null)
+            throw new Error("The parameter 'teamId' must be defined.");
+        url_ = url_.replace("{teamId}", encodeURIComponent("" + teamId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetNonCaptainPlayers(_response);
+        });
+    }
+
+    protected processGetNonCaptainPlayers(response: Response): Promise<NonCaptainTeamPlayersVm> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = NonCaptainTeamPlayersVm.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NonCaptainTeamPlayersVm>(<any>null);
     }
 
     create(command: CreateTeamCommand): Promise<number> {
@@ -1870,6 +2290,49 @@ export class TeamsClient extends ApiClientBase implements ITeamsClient {
     }
 
     protected processAssignHomeField(response: Response): Promise<number> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(<any>null);
+    }
+
+    update(teamId: number, command: UpdateTeamCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Teams/{teamId}";
+        if (teamId === undefined || teamId === null)
+            throw new Error("The parameter 'teamId' must be defined.");
+        url_ = url_.replace("{teamId}", encodeURIComponent("" + teamId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processUpdate(_response);
+        });
+    }
+
+    protected processUpdate(response: Response): Promise<number> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -5343,8 +5806,8 @@ export class PlayerLineupDto implements IPlayerLineupDto {
     id?: number;
     redTeamName?: string | undefined;
     blueTeamName?: string | undefined;
-    redTeamPlayers?: TeamPlayersDto[] | undefined;
-    blueTeamPlayers?: TeamPlayersDto[] | undefined;
+    redTeamPlayers?: TeamLineupPlayersDto[] | undefined;
+    blueTeamPlayers?: TeamLineupPlayersDto[] | undefined;
 
     constructor(data?: IPlayerLineupDto) {
         if (data) {
@@ -5363,12 +5826,12 @@ export class PlayerLineupDto implements IPlayerLineupDto {
             if (Array.isArray(_data["redTeamPlayers"])) {
                 this.redTeamPlayers = [] as any;
                 for (let item of _data["redTeamPlayers"])
-                    this.redTeamPlayers!.push(TeamPlayersDto.fromJS(item));
+                    this.redTeamPlayers!.push(TeamLineupPlayersDto.fromJS(item));
             }
             if (Array.isArray(_data["blueTeamPlayers"])) {
                 this.blueTeamPlayers = [] as any;
                 for (let item of _data["blueTeamPlayers"])
-                    this.blueTeamPlayers!.push(TeamPlayersDto.fromJS(item));
+                    this.blueTeamPlayers!.push(TeamLineupPlayersDto.fromJS(item));
             }
         }
     }
@@ -5403,15 +5866,15 @@ export interface IPlayerLineupDto {
     id?: number;
     redTeamName?: string | undefined;
     blueTeamName?: string | undefined;
-    redTeamPlayers?: TeamPlayersDto[] | undefined;
-    blueTeamPlayers?: TeamPlayersDto[] | undefined;
+    redTeamPlayers?: TeamLineupPlayersDto[] | undefined;
+    blueTeamPlayers?: TeamLineupPlayersDto[] | undefined;
 }
 
-export class TeamPlayersDto implements ITeamPlayersDto {
+export class TeamLineupPlayersDto implements ITeamLineupPlayersDto {
     id?: number;
     playerName?: string | undefined;
 
-    constructor(data?: ITeamPlayersDto) {
+    constructor(data?: ITeamLineupPlayersDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5427,9 +5890,9 @@ export class TeamPlayersDto implements ITeamPlayersDto {
         }
     }
 
-    static fromJS(data: any): TeamPlayersDto {
+    static fromJS(data: any): TeamLineupPlayersDto {
         data = typeof data === 'object' ? data : {};
-        let result = new TeamPlayersDto();
+        let result = new TeamLineupPlayersDto();
         result.init(data);
         return result;
     }
@@ -5442,7 +5905,7 @@ export class TeamPlayersDto implements ITeamPlayersDto {
     }
 }
 
-export interface ITeamPlayersDto {
+export interface ITeamLineupPlayersDto {
     id?: number;
     playerName?: string | undefined;
 }
@@ -5542,6 +6005,110 @@ export class UnplayedGamesDto implements IUnplayedGamesDto {
 }
 
 export interface IUnplayedGamesDto {
+    id?: number;
+    redTeam?: number;
+    redTeamName?: string | undefined;
+    blueTeam?: number;
+    blueTeamName?: string | undefined;
+    weekNumber?: number;
+    scheduledDate?: Date | undefined;
+}
+
+export class UnplayedPlayoffGamesVm implements IUnplayedPlayoffGamesVm {
+    unplayedPlayoffGameList?: UnplayedPlayoffGamesDto[] | undefined;
+
+    constructor(data?: IUnplayedPlayoffGamesVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["unplayedPlayoffGameList"])) {
+                this.unplayedPlayoffGameList = [] as any;
+                for (let item of _data["unplayedPlayoffGameList"])
+                    this.unplayedPlayoffGameList!.push(UnplayedPlayoffGamesDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): UnplayedPlayoffGamesVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new UnplayedPlayoffGamesVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.unplayedPlayoffGameList)) {
+            data["unplayedPlayoffGameList"] = [];
+            for (let item of this.unplayedPlayoffGameList)
+                data["unplayedPlayoffGameList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IUnplayedPlayoffGamesVm {
+    unplayedPlayoffGameList?: UnplayedPlayoffGamesDto[] | undefined;
+}
+
+export class UnplayedPlayoffGamesDto implements IUnplayedPlayoffGamesDto {
+    id?: number;
+    redTeam?: number;
+    redTeamName?: string | undefined;
+    blueTeam?: number;
+    blueTeamName?: string | undefined;
+    weekNumber?: number;
+    scheduledDate?: Date | undefined;
+
+    constructor(data?: IUnplayedPlayoffGamesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.redTeam = _data["redTeam"];
+            this.redTeamName = _data["redTeamName"];
+            this.blueTeam = _data["blueTeam"];
+            this.blueTeamName = _data["blueTeamName"];
+            this.weekNumber = _data["weekNumber"];
+            this.scheduledDate = _data["scheduledDate"] ? new Date(_data["scheduledDate"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): UnplayedPlayoffGamesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UnplayedPlayoffGamesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["redTeam"] = this.redTeam;
+        data["redTeamName"] = this.redTeamName;
+        data["blueTeam"] = this.blueTeam;
+        data["blueTeamName"] = this.blueTeamName;
+        data["weekNumber"] = this.weekNumber;
+        data["scheduledDate"] = this.scheduledDate ? this.scheduledDate.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IUnplayedPlayoffGamesDto {
     id?: number;
     redTeam?: number;
     redTeamName?: string | undefined;
@@ -5653,6 +6220,234 @@ export interface IPlayedGamesDto {
     season?: string | undefined;
     winningTeam?: string | undefined;
     forfeit?: boolean;
+}
+
+export class UpcomingMatchesVm implements IUpcomingMatchesVm {
+    upcomingMatches?: UpcomingMatchesDto[] | undefined;
+
+    constructor(data?: IUpcomingMatchesVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["upcomingMatches"])) {
+                this.upcomingMatches = [] as any;
+                for (let item of _data["upcomingMatches"])
+                    this.upcomingMatches!.push(UpcomingMatchesDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): UpcomingMatchesVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpcomingMatchesVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.upcomingMatches)) {
+            data["upcomingMatches"] = [];
+            for (let item of this.upcomingMatches)
+                data["upcomingMatches"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IUpcomingMatchesVm {
+    upcomingMatches?: UpcomingMatchesDto[] | undefined;
+}
+
+export class UpcomingMatchesDto implements IUpcomingMatchesDto {
+    id?: number;
+    redTeam?: number;
+    seasonName?: string | undefined;
+    redTeamName?: string | undefined;
+    redTeamRecord?: string | undefined;
+    blueTeam?: number;
+    blueTeamName?: string | undefined;
+    blueTeamRecord?: string | undefined;
+    gameType?: string | undefined;
+    scheduledTime?: Date | undefined;
+    maps?: UpcomingMapsDto[] | undefined;
+
+    constructor(data?: IUpcomingMatchesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.redTeam = _data["redTeam"];
+            this.seasonName = _data["seasonName"];
+            this.redTeamName = _data["redTeamName"];
+            this.redTeamRecord = _data["redTeamRecord"];
+            this.blueTeam = _data["blueTeam"];
+            this.blueTeamName = _data["blueTeamName"];
+            this.blueTeamRecord = _data["blueTeamRecord"];
+            this.gameType = _data["gameType"];
+            this.scheduledTime = _data["scheduledTime"] ? new Date(_data["scheduledTime"].toString()) : <any>undefined;
+            if (Array.isArray(_data["maps"])) {
+                this.maps = [] as any;
+                for (let item of _data["maps"])
+                    this.maps!.push(UpcomingMapsDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): UpcomingMatchesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpcomingMatchesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["redTeam"] = this.redTeam;
+        data["seasonName"] = this.seasonName;
+        data["redTeamName"] = this.redTeamName;
+        data["redTeamRecord"] = this.redTeamRecord;
+        data["blueTeam"] = this.blueTeam;
+        data["blueTeamName"] = this.blueTeamName;
+        data["blueTeamRecord"] = this.blueTeamRecord;
+        data["gameType"] = this.gameType;
+        data["scheduledTime"] = this.scheduledTime ? this.scheduledTime.toISOString() : <any>undefined;
+        if (Array.isArray(this.maps)) {
+            data["maps"] = [];
+            for (let item of this.maps)
+                data["maps"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IUpcomingMatchesDto {
+    id?: number;
+    redTeam?: number;
+    seasonName?: string | undefined;
+    redTeamName?: string | undefined;
+    redTeamRecord?: string | undefined;
+    blueTeam?: number;
+    blueTeamName?: string | undefined;
+    blueTeamRecord?: string | undefined;
+    gameType?: string | undefined;
+    scheduledTime?: Date | undefined;
+    maps?: UpcomingMapsDto[] | undefined;
+}
+
+export class UpcomingMapsDto implements IUpcomingMapsDto {
+    id?: number;
+    mapName?: string | undefined;
+    mapPack?: string | undefined;
+    mapNumber?: string | undefined;
+    mapImages?: UpcomingImagesDto[] | undefined;
+
+    constructor(data?: IUpcomingMapsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.mapName = _data["mapName"];
+            this.mapPack = _data["mapPack"];
+            this.mapNumber = _data["mapNumber"];
+            if (Array.isArray(_data["mapImages"])) {
+                this.mapImages = [] as any;
+                for (let item of _data["mapImages"])
+                    this.mapImages!.push(UpcomingImagesDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): UpcomingMapsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpcomingMapsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["mapName"] = this.mapName;
+        data["mapPack"] = this.mapPack;
+        data["mapNumber"] = this.mapNumber;
+        if (Array.isArray(this.mapImages)) {
+            data["mapImages"] = [];
+            for (let item of this.mapImages)
+                data["mapImages"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IUpcomingMapsDto {
+    id?: number;
+    mapName?: string | undefined;
+    mapPack?: string | undefined;
+    mapNumber?: string | undefined;
+    mapImages?: UpcomingImagesDto[] | undefined;
+}
+
+export class UpcomingImagesDto implements IUpcomingImagesDto {
+    imagePath?: string | undefined;
+    imageCaption?: string | undefined;
+
+    constructor(data?: IUpcomingImagesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.imagePath = _data["imagePath"];
+            this.imageCaption = _data["imageCaption"];
+        }
+    }
+
+    static fromJS(data: any): UpcomingImagesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpcomingImagesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["imagePath"] = this.imagePath;
+        data["imageCaption"] = this.imageCaption;
+        return data; 
+    }
+}
+
+export interface IUpcomingImagesDto {
+    imagePath?: string | undefined;
+    imageCaption?: string | undefined;
 }
 
 export class GameMapsVm implements IGameMapsVm {
@@ -6189,6 +6984,42 @@ export class ScheduleMatchCommand implements IScheduleMatchCommand {
 export interface IScheduleMatchCommand {
     match?: number;
     gameDateTime?: Date;
+}
+
+export class DeletePlayoffMatchCommand implements IDeletePlayoffMatchCommand {
+    match?: number;
+
+    constructor(data?: IDeletePlayoffMatchCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.match = _data["match"];
+        }
+    }
+
+    static fromJS(data: any): DeletePlayoffMatchCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeletePlayoffMatchCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["match"] = this.match;
+        return data; 
+    }
+}
+
+export interface IDeletePlayoffMatchCommand {
+    match?: number;
 }
 
 export class PlayersVm implements IPlayersVm {
@@ -6821,6 +7652,198 @@ export interface IUpdatePlayerCommand {
     playerId?: number;
     playerName?: string | undefined;
     playerAlias?: string | undefined;
+}
+
+export class TradePlayerToTeamCommand implements ITradePlayerToTeamCommand {
+    season?: number;
+    week?: number;
+    tradedPlayer?: number;
+    tradedPlayerFor?: number;
+    teamTradedFrom?: number;
+    teamTradedTo?: number;
+
+    constructor(data?: ITradePlayerToTeamCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.season = _data["season"];
+            this.week = _data["week"];
+            this.tradedPlayer = _data["tradedPlayer"];
+            this.tradedPlayerFor = _data["tradedPlayerFor"];
+            this.teamTradedFrom = _data["teamTradedFrom"];
+            this.teamTradedTo = _data["teamTradedTo"];
+        }
+    }
+
+    static fromJS(data: any): TradePlayerToTeamCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new TradePlayerToTeamCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["season"] = this.season;
+        data["week"] = this.week;
+        data["tradedPlayer"] = this.tradedPlayer;
+        data["tradedPlayerFor"] = this.tradedPlayerFor;
+        data["teamTradedFrom"] = this.teamTradedFrom;
+        data["teamTradedTo"] = this.teamTradedTo;
+        return data; 
+    }
+}
+
+export interface ITradePlayerToTeamCommand {
+    season?: number;
+    week?: number;
+    tradedPlayer?: number;
+    tradedPlayerFor?: number;
+    teamTradedFrom?: number;
+    teamTradedTo?: number;
+}
+
+export class TradePlayerToFreeAgencyCommand implements ITradePlayerToFreeAgencyCommand {
+    season?: number;
+    week?: number;
+    tradedPlayer?: number;
+    tradedPlayerFor?: number;
+    teamTradedFrom?: number;
+
+    constructor(data?: ITradePlayerToFreeAgencyCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.season = _data["season"];
+            this.week = _data["week"];
+            this.tradedPlayer = _data["tradedPlayer"];
+            this.tradedPlayerFor = _data["tradedPlayerFor"];
+            this.teamTradedFrom = _data["teamTradedFrom"];
+        }
+    }
+
+    static fromJS(data: any): TradePlayerToFreeAgencyCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new TradePlayerToFreeAgencyCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["season"] = this.season;
+        data["week"] = this.week;
+        data["tradedPlayer"] = this.tradedPlayer;
+        data["tradedPlayerFor"] = this.tradedPlayerFor;
+        data["teamTradedFrom"] = this.teamTradedFrom;
+        return data; 
+    }
+}
+
+export interface ITradePlayerToFreeAgencyCommand {
+    season?: number;
+    week?: number;
+    tradedPlayer?: number;
+    tradedPlayerFor?: number;
+    teamTradedFrom?: number;
+}
+
+export class PromotePlayerToCaptainCommand implements IPromotePlayerToCaptainCommand {
+    season?: number;
+    week?: number;
+    playerPromotedCaptain?: number;
+    team?: number;
+
+    constructor(data?: IPromotePlayerToCaptainCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.season = _data["season"];
+            this.week = _data["week"];
+            this.playerPromotedCaptain = _data["playerPromotedCaptain"];
+            this.team = _data["team"];
+        }
+    }
+
+    static fromJS(data: any): PromotePlayerToCaptainCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new PromotePlayerToCaptainCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["season"] = this.season;
+        data["week"] = this.week;
+        data["playerPromotedCaptain"] = this.playerPromotedCaptain;
+        data["team"] = this.team;
+        return data; 
+    }
+}
+
+export interface IPromotePlayerToCaptainCommand {
+    season?: number;
+    week?: number;
+    playerPromotedCaptain?: number;
+    team?: number;
+}
+
+export class ReverseLastTradeCommand implements IReverseLastTradeCommand {
+    season?: number;
+
+    constructor(data?: IReverseLastTradeCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.season = _data["season"];
+        }
+    }
+
+    static fromJS(data: any): ReverseLastTradeCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ReverseLastTradeCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["season"] = this.season;
+        return data; 
+    }
+}
+
+export interface IReverseLastTradeCommand {
+    season?: number;
 }
 
 export enum RoundsOutputFileType {
@@ -7847,6 +8870,90 @@ export interface ISeasonPlayersDto {
     powerups?: number;
 }
 
+export class FreeAgencyPlayersVm implements IFreeAgencyPlayersVm {
+    freeAgency?: FreeAgencyPlayersDto[] | undefined;
+
+    constructor(data?: IFreeAgencyPlayersVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["freeAgency"])) {
+                this.freeAgency = [] as any;
+                for (let item of _data["freeAgency"])
+                    this.freeAgency!.push(FreeAgencyPlayersDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): FreeAgencyPlayersVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new FreeAgencyPlayersVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.freeAgency)) {
+            data["freeAgency"] = [];
+            for (let item of this.freeAgency)
+                data["freeAgency"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IFreeAgencyPlayersVm {
+    freeAgency?: FreeAgencyPlayersDto[] | undefined;
+}
+
+export class FreeAgencyPlayersDto implements IFreeAgencyPlayersDto {
+    playerId?: number;
+    playerName?: string | undefined;
+
+    constructor(data?: IFreeAgencyPlayersDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.playerId = _data["playerId"];
+            this.playerName = _data["playerName"];
+        }
+    }
+
+    static fromJS(data: any): FreeAgencyPlayersDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new FreeAgencyPlayersDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["playerId"] = this.playerId;
+        data["playerName"] = this.playerName;
+        return data; 
+    }
+}
+
+export interface IFreeAgencyPlayersDto {
+    playerId?: number;
+    playerName?: string | undefined;
+}
+
 export class TeamSummaryVm implements ITeamSummaryVm {
     teamId?: number;
     seasonId?: number;
@@ -8471,6 +9578,262 @@ export interface ITeamsDto {
     homeFieldMapId?: number | undefined;
 }
 
+export class TeamPlayersVm implements ITeamPlayersVm {
+    teamPlayers?: TeamPlayersDto | undefined;
+
+    constructor(data?: ITeamPlayersVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.teamPlayers = _data["teamPlayers"] ? TeamPlayersDto.fromJS(_data["teamPlayers"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): TeamPlayersVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new TeamPlayersVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["teamPlayers"] = this.teamPlayers ? this.teamPlayers.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface ITeamPlayersVm {
+    teamPlayers?: TeamPlayersDto | undefined;
+}
+
+export class TeamPlayersDto implements ITeamPlayersDto {
+    id?: number;
+    teamName?: string | undefined;
+    teamPlayers?: PlayersDto[] | undefined;
+
+    constructor(data?: ITeamPlayersDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.teamName = _data["teamName"];
+            if (Array.isArray(_data["teamPlayers"])) {
+                this.teamPlayers = [] as any;
+                for (let item of _data["teamPlayers"])
+                    this.teamPlayers!.push(PlayersDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): TeamPlayersDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TeamPlayersDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["teamName"] = this.teamName;
+        if (Array.isArray(this.teamPlayers)) {
+            data["teamPlayers"] = [];
+            for (let item of this.teamPlayers)
+                data["teamPlayers"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ITeamPlayersDto {
+    id?: number;
+    teamName?: string | undefined;
+    teamPlayers?: PlayersDto[] | undefined;
+}
+
+export class PlayersDto implements IPlayersDto {
+    id?: number;
+    playerName?: string | undefined;
+
+    constructor(data?: IPlayersDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.playerName = _data["playerName"];
+        }
+    }
+
+    static fromJS(data: any): PlayersDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PlayersDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["playerName"] = this.playerName;
+        return data; 
+    }
+}
+
+export interface IPlayersDto {
+    id?: number;
+    playerName?: string | undefined;
+}
+
+export class NonCaptainTeamPlayersVm implements INonCaptainTeamPlayersVm {
+    teamPlayers?: NonCaptainTeamPlayersDto | undefined;
+
+    constructor(data?: INonCaptainTeamPlayersVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.teamPlayers = _data["teamPlayers"] ? NonCaptainTeamPlayersDto.fromJS(_data["teamPlayers"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): NonCaptainTeamPlayersVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new NonCaptainTeamPlayersVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["teamPlayers"] = this.teamPlayers ? this.teamPlayers.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface INonCaptainTeamPlayersVm {
+    teamPlayers?: NonCaptainTeamPlayersDto | undefined;
+}
+
+export class NonCaptainTeamPlayersDto implements INonCaptainTeamPlayersDto {
+    id?: number;
+    teamName?: string | undefined;
+    teamPlayers?: NonCaptainPlayersDto[] | undefined;
+
+    constructor(data?: INonCaptainTeamPlayersDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.teamName = _data["teamName"];
+            if (Array.isArray(_data["teamPlayers"])) {
+                this.teamPlayers = [] as any;
+                for (let item of _data["teamPlayers"])
+                    this.teamPlayers!.push(NonCaptainPlayersDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): NonCaptainTeamPlayersDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new NonCaptainTeamPlayersDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["teamName"] = this.teamName;
+        if (Array.isArray(this.teamPlayers)) {
+            data["teamPlayers"] = [];
+            for (let item of this.teamPlayers)
+                data["teamPlayers"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface INonCaptainTeamPlayersDto {
+    id?: number;
+    teamName?: string | undefined;
+    teamPlayers?: NonCaptainPlayersDto[] | undefined;
+}
+
+export class NonCaptainPlayersDto implements INonCaptainPlayersDto {
+    id?: number;
+    playerName?: string | undefined;
+
+    constructor(data?: INonCaptainPlayersDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.playerName = _data["playerName"];
+        }
+    }
+
+    static fromJS(data: any): NonCaptainPlayersDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new NonCaptainPlayersDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["playerName"] = this.playerName;
+        return data; 
+    }
+}
+
+export interface INonCaptainPlayersDto {
+    id?: number;
+    playerName?: string | undefined;
+}
+
 export class CreateTeamCommand implements ICreateTeamCommand {
     teamName?: string | undefined;
     teamAbbreviation?: string | undefined;
@@ -8649,6 +10012,50 @@ export class AssignTeamHomefieldCommand implements IAssignTeamHomefieldCommand {
 export interface IAssignTeamHomefieldCommand {
     teamId?: number;
     mapId?: number;
+}
+
+export class UpdateTeamCommand implements IUpdateTeamCommand {
+    teamName?: string | undefined;
+    teamAbbreviation?: string | undefined;
+    teamId?: number;
+
+    constructor(data?: IUpdateTeamCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.teamName = _data["teamName"];
+            this.teamAbbreviation = _data["teamAbbreviation"];
+            this.teamId = _data["teamId"];
+        }
+    }
+
+    static fromJS(data: any): UpdateTeamCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateTeamCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["teamName"] = this.teamName;
+        data["teamAbbreviation"] = this.teamAbbreviation;
+        data["teamId"] = this.teamId;
+        return data; 
+    }
+}
+
+export interface IUpdateTeamCommand {
+    teamName?: string | undefined;
+    teamAbbreviation?: string | undefined;
+    teamId?: number;
 }
 
 export class RegularSeasonWeeksVm implements IRegularSeasonWeeksVm {

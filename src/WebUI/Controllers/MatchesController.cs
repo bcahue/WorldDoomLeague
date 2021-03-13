@@ -1,5 +1,7 @@
 ﻿using WorldDoomLeague.Application.Matches.Queries.GetMatchSummaryByMatchId;
 using WorldDoomLeague.Application.Matches.Queries.GetUnplayedGames;
+using WorldDoomLeague.Application.Matches.Queries.GetUpcomingMatches;
+using WorldDoomLeague.Application.Matches.Queries.GetUnplayedPlayoffGames;
 using WorldDoomLeague.Application.Matches.Queries.GetPlayedGames;
 using WorldDoomLeague.Application.Matches.Queries.GetPlayerLineup;
 using WorldDoomLeague.Application.Matches.Queries.GetGameMaps;
@@ -9,6 +11,7 @@ using WorldDoomLeague.Application.Matches.Commands.CreateMatches;
 using WorldDoomLeague.Application.Matches.Commands.ProcessMatch;
 using WorldDoomLeague.Application.Matches.Commands.ForfeitMatch;
 using WorldDoomLeague.Application.Matches.Commands.ScheduleMatch;
+using WorldDoomLeague.Application.Matches.Commands.DeletePlayoffMatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -34,10 +37,22 @@ namespace WorldDoomLeague.WebUI.Controllers
             return await Mediator.Send(new GetUnplayedGamesQuery(seasonId));
         }
 
+        [HttpGet("{seasonId}/unplayedplayoff")]
+        public async Task<UnplayedPlayoffGamesVm> GetUnplayedPlayoffGames(uint seasonId)
+        {
+            return await Mediator.Send(new GetUnplayedPlayoffGamesQuery(seasonId));
+        }
+
         [HttpGet("played")]
         public async Task<PlayedGamesVm> GetPlayedGames()
         {
             return await Mediator.Send(new GetPlayedGamesQuery());
+        }
+
+        [HttpGet("upcoming")]
+        public async Task<UpcomingMatchesVm> GetUpcomingGames()
+        {
+            return await Mediator.Send(new GetUpcomingMatchesQuery());
         }
 
         [HttpGet("{matchId}/maps")]
@@ -78,6 +93,12 @@ namespace WorldDoomLeague.WebUI.Controllers
 
         [HttpPost("schedule")]
         public async Task<ActionResult<bool>> Schedule(ScheduleMatchCommand command)
+        {
+            return await Mediator.Send(command);
+        }
+
+        [HttpPost("deleteplayoffgame")]
+        public async Task<ActionResult<bool>> DeletePlayoffMatch(DeletePlayoffMatchCommand command)
         {
             return await Mediator.Send(command);
         }

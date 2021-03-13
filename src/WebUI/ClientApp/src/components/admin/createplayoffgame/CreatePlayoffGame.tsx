@@ -94,7 +94,7 @@ const CreatePlayoffGame = props => {
         };
 
         fetchData();
-    }
+    };
 
     const getTeams = async () => {
         const fetchData = async () => {
@@ -112,7 +112,7 @@ const CreatePlayoffGame = props => {
         };
 
         fetchData();
-    }
+    };
 
     const createGame = async () => {
         try {

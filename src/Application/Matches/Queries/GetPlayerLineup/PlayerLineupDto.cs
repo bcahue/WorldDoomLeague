@@ -13,9 +13,9 @@ namespace WorldDoomLeague.Application.Matches.Queries.GetPlayerLineup
 
         public string BlueTeamName { get; set; }
 
-        public IList<TeamPlayersDto> RedTeamPlayers { get; set; }
+        public IList<TeamLineupPlayersDto> RedTeamPlayers { get; set; }
 
-        public IList<TeamPlayersDto> BlueTeamPlayers { get; set; }
+        public IList<TeamLineupPlayersDto> BlueTeamPlayers { get; set; }
 
         public void Mapping(Profile profile)
         {

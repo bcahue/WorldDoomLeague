@@ -28,7 +28,7 @@ namespace WorldDoomLeague.Application.Players.Commands.UpdatePlayer
         {
             return await _context.Player
                 .Where(w => w.Id != model.PlayerId)
-                .AllAsync(p => p.PlayerName != name);
+                .CountAsync(p => p.PlayerName == name) <= 0;
         }
     }
 }

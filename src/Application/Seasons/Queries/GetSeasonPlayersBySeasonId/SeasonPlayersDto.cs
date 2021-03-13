@@ -33,8 +33,8 @@ namespace WorldDoomLeague.Application.Seasons.Queries.GetSeasonPlayersBySeasonId
             .ForMember(m => m.Assists, opt => opt.MapFrom(s => s.TotalAssists))
             .ForMember(m => m.FlagTouches, opt => opt.MapFrom(s => (s.TotalTouches + s.TotalPickupTouches)))
             .ForMember(m => m.FlagReturns, opt => opt.MapFrom(s => s.TotalFlagReturns))
-            .ForMember(m => m.Damage, opt => opt.MapFrom(s => (s.TotalDamage + s.TotalDamageFlagCarrier)))
-            .ForMember(m => m.Frags, opt => opt.MapFrom(s => (s.TotalKills + s.TotalCarrierKills)))
+            .ForMember(m => m.Damage, opt => opt.MapFrom(s => s.TotalDamage))
+            .ForMember(m => m.Frags, opt => opt.MapFrom(s => s.TotalKills))
             .ForMember(m => m.Deaths, opt => opt.MapFrom(s => s.TotalDeaths))
             .ForMember(m => m.Powerups, opt => opt.MapFrom(s => s.TotalPowerPickups))
             .ForMember(m => m.TimePlayed, opt => opt.MapFrom(s => TimeSpan.FromSeconds((double)s.FkIdRoundNavigation.RoundTicsDuration / 35)));
